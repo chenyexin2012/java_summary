@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>java_summary</groupId>
+    <artifactId>java_summary</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+
+    <modules>
+        <module>java_summary_web</module>
+		<module>java_summary_jvm</module>
+        <module>java_summary_base</module>
+        <module>java_summary_spring</module>
+        <module>java_summary_mybatis</module>
+        <module>java_summary_design_pattern</module>
+        <module>java_summary_mq</module>
+        <module>java_summary_io</module>
+        <module>java_summary_reflection</module>
+        <module>java_summary_springmvc</module>
+        <module>java_summary_redis</module>
+        <module>java_summary_concurrency</module>
+        <module>java_summary_springboot</module>
+    </modules>
+
+
+</project>

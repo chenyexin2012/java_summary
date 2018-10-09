@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         id="WebApp_ID" version="2.5">
+
+    <display-name>myWeb</display-name>
+
+    <servlet>
+        <servlet-name>servletTest</servlet-name>
+        <servlet-class>com.java.summary.web.servlet.ServletTest</servlet-class>
+        <!--load-on-startup 参数值大于或等于0时，会在服务器启动时加载对应的Servlet-->
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>servletTest</servlet-name>
+        <url-pattern>/servlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>httpServletTest</servlet-name>
+        <servlet-class>com.java.summary.web.servlet.HttpServletTest</servlet-class>
+        <!--load-on-startup 参数值未指定或值小于0时，则在被选择时才会被加载-->
+        <load-on-startup>-1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>httpServletTest</servlet-name>
+        <url-pattern>/httpServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>genericServletTest</servlet-name>
+        <servlet-class>com.java.summary.web.servlet.GenericServletTest</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>genericServletTest</servlet-name>
+        <url-pattern>/genericServlet</url-pattern>
+    </servlet-mapping>
+
+    <!--处理登录请求-->
+    <servlet>
+        <servlet-name>loginServlet</servlet-name>
+        <servlet-class>com.java.summary.web.servlet.login.LoginServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>loginServlet</servlet-name>
+        <url-pattern>/login</url-pattern>
+    </servlet-mapping>
+
+</web-app>

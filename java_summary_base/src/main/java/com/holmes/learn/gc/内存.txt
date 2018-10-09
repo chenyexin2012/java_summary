@@ -1,0 +1,16 @@
+一、JVM的内存结构
+	1.程序计数器（Program Counter Register）
+	
+	
+	2.java虚拟机栈（Java Stacks）
+	
+	
+	3.本地方法栈（Native Method Stacks）
+	
+	
+	4.堆（Heap）
+	
+	
+	5.方法区（Method Area）
+	
+	

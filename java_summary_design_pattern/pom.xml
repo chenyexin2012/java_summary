@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>java_summary</artifactId>
+        <groupId>java_summary</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>java_summary</groupId>
+    <artifactId>java_summary_design_pattern</artifactId>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+
+    <packaging>pom</packaging>
+    <modules>
+        <module>java_design_pattern_decorator</module>
+        <module>java_design_pattern_observer</module>
+        <module>java_design_pattern_strategy</module>
+        <module>java_design_pattern_factory</module>
+    </modules>
+
+
+</project>

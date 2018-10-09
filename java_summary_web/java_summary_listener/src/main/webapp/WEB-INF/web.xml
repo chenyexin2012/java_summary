@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         id="WebApp_ID" version="2.5">
+
+    <display-name>Archetype Created Web Application</display-name>
+
+    <!-- 注册针对ServletContext对象进行监听的监听器 -->
+    <listener>
+        <description>ServletContext监听器</description>
+        <listener-class>com.java.summary.web.listener.example.MyServletContextListener</listener-class>
+    </listener>
+
+    <!-- 注册针对HttpSession对象进行监听的监听器 -->
+    <listener>
+        <listener-class>com.java.summary.web.listener.example.MyHttpSessionListener</listener-class>
+    </listener>
+
+    <!-- 注册针对ServletRequest对象进行监听的监听器 -->
+    <listener>
+        <listener-class>com.java.summary.web.listener.example.MyServletRequestListener</listener-class>
+    </listener>
+
+    <!-- 注册针对ServletContext对象属性变更进行监听的监听器 -->
+    <listener>
+        <listener-class>com.java.summary.web.listener.example.MyServletContextAttributeListener</listener-class>
+    </listener>
+
+    <!-- 注册针对HttpSession对象属性变更进行监听的监听器 -->
+    <listener>
+        <listener-class>com.java.summary.web.listener.example.MyHttpSessionAttributeListener</listener-class>
+    </listener>
+
+    <!-- 注册针对ServletRequest对象属性变更进行监听的监听器 -->
+    <listener>
+        <listener-class>com.java.summary.web.listener.example.MyServletRequestAttributeListener</listener-class>
+    </listener>
+
+    <!--注册记录当前在线人数的监听器-->
+    <listener>
+        <listener-class>com.java.summary.web.listener.count.CountNumberOfOnlineListener</listener-class>
+    </listener>
+
+    <!--2分钟后销毁session-->
+    <session-config>
+        <session-timeout>2</session-timeout>
+    </session-config>
+
+    <servlet>
+        <servlet-name>myServlet</servlet-name>
+        <servlet-class>com.java.summary.web.servlet.MyServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>myServlet</servlet-name>
+        <url-pattern>/myServlet</url-pattern>
+    </servlet-mapping>
+
+</web-app>

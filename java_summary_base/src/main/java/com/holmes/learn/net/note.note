@@ -1,0 +1,57 @@
+一、使用Socket和ServerSocket编写简易的客户端和服务端并实现双向通信
+
+	1 使用ServerSocket建立一个服务端：
+	
+		1.1 需要绑定一个未使用的端口
+			ServerSocket serverSocket = new ServerSocket(9999);
+			
+			此时，主机会在9999端口上监听来自客户端的连接请求，操作系统会将接受到了请求放入一个先进先出的队列中，在ServerSocket的其它构造方式中有一个参数backlog，就是用来指定这个队列的大小的，默认为50。当请求数超过这个队列大小时，服务端会拒绝客户端的请求。
+			
+		1.2 调用accept()方法，获取一个Socket实例，这时候服务端就和客户端之间建立的通信。
+			Socket socket = serverSocket.accept();
+			
+		1.3 通过socket.getInputStream()获取输入流，之后可以在输入流中获取到客户端传输过来的数据
+			InputStream is = socket.getInputStream();
+			
+			读取完毕后调用socket.shutdownInput()关闭输入
+		
+		1.4 通过socket.getOutputStream()获取输出流，之后可以通过这个输出流向客户段返回数据
+			OutputStream os = socket.getOutputStream();
+			
+			写操作完成后需要调用socket.shutdownOutput()关闭输出
+		
+		1.5 关闭socket
+			socket.close();
+		
+		1.6 关闭服务：一般会在finally块中去关闭
+			serverSocket.close();
+	
+	2.使用Socket创建一个客户端，并向服务端发送请求
+	
+		2.1 使用Socket建立客户端，需要指定服务器地址和端口
+			Socket socket = new Socket("127.0.0.1", 9999);
+			
+		2.2  通过socket.getOutputStream()获取输出流，向服务端传输数据
+			OutputStream os = socket.getOutputStream();
+			
+			写操作完成后需要调用socket.shutdownOutput()关闭输出
+			
+		2.3 通过socket.getInputStream()获取输入流，并从输入流中获取服务端返回的数据
+			InputStream is = socket.getInputStream();
+	
+			读取完毕后调用socket.shutdownInput()关闭输入
+			
+		2.4 关闭socket
+			socket.close();
+	
+	这样就通过Socket和ServerSocket完成了一个简单的并能实现双向通信的客户端和服务端。
+	
+	
+	
+	
+	
+	
+	
+			
+	
+			
