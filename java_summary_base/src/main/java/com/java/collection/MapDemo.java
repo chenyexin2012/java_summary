@@ -8,8 +8,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class MapDemo {
 
+    /**
+     * HashMap
+     */
     @Test
-    public void HashMapTest() {
+    public void hashMapTest() {
 
         Map<Long, String> map = new HashMap<Long, String>();
 
@@ -57,6 +60,9 @@ public class MapDemo {
         System.out.println("按entry遍历：" + (time4 - time3));
     }
 
+    /**
+     * Hashtable
+     */
     @Test
     public void hashTableTest() {
         Hashtable<Long, String> map = new Hashtable<>();
@@ -83,6 +89,9 @@ public class MapDemo {
         }
     }
 
+    /**
+     * ConcurrentHashMap
+     */
     @Test
     public void concurrentHashMapTest() {
 

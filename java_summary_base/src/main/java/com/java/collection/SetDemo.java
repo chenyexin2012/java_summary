@@ -9,7 +9,9 @@ import java.util.TreeSet;
 
 public class SetDemo {
 
-
+    /**
+     * HashSet
+     */
     @Test
     public void HashSetTest() {
 
@@ -34,6 +36,9 @@ public class SetDemo {
         }
     }
 
+    /**
+     * TreeSet
+     */
     @Test
     public void TreeSetTest() {
 //		Set<MyData> set = new TreeSet<MyData>(new Comparator<MyData>() {
@@ -65,6 +70,9 @@ public class SetDemo {
         }
     }
 
+    /**
+     * LinkedHashSet
+     */
     @Test
     public void LinkedHashSetTest() {
 

@@ -1,5 +1,35 @@
-一、set （成员不能重复）
-	1.hashSet 
+### 集合类
+    
+    java中的的集合类主要实现自接口Collection、Map。
+    
+    1.Collection：List、Set、Queue以及它们的实现类。
+    2.Map：HashMap、HashTable以及其它实现类。
+    
+
+#### List
+
+    List接口继承自Collection，常用的实现类有：
+        ArrayList、LinkedList、Vector
+    
+	1.ArrayList
+		以数组作为存储结构
+		访问成员速度较快，插入删除对象速度较慢
+	
+	2.LinkedList
+		以链表作为存储结构
+		能够快速执行插入删除操作，但访问速度较慢
+	
+	3.Vector	
+	    以数组作为存储结构
+	    线程安全
+	    一般不用
+	
+#### Set （成员不能重复）
+
+    Set接口继承自Collection，表示数学中的集合，常用的实现类有：
+        HashSet、TreeSet、LinkedHashSet
+
+	1.HashSet 
 		不能保证元素的排列顺序，顺序有可能发生变化。
 		不是同步的。
 		成员可以为任何Object子类的对象，同时需要覆盖eqauls和hashCode方法，否则无法判断成员是否相等。
@@ -21,16 +51,35 @@
 		遍历顺序和插入顺序是一致
 		与HashSet类似
 
-二、List
-	1.ArrayList
-		以数组作为存储结构
-		访问成员速度较快，插入删除对象速度较慢
-	
-	2.LinkedList
-		以链表作为存储结构
-		能够快速执行插入删除操作，但访问速度较慢
+#### Queue
+
+Queue接口继承自Collection，常用的实现类有：
+    
+    java.util.PriorityQueue
+    java.util.concurrent.LinkedBlockingQueue
+    java.util.concurrent.ArrayBlockingQueue
+    java.util.concurrent.PriorityBlockingQueue
+
+1.阻塞队列与非阻塞队列
+
+2.Queue与Deque的区别
+    
+3.一些方法的区别：
+    
+|head|head|head|
+|:----|:----|----|
+|add|增加一个元索|如果队列已满，则抛出一个IIIegaISlabEepeplian异常|
+|remove|移除并返回队列头部的元素|如果队列为空，则抛出一个NoSuchElementException异常|
+|element|返回队列头部的元素|如果队列为空，则抛出一个NoSuchElementException异常|
+|offer|添加一个元素并返回true|如果队列已满，则返回false|
+|poll|移除并返问队列头部的元素|如果队列为空，则返回null|
+|peek|返回队列头部的元素|如果队列为空，则返回null|
+|put|添加一个元素|如果队列满，则阻塞|
+|take|移除并返回队列头部的元素|如果队列为空，则阻塞|
+    
 		
-三、Map
+### Map
+
 	1.HashMap、Hashtable与ConcurrentHashMap
 		利用哈希表作为键值存储
 		HashMap的键与值都可以为null，后两者不可以
