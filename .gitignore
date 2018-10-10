@@ -1,9 +1,18 @@
-/target
-/.settings
-/.classpath
-/.project
-*.epoch
-*.log
+.settings
+bin
+pom.xml
+classes/
+/build
+target/
+.classpath
+.project
+
+# IDEA artifacts and output dirs
 *.iml
-/.idea
-.mvn/wrapper/maven-wrapper.jar
+*.ipr
+*.iws
+.idea
+out
+test-output
+atlassian-ide-plugin.xml
+.gradletasknamecache
