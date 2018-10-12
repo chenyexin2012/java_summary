@@ -29,6 +29,7 @@
         <module>java_summary_redis</module>
         <module>java_summary_concurrency</module>
         <module>java_summary_springboot</module>
+        <module>java_summary_class</module>
     </modules>
 
 
