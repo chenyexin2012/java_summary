@@ -35,7 +35,9 @@ public class ConnectionManager {
                 public void run() {
                     ConnectionManager.getConnectionManager().getConnection();
                     System.out.println(Thread.currentThread().getName() + "获取到连接。。。");
-                    for (int j = 0; j < 10000000; j++);
+                    for (int j = 0; j < 10000000; j++){
+
+                    }
                     ConnectionManager.getConnectionManager().close();
                 }
             });

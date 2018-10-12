@@ -6,9 +6,7 @@ import java.util.concurrent.Semaphore;
 
 public class SemaphoreTest {
 
-    @Test
-    public void semaphoreTest() {
-
+    public static void main(String[] args) {
         final Semaphore semaphore = new Semaphore(3);
 
         for (int i = 1; i < 10; i++) {
@@ -36,6 +34,5 @@ public class SemaphoreTest {
             });
             thread.start();
         }
-
     }
 }
