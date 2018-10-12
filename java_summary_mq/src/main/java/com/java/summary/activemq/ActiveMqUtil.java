@@ -12,11 +12,11 @@ public class ActiveMqUtil {
 
     private PooledConnectionFactory pooledConnectionFactory = null;
 
-    private final static String URL = "tcp://47.101.32.50:61616";
+    private final static String URL = "tcp://localhost:61616";
 
     private final static String USER_NAME = "admin";
 
-    private final static String PASSWORD = "holmes221b";
+    private final static String PASSWORD = "";
 
     public static ActiveMqUtil getActiveMqUtil() {
         if (null != activeMqUtil) {
