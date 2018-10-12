@@ -1,6 +1,5 @@
 .settings
 bin
-pom.xml
 classes/
 /build
 target/
