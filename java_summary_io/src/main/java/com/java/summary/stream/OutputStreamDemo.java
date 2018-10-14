@@ -109,84 +109,39 @@ public class OutputStreamDemo {
     @Test
     public void PipedOutputStreamTest() throws IOException {
 
-
-
-
-    }
-
-    public static void main(String[] args) throws IOException {
         PipedInputStream pis = new PipedInputStream();
         PipedOutputStream pos = new PipedOutputStream();
 
-        CyclicBarrier barrier1 = new CyclicBarrier(3, new Runnable() {
+        pis.connect(pos);
+
+        new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
+                    pos.write(str.getBytes());
                     pos.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-        });
+        }).start();
 
-        CyclicBarrier barrier2 = new CyclicBarrier(3, new Runnable() {
+        new Thread(new Runnable() {
             @Override
             public void run() {
+                byte[] buf = new byte[2048];
                 try {
+                    int len = -1;
+                    while((len = pis.read(buf)) != -1) {
+                        System.out.println(len);
+                        System.out.println(new String(buf, 0, len));
+                    }
                     pis.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-        });
 
-        pis.connect(pos);
-
-        for (int i = 0; i < 3; i++) {
-
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        pos.write(str.getBytes());
-
-                        try {
-                            barrier1.await();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        } catch (BrokenBarrierException e) {
-                            e.printStackTrace();
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }).start();
-        }
-
-        for (int i = 0; i < 3; i++) {
-
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    byte[] buf = new byte[2048];
-                    try {
-                        int len = -1;
-                        while((len = pis.read(buf)) > 0) {
-                            System.out.println(len);
-                            System.out.println(new String(buf, 0, len));
-                        }
-                        barrier2.await();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } catch (BrokenBarrierException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-            }).start();
-        }
+        }).start();
     }
 }

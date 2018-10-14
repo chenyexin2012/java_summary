@@ -54,7 +54,6 @@ public class InputSteamDemo {
     }
 
     /**
-     *
      * @see OutputStreamDemo#ByteArrayOutputStreamTest()
      */
     @Test
@@ -62,7 +61,6 @@ public class InputSteamDemo {
     }
 
     /**
-     *
      * @throws IOException
      * @see OutputStreamDemo#BufferedOutputStreamTest()
      */
@@ -94,5 +92,11 @@ public class InputSteamDemo {
         System.out.println(dis.readUTF());
     }
 
+    /**
+     * @see OutputStreamDemo#PipedOutputStreamTest()
+     */
+    @Test
+    public void PipedInputStreamTest() {
+    }
 
 }
