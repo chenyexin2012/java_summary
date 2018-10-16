@@ -137,3 +137,9 @@ close()方法中不做任何操作。
 
 [See the blog](https://www.cnblogs.com/skywang12345/p/io_04.html)
 
+
+#### StringReader 和 StringWriter
+
+感觉没啥用？？
+
+
