@@ -30,6 +30,7 @@
         <module>java_summary_concurrency</module>
         <module>java_summary_springboot</module>
         <module>java_summary_class</module>
+        <module>java_summary_dubbo</module>
     </modules>
 
 
