@@ -1,6 +1,6 @@
-package com.java.summary.activemq.p2p.consumer;
+package com.java.summary.activemq.api.p2p.consumer;
 
-import com.java.summary.activemq.ActiveMqUtil;
+import com.java.summary.activemq.api.ActiveMqUtil;
 
 import javax.jms.*;
 

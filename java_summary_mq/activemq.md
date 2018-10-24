@@ -100,11 +100,29 @@
     .6 消息监听者（Message Listeners）
 
     
+
+#### spring整合ActiveMq
+
+##### DefaultMessageListenerContainer
+
+    org.springframework.jms.listener.DefaultMessageListenerContainer
+    通过在内部实现一个TaskExecutor来执行消息监听的任务。
+
+1.任务执行器 TaskExecutor
+    SimpleAsyncTaskExecutor（默认）：不重用连接，对于每个任务都需要新开启一个线程，执行完任务后会关闭它。
+
+2.监听消息的任务 AsyncMessageListenerInvoker
+    AsyncMessageListenerInvoker是DefaultMessageListenerContainer的内部类，它实现了Runnable接口，用来表示消息监听的任务。
     
+3.缓存共享等级 cacheLevel
     
+    CACHE_AUTO(4)，默认值，表示由配置的外部事务管理器决定。
+    CACHE_CONSUMER(3)，缓存共享consumer、session、connection。
+    CACHE_SESSION(2)，缓存共享session、connection。
+    CACHE_CONNECTION(1)，缓存共享connection。
+    CACHE_NONE(0)，不使用缓存共享。
     
-    
-    
+4.maxMessagesPerTask
     
     
     

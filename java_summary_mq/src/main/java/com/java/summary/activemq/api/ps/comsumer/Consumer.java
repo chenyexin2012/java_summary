@@ -1,6 +1,6 @@
-package com.java.summary.activemq.ps.comsumer;
+package com.java.summary.activemq.api.ps.comsumer;
 
-import com.java.summary.activemq.ActiveMqUtil;
+import com.java.summary.activemq.api.ActiveMqUtil;
 
 import javax.jms.*;
 

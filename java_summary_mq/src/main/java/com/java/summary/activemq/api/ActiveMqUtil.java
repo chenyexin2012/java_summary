@@ -1,4 +1,4 @@
-package com.java.summary.activemq;
+package com.java.summary.activemq.api;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.pool.PooledConnectionFactory;
@@ -16,7 +16,7 @@ public class ActiveMqUtil {
 
     private final static String USER_NAME = "admin";
 
-    private final static String PASSWORD = "";
+    private final static String PASSWORD = "admin";
 
     public static ActiveMqUtil getActiveMqUtil() {
         if (null != activeMqUtil) {
