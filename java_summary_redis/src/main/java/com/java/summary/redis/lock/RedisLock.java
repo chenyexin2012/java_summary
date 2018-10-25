@@ -9,24 +9,54 @@ import java.util.concurrent.locks.Lock;
 
 public class RedisLock implements Lock {
 
+    /**
+     * 锁标识名的统一后缀
+     */
+    private final static String SUFFIX = "_lock";
+    /**
+     * 锁的标识名，不可为空
+     */
     private String name;
 
-    private int expire;
-
-    private long waitInterval;
+    /**
+     * 锁的生存时间，单位毫秒，及redis中key的生存时间
+     */
+    private long expire = 60 * 1000L;
 
     /**
-     * @param name         锁的标识名，不可为空
-     * @param expire       锁的生存时间，单位秒，及redis中key的生存时间
-     * @param waitInterval 获取锁失败后挂起再试的时间间隔，单位毫秒
+     * 获取锁失败后挂起再试的时间间隔，单位毫秒
      */
-    public RedisLock(String name, int expire, long waitInterval) throws RedisLockException {
+    private long waitInterval = 100L;
+
+    /**
+     * 获取锁的超时时间，单位毫秒，必须大于waitInterval
+     */
+    private long timeout = 10 * 1000L;
+
+
+    /**
+     * @param name
+     * @throws RedisLockException
+     */
+    public RedisLock(String name) throws RedisLockException {
         if (null == name || "".equals(name)) {
             throw new RedisLockException("锁的标识名不可为空！");
         }
-        this.name = name;
+        this.name = name + SUFFIX;
+    }
+    /**
+     * @param name
+     * @param expire
+     * @param waitInterval
+     */
+    public RedisLock(String name, long expire, long waitInterval, long timeout) throws RedisLockException {
+        if (null == name || "".equals(name)) {
+            throw new RedisLockException("锁的标识名不可为空！");
+        }
+        this.name = name + SUFFIX;
         this.expire = expire;
         this.waitInterval = waitInterval;
+        this.timeout = timeout;
     }
 
     @Override
@@ -34,27 +64,29 @@ public class RedisLock implements Lock {
 
         Jedis jedis = JedisPoolUtil.getJedis();
 
-        while (true) {
+        long timeoutT = this.timeout + System.currentTimeMillis();
+        while (timeoutT > System.currentTimeMillis()) {
 
+            long expireTime = this.expire + System.currentTimeMillis();
+            String expireStr = String.valueOf(expireTime);
             // 尝试向redis中插入锁的标识名
-            long res = jedis.setnx(name, "");
+            long res = jedis.setnx(name, expireStr);
             if (res == 1L) {
-                // 加入成功，为锁的标识添加超时时间
-                jedis.expire(name, expire);
                 break;
             }
 
-            // 获取key的剩余生存时间
-            long ttl = jedis.ttl(name);
-            //ttl小于0 表示key上没有设置生存时间（key是不会不存在的，因为前面setnx会自动创建）
-            //如果出现这种状况，那就是进程的某个实例setnx成功后 crash 导致紧跟着的expire没有被调用
-            //这时可以直接设置expire并把锁纳为己用
-            if (ttl < 0L) {
-                // 为锁的标识重新设置超时时间
-                jedis.expire(name, expire);
-                break;
+            // 锁的标识名存在，则判断其是否超时
+            String currentExpireStr = jedis.get(name);
+            if(null != currentExpireStr && Long.valueOf(currentExpireStr) < System.currentTimeMillis()){
+                // 此时则表示锁已经超时
+                // 向锁中添加新的值，并获取之前的值与currentExpireStr作比较，防止其它线程修改了存储的值
+                // 此时虽然可能在没有成功获取锁的请况下更新了值，但由于误差较小，可以忽略
+                String oldExpireStr = jedis.getSet(name, expireStr);
+                // 值相等则表示没有其他线程获取了锁
+                if(currentExpireStr.equals(oldExpireStr)) {
+                    break;
+                }
             }
-
             try {
                 // 等待下次重新获取锁
                 Thread.sleep(waitInterval);
