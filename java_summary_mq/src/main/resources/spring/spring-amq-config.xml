@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--连接工厂-->
+    <bean id="pooledConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory" destroy-method="stop">
+        <property name="connectionFactory">
+            <bean class="org.apache.activemq.ActiveMQConnectionFactory">
+                <property name="brokerURL" value="tcp://localhost:61616"></property>
+                <property name="userName" value="admin"></property>
+                <property name="password" value="admin"></property>
+            </bean>
+        </property>
+        <property name="maxConnections" value="2"></property>
+        <property name="maximumActiveSessionPerConnection" value="20"></property>
+        <property name="idleTimeout" value="1000"></property>
+        <property name="expiryTimeout" value="1000"></property>
+    </bean>
+
+    <!--缓存-->
+    <bean id="cachingConnectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
+        <property name="targetConnectionFactory" ref="pooledConnectionFactory"></property>
+        <property name="sessionCacheSize" value="1"></property>
+    </bean>
+
+    <!--点对点-->
+    <bean id="queueDestination" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg name="name" value="queueTest"></constructor-arg>
+    </bean>
+
+    <!--发布/订阅-->
+    <bean id="topicDestination" class="org.apache.activemq.command.ActiveMQTopic">
+        <constructor-arg name="name" value="topicTest"></constructor-arg>
+    </bean>
+
+</beans>

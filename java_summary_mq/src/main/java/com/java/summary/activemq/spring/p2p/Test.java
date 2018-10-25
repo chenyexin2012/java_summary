@@ -8,10 +8,11 @@ import java.util.Date;
 
 public class Test {
 
-    public static void main(String[] args) {
+    @org.junit.Test
+    public void providerTest() {
 
         ClassPathXmlApplicationContext applicationContext =
-                new ClassPathXmlApplicationContext("classpath:spring/spring-amq.xml");
+                new ClassPathXmlApplicationContext("classpath:spring/spring-amq-provider.xml");
 
         applicationContext.start();
 
@@ -32,7 +33,21 @@ public class Test {
                 }
             }).start();
         }
+        while(true){
+        }
 //        applicationContext.stop();
 //        applicationContext.close();
+    }
+
+    @org.junit.Test
+    public void consumerTest() {
+
+        ClassPathXmlApplicationContext applicationContext =
+                new ClassPathXmlApplicationContext("classpath:spring/spring-amq-consumer.xml");
+
+        applicationContext.start();
+
+        while (true) {
+        }
     }
 }

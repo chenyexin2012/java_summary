@@ -123,7 +123,33 @@
     CACHE_NONE(0)，不使用缓存共享。
     
 4.maxMessagesPerTask
+
+当maxMessagesPerTask的值大于0时，表示AsyncMessageListenerInvoker.run方法会在循环中反复尝试接收消息，
+并在接收到消息后调用MessageListener（或者SessionAwareMessageListener）。
+
+当maxMessagesPerTask的值不小于0时，表示AsyncMessageListenerInvoker.run方法中尝试接受消息的最大次数，
+每次接收消息的超时时间由其父类AbstractPollingMessageListenerContainer的receiveTimeout属性指定。
     
+5.receiveTimeout
+
+父类AbstractPollingMessageListenerContainer的属性，表示每次接收消息的超时时间，默认值为DEFAULT_RECEIVE_TIMEOUT = 1000。
+    
+6.idleTaskExecutionLimit
+
+默认值为1。
+
+当AsyncMessageListenerInvoker.run方法尝试接受消息maxMessagesPerTask(maxMessagesPerTask>=0)次，且都没有接收到消息，
+此时AsyncMessageListenerInvoker的idleTaskExecutionCount值会被累加，直到超过idleTaskExecutionLimit值，
+AsyncMessageListenerInvoker会被销毁。
+
+7.concurrentConsumers maxConcurrentConsumers
+
+DefaultMessageListenerContainer使用scheduledInvokers来保存AsyncMessageListenerInvoker实例。
+而实例的个数可以在concurrentConsumers和maxConcurrentConsumers之间浮动。
+跟SimpleMessageListenerContainer一样，应该只是在Destination为Queue的时候才使用多个AsyncMessageListenerInvoker实例。
+
+
+
     
     
     

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <import resource="spring-amq-config.xml"></import>
+
+    <bean id="messageListener" class="com.java.summary.activemq.spring.p2p.consumer.MessageListenerImpl"/>
+
+    <bean id="messageListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="connectionFactory" ref="cachingConnectionFactory"></property>
+        <!--点对点-->
+        <!--<property name="destination" ref="queueDestination"></property>-->
+        <!--发布订阅-->
+        <property name="destination" ref="topicDestination"></property>
+        <property name="messageListener" ref="messageListener"></property>
+        <property name="cacheLevel" value="3"></property>
+        <property name="maxMessagesPerTask" value="10"></property>
+    <!--<property name="receiveTimeout" value="1000"></property>-->
+    <!--<property name="idleTaskExecutionLimit" value="1"></property>-->
+    <!--<property name="concurrentConsumers" value="1"></property>-->
+    <!--<property name="maxConcurrentConsumers" value="1"></property>-->
+    <!--<property name="concurrency" value="1-10"></property>-->
+    </bean>
+
+</beans>
