@@ -21,8 +21,10 @@
         <setting name="logImpl" value="STDOUT_LOGGING"/>
         <!-- 延迟加载 -->
         <setting name="lazyLoadingEnabled" value="true"/>
-        <!-- 开启二级缓存 -->
-        <setting name="cacheEnabled" value="true"/>
+        <!--一级缓存作用范围 默认为SESSION -->
+<!--        <setting name="localCacheScope" value="STATEMENT" />-->
+        <!-- 开启二级缓存 默认为true-->
+<!--        <setting name="cacheEnabled" value="true"/>-->
     </settings>
 
     <!--

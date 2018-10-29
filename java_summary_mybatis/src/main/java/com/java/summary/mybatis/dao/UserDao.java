@@ -21,6 +21,11 @@ public interface UserDao {
     public void insert(User user);
 
     /**
+     *
+     * @param userId
+     */
+    public void deleteById(Integer userId);
+    /**
      * 批量插入
      *
      * @param list

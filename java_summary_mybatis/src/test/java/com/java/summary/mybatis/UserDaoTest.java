@@ -14,19 +14,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserDaoTest {
-
-    private SqlSessionFactory sessionFactory = null;
-
-    @Before
-    public void before() {
-        InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("mybatis/mybatis-config.xml");
-        sessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
-    }
-
-    @After
-    public void after() {
-    }
+public class UserDaoTest extends BaseTest{
 
     @org.junit.Test
     public void testInsert() {
