@@ -281,10 +281,102 @@ Filter接口中有一个doFilter方法，当开发人员编写好Filter，并配
     
 ##### 使用Filter处理全站乱码问题
     
+1.直接通过Filter设计编码UTF-8，只能对post请求起作用，如果需要同时对get请求起作用，需要同时修改tomcat配置中的编码:
+  
+Filter
+  
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+
+        request.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
+        chain.doFilter(request, response);
+    }
+
+server.xml
+  
+    <Connector port="8080" protocol="HTTP/1.1"  
+                   connectionTimeout="20000"  
+                   redirectPort="8443"   
+                   URIEncoding="UTF-8"  
+                   useBodyEncodingForURI="true"  
+                   />  
     
+2.Filter结合自定义增强类处理乱码问题
+
+Filter
+
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+
+        response.setContentType("text/html;charset=" + charset);
+        // 增强request对象
+        chain.doFilter(new EncodingRequest((HttpServletRequest) request, this.charset), response);
+    } 
+  
+增强类
+         
+    /**
+     * 自定义HttpServletRequest增强类
+     */
+    public class EncodingRequest extends HttpServletRequestWrapper {
     
+        private HttpServletRequest request;
+        private String charset;
+        private volatile Map<String, String[]> map = null;
     
+        /**
+         * Constructs a request object wrapping the given request.
+         *
+         * @param request
+         * @throws IllegalArgumentException if the request is null
+         */
+        public EncodingRequest(HttpServletRequest request, String charset) {
+            super(request);
+            this.charset = charset;
+            this.request = request;
+        }
     
+        @Override
+        public Map<String, String[]> getParameterMap() {
+    
+            synchronized (EncodingRequest.class) {
+                if (null == this.map) {
+                    this.map = this.request.getParameterMap();
+                    // 遍历map，对每个String[]进行编码
+                    Iterator<Map.Entry<String, String[]>> iterable = map.entrySet().iterator();
+                    while (iterable.hasNext()) {
+                        Map.Entry<String, String[]> entry = iterable.next();
+                        String[] values = entry.getValue();
+                        for (int i = 0; i < values.length; i++) {
+                            try {
+                                values[i] = new String(values[i].getBytes("ISO-8859-1"), this.charset);
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
+                return this.map;
+            }
+        }
+    
+        @Override
+        public String[] getParameterValues(String name) {
+    
+            return this.getParameterMap().get(name);
+        }
+    
+        @Override
+        public String getParameter(String name) {
+    
+            String[] values = this.getParameterValues(name);
+            if (null != values && values.length > 0) {
+                return values[0];
+            }
+            return null;
+        }
+    }
     
     
     

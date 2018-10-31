@@ -11,11 +11,12 @@ public class LoginServlet extends HttpServlet {
 
         String name = req.getParameter("name");
         String pwd = req.getParameter("pwd");
+        String message = req.getParameter("message");
         if ("holmes".equals(name) && "holmes".equals(pwd)) {
 
             HttpSession session = req.getSession();
             session.setAttribute("name", name);
-
+            session.setAttribute("message", message);
             //用户点击记住登录功能则将信息记录至Cookie中
             if ("true".equals(req.getParameter("autoLogin"))) {
 
@@ -34,6 +35,6 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doGet(req, resp);
+        doPost(req, resp);
     }
 }

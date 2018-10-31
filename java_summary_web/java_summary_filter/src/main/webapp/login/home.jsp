@@ -12,5 +12,6 @@
 </head>
 <body>
 <h2>Hello ${name}! Welcome!</h2>
+<h2>Message ${message}!</h2>
 </body>
 </html>
