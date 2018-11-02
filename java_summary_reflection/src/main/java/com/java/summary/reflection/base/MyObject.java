@@ -1,4 +1,4 @@
-package com.java.summary.relection.base;
+package com.java.summary.reflection.base;
 
 public class MyObject {
 

@@ -1,4 +1,4 @@
-package com.java.summary.relection.base;
+package com.java.summary.reflection.base;
 
 public class Student {
 
@@ -20,7 +20,7 @@ public class Student {
 
     //有多个参数的构造方法  
     public Student(String name, int age) {
-        System.out.println("姓名：" + name + "年龄：" + age);//这的执行效率有问题，以后解决。
+        System.out.println("姓名：" + name + " 年龄：" + age);//这的执行效率有问题，以后解决。
     }
 
     //受保护的构造方法  

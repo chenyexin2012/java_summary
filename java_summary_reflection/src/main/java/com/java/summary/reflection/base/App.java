@@ -1,4 +1,4 @@
-package com.java.summary.relection.base;
+package com.java.summary.reflection.base;
 
 
 import org.junit.Test;
@@ -16,12 +16,12 @@ public class App {
      * 获取Class的三种方式
      */
     @Test
-    public void test1() {
+    public void getClassTest() {
+
         //1.通过对象的getClass方法
         MyObject obj = new MyObject();
         Class obj1 = obj.getClass();
         System.out.println(obj1.getName());
-
 
         //2.通过Object类的静态属性class
         Class obj2 = MyObject.class;
@@ -31,7 +31,7 @@ public class App {
 
         //3.通过Class的静态方法classForName()
         try {
-            Class obj3 = Class.forName("com.holmes.learn.reflect.MyObject");
+            Class obj3 = Class.forName("com.java.summary.reflection.base.MyObject");
             System.out.println(obj3.getName());
             System.out.println(obj1 == obj3);
         } catch (ClassNotFoundException e) {
@@ -43,7 +43,7 @@ public class App {
      * 通过反射获取类的构造方法
      */
     @Test
-    public void test2() {
+    public void getConstructorsTest() {
 
         Class clazz = Student.class;
         System.out.println("获取Student的所有公有构造方法以及参数");
@@ -71,7 +71,7 @@ public class App {
         }
 
         try {
-            System.out.println("获取共有无参的构造方法");
+            System.out.println("获取公有无参的构造方法");
             Constructor constructor = clazz.getConstructor(null);
             System.out.println(constructor.getName() + "\t");
 
@@ -82,7 +82,18 @@ public class App {
         }
 
         try {
-            System.out.println("获取私有有参的构造方法");
+            System.out.println("获取指定参数类型的公有构造方法");
+            Constructor constructor = clazz.getConstructor(String.class, int.class);
+            System.out.println(constructor.getName() + "\t");
+            constructor.newInstance("aaa", 1);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+
+        try {
+            System.out.println("获取指定参数类型的构造方法");
             Constructor constructor = clazz.getDeclaredConstructor(int.class);
             System.out.println(constructor);
             constructor.setAccessible(true);
@@ -91,7 +102,6 @@ public class App {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
     }
 
     /**
@@ -100,7 +110,7 @@ public class App {
      * @throws Exception
      */
     @Test
-    public void test3() throws Exception {
+    public void newInstanceTest() throws Exception {
 
         Class clazz = MyObject.class;
 
@@ -120,7 +130,7 @@ public class App {
      * 通过class获取类的字段
      */
     @Test
-    public void test4() throws Exception {
+    public void getFieldsTest() throws Exception {
 
         Class clazz = MyObject.class;
         System.out.println("获取MyObject所有的公有字段。。。");
@@ -133,8 +143,8 @@ public class App {
         System.out.println("获取MyObject所有的字段");
         //获取一个MyObject对象
 
-        Field[] fielsAll = clazz.getDeclaredFields();
-        for (Field field : fielsAll) {
+        Field[] fieldAll = clazz.getDeclaredFields();
+        for (Field field : fieldAll) {
             System.out.println(field.getType().getSimpleName() + " " + field.getName());
         }
         //获取一个MyObject对象
@@ -164,7 +174,7 @@ public class App {
      * 通过class获取类的方法
      */
     @Test
-    public void test5() throws Exception {
+    public void getMethodsTest() throws Exception {
 
         Class<MyObject> clazz = MyObject.class;
 
@@ -203,7 +213,7 @@ public class App {
         method.invoke(myObject, "231651613165151");
         System.out.println("******************调用MyClass的公有方法******************");
         method = clazz.getMethod("setName", String.class);
-        method.invoke(myObject, "张学友");
+        method.invoke(myObject, "张三");
         method = clazz.getMethod("setPhone", String.class);
         method.invoke(myObject, "15655996669");
 
