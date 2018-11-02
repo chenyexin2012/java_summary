@@ -1,4 +1,67 @@
-### mybatis的缓存
+### Mapper接口的“实例化”
+在我们使用mybatis时，会定义很多Mapper接口，用来对应着我们需要执行的sql语句。但是，Mapper作为一个接口，我们无法直接对其进行实例化。因此，mybatis提供了MapperProxy类来间接的实现Mapper接口的实例化。
+
+
+
+
+
+### 一个SQL完整执行流程
+在mybatis的枚举类SqlCommandType中，定义了以下几个SQL的命令类型：
+
+    UNKNOWN, INSERT, UPDATE, DELETE, SELECT, FLUSH
+    
+
+
+
+
+### 事务管理机制
+mybatis的Transaction接口定义：
+
+    public interface Transaction {
+        Connection getConnection() throws SQLException;
+        void commit() throws SQLException;
+        void rollback() throws SQLException;
+        void close() throws SQLException;
+        Integer getTimeout() throws SQLException;
+    }
+    
+在mybatis中，Transaction主要有两种实现:
+
+    使用jdbc的事务管理机制：
+        org.apache.ibatis.transaction.managed.ManagedTransaction
+    使用MANAGED的事务管理机制，自身不实现事务，而是将实现的任务交给其它框架或容器：
+        org.apache.ibatis.transaction.jdbc.JdbcTransaction
+
+xml中事务的配置：
+
+    environments->environment->transactionManager节点中，如：<transactionManager type="JDBC"/>
+    
+    mybatis会根据type创建对应的事务工厂：
+    
+        private TransactionFactory transactionManagerElement(XNode context) throws Exception {
+            if (context != null) {
+                /**
+                 * <transactionManager type="XXX"/>
+                 * 根据type创建对应的事务工厂
+                 */
+                String type = context.getStringAttribute("type");
+                Properties props = context.getChildrenAsProperties();
+                TransactionFactory factory = (TransactionFactory) resolveClass(type).newInstance();
+                factory.setProperties(props);
+                return factory;
+            }
+            throw new BuilderException("Environment declaration requires a TransactionFactory.");
+        }
+
+    并且在Configuration初始化时，已经注册了对应的类型处理器：
+        typeAliasRegistry.registerAlias("JDBC", JdbcTransactionFactory.class);
+        typeAliasRegistry.registerAlias("MANAGED", ManagedTransactionFactory.class);
+    因此在
+        TransactionFactory factory = (TransactionFactory) resolveClass(type).newInstance();
+    中可以直接创建工厂。
+
+
+### 缓存
 
 MyBatis执行SQL语句之后，这条语句就会被缓存，以后再执行这条语句的时候，会直接从缓存中拿结果，而不是再次执行SQL。
 
