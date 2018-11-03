@@ -1,25 +1,22 @@
-package com.java.summary.proxy.jdk;
+package com.java.summary.proxy.cglib;
 
 /**
- * 代理对象的类，实现了某个接口
+ * 被代理对象的类
  */
-public class CalculatorImpl implements Calculator{
-    @Override
+public class Calculator {
+
     public int add(int a, int b) {
         return a + b;
     }
 
-    @Override
     public int sub(int a, int b) {
         return a - b;
     }
 
-    @Override
     public int mul(int a, int b) {
         return a * b;
     }
 
-    @Override
     public int div(int a, int b) {
         return a / b;
     }

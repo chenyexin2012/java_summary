@@ -1,7 +1,7 @@
-package com.java.summary.proxy;
+package com.java.summary.proxy.jdk;
 
 /**
- * 代理对象的类需要实现的接口
+ * 被代理对象的类需要实现的接口
  */
 public interface Calculator {
 
