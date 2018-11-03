@@ -11,7 +11,7 @@ import java.lang.reflect.Type;
 /**
  * Hello world!
  */
-public class App {
+public class ReflectionTest {
     /**
      * 获取Class的三种方式
      */
