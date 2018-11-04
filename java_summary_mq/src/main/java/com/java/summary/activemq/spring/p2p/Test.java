@@ -12,7 +12,7 @@ public class Test {
     public void providerTest() {
 
         ClassPathXmlApplicationContext applicationContext =
-                new ClassPathXmlApplicationContext("classpath:spring/spring-amq-provider.xml");
+                new ClassPathXmlApplicationContext("classpath:spring/amq/spring-amq-provider.xml");
 
         applicationContext.start();
 
@@ -43,7 +43,7 @@ public class Test {
     public void consumerTest() {
 
         ClassPathXmlApplicationContext applicationContext =
-                new ClassPathXmlApplicationContext("classpath:spring/spring-amq-consumer.xml");
+                new ClassPathXmlApplicationContext("classpath:spring/amq/spring-amq-consumer.xml");
 
         applicationContext.start();
 
