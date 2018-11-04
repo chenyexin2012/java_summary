@@ -24,6 +24,7 @@
         <module>java_design_pattern_observer</module>
         <module>java_design_pattern_strategy</module>
         <module>java_design_pattern_factory</module>
+        <module>java_summary_proxy</module>
     </modules>
 
 
