@@ -31,6 +31,7 @@
         <module>java_summary_springboot</module>
         <module>java_summary_class</module>
         <module>java_summary_dubbo</module>
+        <module>java_summary_rmi</module>
     </modules>
 
 
