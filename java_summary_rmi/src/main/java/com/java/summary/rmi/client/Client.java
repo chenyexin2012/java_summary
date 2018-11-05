@@ -1,6 +1,5 @@
 package com.java.summary.rmi.client;
 
-import com.java.summary.rmi.Calculator;
 import com.java.summary.rmi.Input;
 
 import java.net.MalformedURLException;
@@ -15,7 +14,9 @@ public class Client {
         String url = "rmi://localhost:1999/calculator";
         try {
             // Naming.lookup(url) 寻找服务
-            Calculator calculator = (Calculator) Naming.lookup(url);
+            // 接口类路径必须和服务端相同
+//            com.java.summary.rmi.client.Calculator calculator = (com.java.summary.rmi.client.Calculator) Naming.lookup(url);
+            com.java.summary.rmi.Calculator calculator = (com.java.summary.rmi.Calculator) Naming.lookup(url);
             System.out.println(calculator.add(new Input(1, 2)));
         } catch (NotBoundException e) {
             e.printStackTrace();

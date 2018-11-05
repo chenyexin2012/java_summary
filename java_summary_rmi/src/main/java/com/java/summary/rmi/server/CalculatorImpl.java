@@ -12,6 +12,10 @@ import java.rmi.server.UnicastRemoteObject;
  */
 public class CalculatorImpl extends UnicastRemoteObject implements Calculator {
 
+    /**
+     * 构造方法需声明抛出RemoteException异常
+     * @throws RemoteException
+     */
     public CalculatorImpl() throws RemoteException {
 
     }
