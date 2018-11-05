@@ -1,7 +1,162 @@
+
 ### Mapper接口的“实例化”
-在我们使用mybatis时，会定义很多Mapper接口，用来对应着我们需要执行的sql语句。但是，Mapper作为一个接口，我们无法直接对其进行实例化。因此，mybatis提供了MapperProxy类来间接的实现Mapper接口的实例化。
+在我们使用mybatis时，会定义很多Mapper接口，用来对应着我们需要执行的sql语句。但是，Mapper作为一个接口，我们无法直接对其进行实例化。
+因此，mybatis提供了MapperProxy类来间接的实现Mapper接口的实例化。
 
+SqlSession接口提供了一个方法：
 
+    /**
+     * Retrieves a mapper.
+     * @param <T> the mapper type
+     * @param type Mapper interface class
+     * @return a mapper bound to this SqlSession
+     */
+    <T> T getMapper(Class<T> type);
+    
+通过调用这个方法可以获取对应Mapper接口的代理对象，当我们调用Mapper接口中的方法时，就会接着调用下面这个方法，从而定位到正确的SqlSession方法上：
+
+    org.apache.ibatis.binding.MapperProxy
+    /**
+     * 调用mapper中的方法时，实际调用处
+     * @param proxy
+     * @param method
+     * @param args
+     * @return
+     * @throws Throwable
+     */
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        try {
+            if (Object.class.equals(method.getDeclaringClass())) {
+                // Object中提供的方法，直接执行
+                return method.invoke(this, args);
+            } else if (isDefaultMethod(method)) {
+                return invokeDefaultMethod(proxy, method, args);
+            }
+        } catch (Throwable t) {
+            throw ExceptionUtil.unwrapThrowable(t);
+        }
+        // 其它方法由MapperMethod来执行
+        // 若没有对应的MapperMethod，则新建一个并加入MapperMethod缓存中
+        final MapperMethod mapperMethod = cachedMapperMethod(method);
+        return mapperMethod.execute(sqlSession, args);
+    }
+
+### SqlSession和SqlSessionFactory
+SqlSession接口是mybatis框架中最重要的接口之一，它定义了我们对数据库的CRUD及事务操作的方法，
+而SqlSessionFactory提供了多种生成SqlSession对象的方法。
+
+#### DefaultSqlSession和DefaultSqlSessionFactory
+DefaultSqlSession和DefaultSqlSessionFactory分别实现了SqlSession接口和SqlSessionFactory接口。
+
+以DefaultSqlSession中一段为例：
+    
+    public <E> List<E> selectList(String statement, Object parameter, RowBounds rowBounds) {
+        try {
+            MappedStatement ms = configuration.getMappedStatement(statement);
+            return executor.query(ms, wrapCollection(parameter), rowBounds, Executor.NO_RESULT_HANDLER);
+        } catch (Exception e) {
+            throw ExceptionFactory.wrapException("Error querying database.  Cause: " + e, e);
+        } finally {
+            ErrorContext.instance().reset();
+        }
+    }
+
+在我们通过使用代理对象调用Mapper接口中的方法时，最终都会定位到相应的SqlSession方法上，如上述代码中，
+首先或根据statement从configuration中获取到包含着sql节点信息的MappedStatement对象，并交给相应Executor去执行。
+
+而在DefaultSqlSessionFactory中，如何创建一个DefaultSqlSession对象，主要来自下面两种方式：
+
+        private SqlSession openSessionFromDataSource(ExecutorType execType, TransactionIsolationLevel level, boolean autoCommit) {
+            Transaction tx = null;
+            try {
+                final Environment environment = configuration.getEnvironment();
+                // 获取事务工厂
+                final TransactionFactory transactionFactory = getTransactionFactoryFromEnvironment(environment);
+                // 通过事务工厂创建事务
+                tx = transactionFactory.newTransaction(environment.getDataSource(), level, autoCommit);
+                final Executor executor = configuration.newExecutor(tx, execType);
+                return new DefaultSqlSession(configuration, executor, autoCommit);
+            } catch (Exception e) {
+                closeTransaction(tx); // may have fetched a connection so lets call close()
+                throw ExceptionFactory.wrapException("Error opening session.  Cause: " + e, e);
+            } finally {
+                ErrorContext.instance().reset();
+            }
+        }
+    
+        private SqlSession openSessionFromConnection(ExecutorType execType, Connection connection) {
+            try {
+                boolean autoCommit;
+                try {
+                    autoCommit = connection.getAutoCommit();
+                } catch (SQLException e) {
+                    // Failover to true, as most poor drivers
+                    // or databases won't support transactions
+                    autoCommit = true;
+                }
+                final Environment environment = configuration.getEnvironment();
+                final TransactionFactory transactionFactory = getTransactionFactoryFromEnvironment(environment);
+                final Transaction tx = transactionFactory.newTransaction(connection);
+                final Executor executor = configuration.newExecutor(tx, execType);
+                return new DefaultSqlSession(configuration, executor, autoCommit);
+            } catch (Exception e) {
+                throw ExceptionFactory.wrapException("Error opening session.  Cause: " + e, e);
+            } finally {
+                ErrorContext.instance().reset();
+            }
+        }
+
+#### SqlSessionManager
+SqlSessionManager同时实现了SqlSession接口和SqlSessionFactory接口，参数和构造函数如下：
+
+        private final SqlSessionFactory sqlSessionFactory;
+        // 动态代理对象
+        private final SqlSession sqlSessionProxy;
+    
+        private final ThreadLocal<SqlSession> localSqlSession = new ThreadLocal<>();
+    
+        private SqlSessionManager(SqlSessionFactory sqlSessionFactory) {
+            this.sqlSessionFactory = sqlSessionFactory;
+            this.sqlSessionProxy = (SqlSession) Proxy.newProxyInstance(
+                    SqlSessionFactory.class.getClassLoader(),
+                    new Class[]{SqlSession.class},
+                    new SqlSessionInterceptor());
+        }
+
+这里的sqlSessionFactory就相当于一个DefaultSqlSessionFactory实例，而sqlSessionProxy则是一个动态代理的SqlSession对象，
+因此所有调用sqlSessionProxy的方法都会经历SqlSessionInterceptor拦截器
+
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            // 从线程局部变量中取出sqlSession
+            final SqlSession sqlSession = SqlSessionManager.this.localSqlSession.get();
+            if (sqlSession != null) {
+                try {
+                    // 直接复用线程局部变量中的sqlSession（不提交、不回滚、不关闭，让用户自定义session的提交、回滚和关闭，达到在县城内复用的效果）
+                    return method.invoke(sqlSession, args);
+                } catch (Throwable t) {
+                    throw ExceptionUtil.unwrapThrowable(t);
+                }
+            } else {
+                // 产生新的SqlSession实例（自动提交、回滚）
+                try (SqlSession autoSqlSession = openSession()) {
+                    try {
+                        final Object result = method.invoke(autoSqlSession, args);
+                        autoSqlSession.commit();
+                        return result;
+                    } catch (Throwable t) {
+                        autoSqlSession.rollback();
+                        throw ExceptionUtil.unwrapThrowable(t);
+                    }
+                }
+            }
+        }
+
+### 执行器 Executor
+SqlSession对数据库的操作，最终都会委托给Executor来完成，在mybatis框架中，Executor的类型公有五种，分别是：
+SimpleExecutor、ReuseExecutor、ResultExtractor、CachingExecutor、BatchExecutor，它们都继承自实现了
+Executor接口的BaseExecutor类。
 
 
 
