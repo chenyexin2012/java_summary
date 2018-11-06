@@ -1,6 +1,6 @@
-package com.java.summary.rmi.server;
+package com.java.summary.rmi.jdk.server;
 
-import com.java.summary.rmi.Calculator;
+import com.java.summary.rmi.jdk.Calculator;
 
 import java.net.MalformedURLException;
 import java.rmi.AlreadyBoundException;

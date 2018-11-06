@@ -1,6 +1,6 @@
-package com.java.summary.rmi.server;
+package com.java.summary.rmi.jdk.server;
 
-import com.java.summary.rmi.Calculator;
+import com.java.summary.rmi.jdk.Calculator;
 import com.java.summary.rmi.Input;
 import com.java.summary.rmi.Output;
 
@@ -22,21 +22,25 @@ public class CalculatorImpl extends UnicastRemoteObject implements Calculator {
 
     @Override
     public Output add(Input input) throws RemoteException{
+        System.out.println(input);
         return new Output(input.getA() + input.getB());
     }
 
     @Override
     public Output sub(Input input) throws RemoteException{
+        System.out.println(input);
         return new Output(input.getA() - input.getB());
     }
 
     @Override
     public Output mul(Input input) throws RemoteException{
+        System.out.println(input);
         return new Output(input.getA() * input.getB());
     }
 
     @Override
     public Output div(Input input) throws RemoteException{
+        System.out.println(input);
         return new Output(input.getA() / input.getB());
     }
 }

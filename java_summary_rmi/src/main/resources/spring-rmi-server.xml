@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean name="rmiServiceExporter" class="org.springframework.remoting.rmi.RmiServiceExporter">
+        <property name="serviceName" value="calculator"/>
+        <property name="registryPort" value="1999"/>
+        <property name="serviceInterface" value="com.java.summary.rmi.spring.Calculator"/>
+        <property name="service">
+            <bean class="com.java.summary.rmi.spring.server.CalculatorImpl"/>
+        </property>
+    </bean>
+</beans>
