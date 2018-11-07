@@ -154,9 +154,267 @@ SqlSessionManager同时实现了SqlSession接口和SqlSessionFactory接口，参
         }
 
 ### 执行器 Executor
-SqlSession对数据库的操作，最终都会委托给Executor来完成，在mybatis框架中，Executor的类型公有五种，分别是：
-SimpleExecutor、ReuseExecutor、ResultExtractor、CachingExecutor、BatchExecutor，它们都继承自实现了
-Executor接口的BaseExecutor类。
+SqlSession对数据库的操作，最终都会委托给Executor来完成，在mybatis框架中，Executor的类型有五种，分别是：
+SimpleExecutor、ReuseExecutor、BatchExecutor、CachingExecutor和ResultLoaderMap内部类ClosedExecutor，
+SimpleExecutor、ReuseExecutor、BatchExecutor和ClosedExecutor继承自实现了Executor接口的BaseExecutor类。
+
+#### BaseExecutor
+
+BaseExecutor实现了Executor接口中的大部分方法以及本地缓存等功能，涉及到数据库的操作的四个方法让子类去实现：
+
+    protected abstract int doUpdate(MappedStatement ms, Object parameter)
+            throws SQLException;
+
+    protected abstract List<BatchResult> doFlushStatements(boolean isRollback)
+            throws SQLException;
+
+    protected abstract <E> List<E> doQuery(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql)
+            throws SQLException;
+
+    protected abstract <E> Cursor<E> doQueryCursor(MappedStatement ms, Object parameter, RowBounds rowBounds, BoundSql boundSql)
+            throws SQLException;
+
+#### SimpleExecutor
+
+SimpleExecutor实现了Executor的最基本的功能，它在每次执行select或update都是开启一个新的Statement对象，用完立即关闭。
+
+#### ReuseExecutor
+
+ReuseExecutor的内部使用一个statementMap来存储Statement，每次调用select或update都会从statementMap中以BoundSql中的SQL
+为键查找是否存在对应的Statement，存在则直接使用，否则新建一个Statement并加入到statementMap中。
+
+以doUpdate方法为例，执行doUpdate方法时会优先从statementMap缓存中获取Statement对象：
+
+    private final Map<String, Statement> statementMap = new HashMap<>();
+
+    @Override
+    public int doUpdate(MappedStatement ms, Object parameter) throws SQLException {
+        Configuration configuration = ms.getConfiguration();
+        StatementHandler handler = configuration.newStatementHandler(this, ms, parameter, RowBounds.DEFAULT, null, null);
+        Statement stmt = prepareStatement(handler, ms.getStatementLog());
+        return handler.update(stmt);
+    }
+    
+    private Statement prepareStatement(StatementHandler handler, Log statementLog) throws SQLException {
+        Statement stmt;
+        BoundSql boundSql = handler.getBoundSql();
+        String sql = boundSql.getSql();
+        // 以sql作为statementMap的键
+        if (hasStatementFor(sql)) {
+            // 从statementMap缓存中获取statement对象
+            stmt = getStatement(sql);
+            applyTransactionTimeout(stmt);
+        } else {
+            Connection connection = getConnection(statementLog);
+            // 开启一个新的Statement对象并加入statementMap缓存中
+            stmt = handler.prepare(connection, transaction.getTimeout());
+            putStatement(sql, stmt);
+        }
+        handler.parameterize(stmt);
+        return stmt;
+    }
+    
+    
+
+#### BatchExecutor
+
+BatchExecutor的内部使用statementList和batchResultList来存储每次调用update方法的Statement对象和BatchResult对象，最终统一执行。
+
+以doUpdate方法为例，每次执行doUpdate方法会将操作存入statementList和batchResultList中：
+
+    // Statement对象列表，和batchResultList一一对应，每个节点维护了一组相同的JDBC批处理任务
+    // 也保证了最终执行结果严格的按插入顺序执行
+    private final List<Statement> statementList = new ArrayList<>();
+    private final List<BatchResult> batchResultList = new ArrayList<>();
+
+    // 当前存储的sql，实际表示上一次执行的sql
+    private String currentSql;
+    // 同上，表示使用的MappedStatement对象
+    private MappedStatement currentStatement;
+    
+    @Override
+    public int doUpdate(MappedStatement ms, Object parameterObject) throws SQLException {
+        final Configuration configuration = ms.getConfiguration();
+        final StatementHandler handler = configuration.newStatementHandler(this, ms, parameterObject, RowBounds.DEFAULT, null, null);
+        final BoundSql boundSql = handler.getBoundSql();
+        final String sql = boundSql.getSql();
+        final Statement stmt;
+        // 本次执行的sql和上次执行的sql相同 且 对应的MappedStatement也相同
+        // 由此处可知，BatchExecutor的Statement按照相邻则复用的规则，如：
+        // 1. 当执行顺序为sql1&ms1->sql1&ms1->sql2&ms2->sql2&ms2，则会生成两个statement对象，
+        // 2. 当执行顺序为sql1&ms1->sql1&ms1->sql2&ms2->sql1&ms1，
+        //    虽然第四个sql1&ms1与第一个和第二个相同，但是并不相邻，会重新生成一个statement对象，
+        //    因此最终会生成三个statement对象。
+        // 这种规格也保证了最终批量执行的顺序和插入顺序保持一致
+        if (sql.equals(currentSql) && ms.equals(currentStatement)) {
+            // 取出最近使用的Statement对象
+            int last = statementList.size() - 1;
+            stmt = statementList.get(last);
+            applyTransactionTimeout(stmt);
+            handler.parameterize(stmt);//fix Issues 322
+            BatchResult batchResult = batchResultList.get(last);
+            batchResult.addParameterObject(parameterObject);
+        } else {
+            // 不存在，则重新创建Statement对象
+            Connection connection = getConnection(ms.getStatementLog());
+            stmt = handler.prepare(connection, transaction.getTimeout());
+            handler.parameterize(stmt);    //fix Issues 322
+            // 记录当前执行的sql和MappedStatement对象
+            currentSql = sql;
+            currentStatement = ms;
+            // statementList和batchResultList一一对应
+            statementList.add(stmt);
+            batchResultList.add(new BatchResult(ms, sql, parameterObject));
+        }
+        // handler.parameterize(stmt);
+        handler.batch(stmt);
+        return BATCH_UPDATE_RETURN_VALUE;
+    }
+
+当缓存操作结束后，会通过调用doFlushStatements方法，来执行所有的操作：
+
+    @Override
+    public List<BatchResult> doFlushStatements(boolean isRollback) throws SQLException {
+        try {
+            // 存储所有的执行情况
+            List<BatchResult> results = new ArrayList<>();
+            if (isRollback) {
+                // 回滚，即啥也不干，返回一个emptyList
+                return Collections.emptyList();
+            }
+            // 执行批量操作
+            for (int i = 0, n = statementList.size(); i < n; i++) {
+                Statement stmt = statementList.get(i);
+                applyTransactionTimeout(stmt);
+                BatchResult batchResult = batchResultList.get(i);
+                try {
+                    // stmt.executeBatch() 完成一组批处理任务
+                    batchResult.setUpdateCounts(stmt.executeBatch());
+                    MappedStatement ms = batchResult.getMappedStatement();
+                    List<Object> parameterObjects = batchResult.getParameterObjects();
+                    KeyGenerator keyGenerator = ms.getKeyGenerator();
+                    if (Jdbc3KeyGenerator.class.equals(keyGenerator.getClass())) {
+                        Jdbc3KeyGenerator jdbc3KeyGenerator = (Jdbc3KeyGenerator) keyGenerator;
+                        jdbc3KeyGenerator.processBatch(ms, stmt, parameterObjects);
+                    } else if (!NoKeyGenerator.class.equals(keyGenerator.getClass())) { //issue #141
+                        for (Object parameter : parameterObjects) {
+                            keyGenerator.processAfter(this, ms, stmt, parameter);
+                        }
+                    }
+                    // Close statement to close cursor #1109
+                    closeStatement(stmt);
+                } catch (BatchUpdateException e) {
+                    StringBuilder message = new StringBuilder();
+                    message.append(batchResult.getMappedStatement().getId())
+                            .append(" (batch index #")
+                            .append(i + 1)
+                            .append(")")
+                            .append(" failed.");
+                    if (i > 0) {
+                        message.append(" ")
+                                .append(i)
+                                .append(" prior sub executor(s) completed successfully, but will be rolled back.");
+                    }
+                    throw new BatchExecutorException(message.toString(), e, results, batchResult);
+                }
+                results.add(batchResult);
+            }
+            return results;
+        } finally {
+            // 关闭所有的Statement对象，并清楚批量对象缓存
+            for (Statement stmt : statementList) {
+                closeStatement(stmt);
+            }
+            currentSql = null;
+            statementList.clear();
+            batchResultList.clear();
+        }
+    }
+    
+
+#### CachingExecutor
+
+装饰器模式，调用查询时，首先从二级缓存中获取，不存在则委托其它Executor去执行查询。
+
+    @Override
+    public <E> List<E> query(MappedStatement ms, Object parameterObject, RowBounds rowBounds, ResultHandler resultHandler, CacheKey key, BoundSql boundSql)
+            throws SQLException {
+        // 二级缓存
+        Cache cache = ms.getCache();
+        if (cache != null) {
+            flushCacheIfRequired(ms);
+            if (ms.isUseCache() && resultHandler == null) {
+                ensureNoOutParams(ms, boundSql);
+                @SuppressWarnings("unchecked")
+                List<E> list = (List<E>) tcm.getObject(cache, key);
+                if (list == null) {
+                    list = delegate.<E>query(ms, parameterObject, rowBounds, resultHandler, key, boundSql);
+                    tcm.putObject(cache, key, list); // issue #578 and #116
+                }
+                return list;
+            }
+        }
+        return delegate.<E>query(ms, parameterObject, rowBounds, resultHandler, key, boundSql);
+    }
+
+#### ClosedExecutor
+
+ResultLoaderMap的内部类，用处不大。
+
+#### Executor创建时期以及创建策略
+
+由上一节可知，SqlSession中涉及到数据库的操作最终都会交给Executor来执行，且观察DefaultSqlSession的构造函数，
+
+    public DefaultSqlSession(Configuration configuration, Executor executor, boolean autoCommit) {
+        this.configuration = configuration;
+        this.executor = executor;
+        this.dirty = false;
+        this.autoCommit = autoCommit;
+    }
+
+    public DefaultSqlSession(Configuration configuration, Executor executor) {
+        this(configuration, executor, false);
+    }
+
+Executor作为一个参数传入至DefaultSqlSession的，而创建DefaultSqlSession对象则由DefaultSqlSessionFactory完成，
+而查看DefaultSqlSessionFactory源码可知：
+
+    final Executor executor = configuration.newExecutor(tx, execType);
+
+Executor对象由Configuration的newExecutor方法创建：
+    
+    public Executor newExecutor(Transaction transaction) {
+        // 默认SimpleExecutor或用户配置指定的Executor
+        // 配置文件中setting配置指定
+        // <setting name="defaultExecutorType" value="REUSE"/>
+        return newExecutor(transaction, defaultExecutorType);
+    }
+
+    public Executor newExecutor(Transaction transaction, ExecutorType executorType) {
+        executorType = executorType == null ? defaultExecutorType : executorType;
+        executorType = executorType == null ? ExecutorType.SIMPLE : executorType;
+        Executor executor;
+        if (ExecutorType.BATCH == executorType) {
+            executor = new BatchExecutor(this, transaction);
+        } else if (ExecutorType.REUSE == executorType) {
+            executor = new ReuseExecutor(this, transaction);
+        } else {
+            executor = new SimpleExecutor(this, transaction);
+        }
+        // 开启了二级缓存则使用装饰器模式的CachingExecutor
+        if (cacheEnabled) {
+            executor = new CachingExecutor(executor);
+        }
+        executor = (Executor) interceptorChain.pluginAll(executor);
+        return executor;
+    }
+
+有以上代码可知，Executor对象创建于SqlSession对象创建之前，且最为参数传入SqlSession对象中，且使用哪种Executor，
+则由用户配置而定，如指定ReuseExecutor：
+
+    <setting name="defaultExecutorType" value="REUSE"/>
+    
+默认使用SimpleExecutor，如果用户开启了二级缓存，则会创建CachingExecutor对象，并将最终操作委托给用户指定或默认的Executor。
 
 
 
