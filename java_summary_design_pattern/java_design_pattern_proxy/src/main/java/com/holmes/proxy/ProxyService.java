@@ -2,6 +2,8 @@ package com.holmes.proxy;
 
 /**
  * 代理类
+ * 在代理模式中，代理对象对被代理对象具有控制权
+ * 可以决定被代理对象的方法是否执行
  */
 public class ProxyService implements IService {
 
