@@ -44,7 +44,7 @@ SqlSession接口提供了一个方法：
 
 ### SqlSession和SqlSessionFactory
 SqlSession接口是mybatis框架中最重要的接口之一，它定义了我们对数据库的CRUD及事务操作的方法，
-而SqlSessionFactory提供了多种生成SqlSession对象的方法。
+而SqlSessionFactory则提供了多种生成SqlSession对象的方法。
 
 #### DefaultSqlSession和DefaultSqlSessionFactory
 DefaultSqlSession和DefaultSqlSessionFactory分别实现了SqlSession接口和SqlSessionFactory接口。
@@ -154,6 +154,8 @@ SqlSessionManager同时实现了SqlSession接口和SqlSessionFactory接口，参
         }
 
 ### 执行器 Executor
+Mybatis框架有四个非常重要的对象，分别是executor, statementHandler,parameterHandler，resultHandler，
+它们贯穿了Mybatis框架对数据库操作的整个流程。
 SqlSession对数据库的操作，最终都会委托给Executor来完成，在mybatis框架中，Executor的类型有五种，分别是：
 SimpleExecutor、ReuseExecutor、BatchExecutor、CachingExecutor和ResultLoaderMap内部类ClosedExecutor，
 SimpleExecutor、ReuseExecutor、BatchExecutor和ClosedExecutor继承自实现了Executor接口的BaseExecutor类。
@@ -417,13 +419,23 @@ Executor对象由Configuration的newExecutor方法创建：
 默认使用SimpleExecutor，如果用户开启了二级缓存，则会创建CachingExecutor对象，并将最终操作委托给用户指定或默认的Executor。
 
 
+### StatementHandler ParameterHandler ResultHandler
+上一小节提到了Mybatis框架中有四个非常重要的贯穿着整个SQL执行流程的对象，本节就要介绍接下来的三个对象statementHandler、
+parameterHandler、resultHandler。
+
+在Mybatis框架中，statementHandler才是真正与数据库进行对话的对象，它会使用parameterHandler和resultHandler对象为我们
+绑定SQL参数和组装最后的结果返回。
+
+### 
+
+
+
+
 
 ### 一个SQL完整执行流程
 在mybatis的枚举类SqlCommandType中，定义了以下几个SQL的命令类型：
 
     UNKNOWN, INSERT, UPDATE, DELETE, SELECT, FLUSH
-    
-
 
 
 
