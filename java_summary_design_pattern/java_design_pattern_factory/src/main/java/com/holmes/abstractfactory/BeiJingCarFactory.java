@@ -1,5 +1,7 @@
 package com.holmes.abstractfactory;
 
+import com.holmes.*;
+
 /**
  * 北京的汽车工厂 --> 工厂的具体实现类
  */

@@ -1,4 +1,4 @@
-package com.holmes.abstractfactory;
+package com.holmes;
 
 /**
  * 别克 --> 抽象的产品类

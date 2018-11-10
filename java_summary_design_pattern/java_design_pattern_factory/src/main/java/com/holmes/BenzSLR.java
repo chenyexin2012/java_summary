@@ -1,4 +1,4 @@
-package com.holmes.abstractfactory;
+package com.holmes;
 
 /**
  * 奔驰SLR --> 具体的产品类

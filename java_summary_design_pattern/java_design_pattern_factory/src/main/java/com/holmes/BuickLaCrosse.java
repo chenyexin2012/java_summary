@@ -1,4 +1,4 @@
-package com.holmes.abstractfactory;
+package com.holmes;
 
 /**
  * 别克君越 --> 具体的产品类

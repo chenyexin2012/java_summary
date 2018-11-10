@@ -1,5 +1,8 @@
 package com.holmes.abstractfactory;
 
+import com.holmes.IAudi;
+import com.holmes.IBuick;
+import com.holmes.IMercedesBenz;
 import org.junit.Test;
 
 public class AbstractFactoryTest {

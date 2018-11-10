@@ -1,4 +1,4 @@
-package com.holmes.abstractfactory;
+package com.holmes;
 
 /**
  * 梅赛德斯-奔驰 --> 抽象的产品类
