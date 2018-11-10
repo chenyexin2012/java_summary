@@ -7,7 +7,10 @@ package com.holmes.singleton;
  */
 public class DoubleCheckLockingSingleton {
 
-    private static DoubleCheckLockingSingleton instance;
+    /**
+     * 使用volatile防止指令重排序导致的状态不确定
+     */
+    private static volatile DoubleCheckLockingSingleton instance;
 
     private DoubleCheckLockingSingleton() {
         System.out.println("ThreadSafeDoubleCheckLockingSingleton created...");
