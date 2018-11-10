@@ -1,17 +1,14 @@
-package com.holmes.simplefactory;
+package com.holmes.factorymethod;
 
 import com.holmes.BenzA;
 import com.holmes.BenzAMG;
 import com.holmes.BenzSLR;
 import com.holmes.IMercedesBenz;
 
-/**
- * 简单工厂模式
- */
-public class SimpleCarFactory {
+public class BenzCarFactory implements AbstractCarFactory {
 
+    @Override
     public IMercedesBenz createCar(String type) {
-
         IMercedesBenz benz = null;
         if ("BenzA".equals(type)) {
             benz = new BenzA();
