@@ -1,6 +1,7 @@
 package com.holmes.command;
 
 /**
+ *
  * 一个具体的命令角色
  */
 public class PlayCommand implements Command {
