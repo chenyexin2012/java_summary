@@ -420,13 +420,129 @@ Executor对象由Configuration的newExecutor方法创建：
 
 
 ### StatementHandler ParameterHandler ResultHandler
-上一小节提到了Mybatis框架中有四个非常重要的贯穿着整个SQL执行流程的对象，本节就要介绍接下来的三个对象statementHandler、
+Mybatis框架中有四个非常重要的贯穿着整个SQL执行流程的对象，上一小节介绍了executor对象，本节将介绍另外三个对象statementHandler、
 parameterHandler、resultHandler。
 
-在Mybatis框架中，statementHandler才是真正与数据库进行对话的对象，它会使用parameterHandler和resultHandler对象为我们
-绑定SQL参数和组装最后的结果返回。
+在Mybatis框架中，statementHandler才是真正与数据库进行对话的对象，它会使用parameterHandler和resultHandler对象为我们绑定SQL参数
+和组装最后的结果返回。
 
-### 
+#### BaseStatementHandler
+BaseStatementHandler是一个抽象类，它实现了StatementHandler接口，主要功能是准备好执行一个sql所需要的所有对象，留下Statement对象
+的创建交给它的子类去实现。
+
+#### RoutingStatementHandler
+实现自StatementHandler接口，RoutingStatementHandler使用装饰器模式，通过StatementType将StatementHandler对象的方法路由到相应的方法上：
+
+    private final StatementHandler delegate;
+
+    public RoutingStatementHandler(Executor executor, MappedStatement ms, Object parameter,
+                                   RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
+
+        switch (ms.getStatementType()) {
+            case STATEMENT:
+                delegate = new SimpleStatementHandler(executor, ms, parameter, rowBounds, resultHandler, boundSql);
+                break;
+            case PREPARED:
+                delegate = new PreparedStatementHandler(executor, ms, parameter, rowBounds, resultHandler, boundSql);
+                break;
+            case CALLABLE:
+                delegate = new CallableStatementHandler(executor, ms, parameter, rowBounds, resultHandler, boundSql);
+                break;
+            default:
+                throw new ExecutorException("Unknown statement type: " + ms.getStatementType());
+        }
+    }
+
+#### SimpleStatementHandler
+继承自BaseStatementHandler，主要处理Statement对象的jdbc操作：
+
+    @Override
+    protected Statement instantiateStatement(Connection connection) throws SQLException {
+        if (mappedStatement.getResultSetType() == ResultSetType.DEFAULT) {
+            return connection.createStatement();
+        } else {
+            return connection.createStatement(mappedStatement.getResultSetType().getValue(), ResultSet.CONCUR_READ_ONLY);
+        }
+    }
+
+#### PreparedStatementHandler
+继承自BaseStatementHandler，主要处理PreparedStatement对象的jdbc操作：
+
+    @Override
+    protected Statement instantiateStatement(Connection connection) throws SQLException {
+        String sql = boundSql.getSql();
+        if (mappedStatement.getKeyGenerator() instanceof Jdbc3KeyGenerator) {
+            String[] keyColumnNames = mappedStatement.getKeyColumns();
+            if (keyColumnNames == null) {
+                return connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+            } else {
+                return connection.prepareStatement(sql, keyColumnNames);
+            }
+        } else if (mappedStatement.getResultSetType() == ResultSetType.DEFAULT) {
+            return connection.prepareStatement(sql);
+        } else {
+            return connection.prepareStatement(sql, mappedStatement.getResultSetType().getValue(), ResultSet.CONCUR_READ_ONLY);
+        }
+    }
+
+#### CallableStatementHandler
+继承自BaseStatementHandler，主要处理CallableStatement对象的jdbc操作：
+
+    @Override
+    protected Statement instantiateStatement(Connection connection) throws SQLException {
+        String sql = boundSql.getSql();
+        if (mappedStatement.getResultSetType() == ResultSetType.DEFAULT) {
+            return connection.prepareCall(sql);
+        } else {
+            return connection.prepareCall(sql, mappedStatement.getResultSetType().getValue(), ResultSet.CONCUR_READ_ONLY);
+        }
+    }
+
+#### ParameterHandler
+在mybatis中只有一个实现类DefaultParameterHandler，只要用于处理SQL参数：
+
+    @Override
+    public void setParameters(PreparedStatement ps) {
+        ErrorContext.instance().activity("setting parameters").object(mappedStatement.getParameterMap().getId());
+        // 获取sql所需参数
+        List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
+        if (parameterMappings != null) {
+            for (int i = 0; i < parameterMappings.size(); i++) {
+                ParameterMapping parameterMapping = parameterMappings.get(i);
+                if (parameterMapping.getMode() != ParameterMode.OUT) {
+                    Object value;
+                    // 获取参数名
+                    String propertyName = parameterMapping.getProperty();
+                    // 获取参数值
+                    if (boundSql.hasAdditionalParameter(propertyName)) { // issue #448 ask first for additional params
+                        value = boundSql.getAdditionalParameter(propertyName);
+                    } else if (parameterObject == null) {
+                        value = null;
+                    } else if (typeHandlerRegistry.hasTypeHandler(parameterObject.getClass())) {
+                        value = parameterObject;
+                    } else {
+                        MetaObject metaObject = configuration.newMetaObject(parameterObject);
+                        value = metaObject.getValue(propertyName);
+                    }
+                    // 类型处理器
+                    TypeHandler typeHandler = parameterMapping.getTypeHandler();
+                    // jdbc类型
+                    JdbcType jdbcType = parameterMapping.getJdbcType();
+                    if (value == null && jdbcType == null) {
+                        jdbcType = configuration.getJdbcTypeForNull();
+                    }
+                    try {
+                        // 转换至 preparedStatement.setXxx(index, value);
+                        typeHandler.setParameter(ps, i + 1, value, jdbcType);
+                    } catch (TypeException e) {
+                        throw new TypeException("Could not set parameters for mapping: " + parameterMapping + ". Cause: " + e, e);
+                    } catch (SQLException e) {
+                        throw new TypeException("Could not set parameters for mapping: " + parameterMapping + ". Cause: " + e, e);
+                    }
+                }
+            }
+        }
+    }
 
 
 
