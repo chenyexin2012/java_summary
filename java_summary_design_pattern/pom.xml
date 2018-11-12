@@ -27,6 +27,7 @@
         <module>java_design_pattern_proxy</module>
         <module>java_design_pattern_singleton</module>
         <module>java_design_pattern_command</module>
+        <module>java_design_pattern_builder</module>
     </modules>
 
 
