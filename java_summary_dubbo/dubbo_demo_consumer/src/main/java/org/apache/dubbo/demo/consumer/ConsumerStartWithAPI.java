@@ -1,10 +1,10 @@
 package org.apache.dubbo.demo.consumer;
 
-import com.alibaba.dubbo.config.ApplicationConfig;
-import com.alibaba.dubbo.config.ReferenceConfig;
-import com.alibaba.dubbo.config.RegistryConfig;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.dubbo.api.IService;
+import org.apache.dubbo.config.ApplicationConfig;
+import org.apache.dubbo.config.ReferenceConfig;
+import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.exception.NullInputException;
 
 public class ConsumerStartWithAPI {
