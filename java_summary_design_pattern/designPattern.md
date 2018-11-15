@@ -31,4 +31,9 @@
 #### 命令模式 command
 
 
+
 #### 适配器模式 adapter
+
+
+
+#### 外观模式 facade
