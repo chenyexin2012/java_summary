@@ -30,6 +30,7 @@
         <module>java_design_pattern_builder</module>
         <module>java_design_pattern_adapter</module>
         <module>java_design_pattern_facade</module>
+        <module>java_design_pattern_iterator</module>
     </modules>
 
 
