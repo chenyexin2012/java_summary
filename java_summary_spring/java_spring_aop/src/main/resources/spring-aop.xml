@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <bean name="calculator" class="com.holmes.spring.aop.Calculator"/>
+    <bean name="operator" class="com.holmes.spring.aop.Operator"/>
+
+    <aop:config>
+        <aop:aspect ref="operator">
+            <aop:pointcut id="allMethods" expression="execution(* com.holmes.spring.aop.Calculator.*(..))"/>
+            <aop:before method="beforeMethod" pointcut-ref="allMethods"/>
+            <aop:before method="afterMethod" pointcut-ref="allMethods"/>
+        </aop:aspect>
+    </aop:config>
+
+
+
+</beans>

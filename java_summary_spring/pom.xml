@@ -12,6 +12,9 @@
     <groupId>java_summary</groupId>
     <artifactId>java_summary_spring</artifactId>
     <packaging>pom</packaging>
+    <modules>
+        <module>java_spring_aop</module>
+    </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
