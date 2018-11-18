@@ -2,21 +2,33 @@ package com.holmes.spring.aop;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.*;
 import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
 
-public class CalculatorAop implements Ordered {
+@Component
+@Aspect
+@Order(1)
+public class CalculatorAnnotationAop {
+//public class CalculatorAnnotationAop implements Ordered {
 
-    private final static String PRE = "[CalculatorAop]";
+    private final static String PRE = "[CalculatorAnnotationAop]";
 
-    /**
-     * 指定AOP的执行顺序
-     * @return
-     */
-    @Override
-    public int getOrder() {
-        return 2;
+//    /**
+//     * 指定AOP的执行顺序
+//     * @return
+//     */
+//    @Override
+//    public int getOrder() {
+//        return 1;
+//    }
+
+
+    @Pointcut("execution(* com.holmes.spring.aop.Calculator.*(..))")
+    public void pointcut() {
     }
 
     /**
@@ -24,6 +36,7 @@ public class CalculatorAop implements Ordered {
      *
      * @param point
      */
+    @Before("pointcut()")
     public void beforeMethod(JoinPoint point) {
         String className = point.getTarget().getClass().getName();
         String methodName = className + "#" + point.getSignature().getName();
@@ -36,6 +49,7 @@ public class CalculatorAop implements Ordered {
      * @param point
      * @see ExecutionTimeLoggingAop#afterReturning(Object, Method, Object[], Object)
      */
+    @AfterReturning("pointcut()")
     public void afterReturning(JoinPoint point) {
         String className = point.getTarget().getClass().getName();
         String methodName = className + "#" + point.getSignature().getName();
@@ -48,6 +62,7 @@ public class CalculatorAop implements Ordered {
      * @param point
      * @see ExecutionTimeLoggingAop#afterThrowing(Method, Object[], Object, Exception)
      */
+    @AfterThrowing("pointcut()")
     public void afterThrowing(JoinPoint point) {
 
         String className = point.getTarget().getClass().getName();
@@ -60,6 +75,7 @@ public class CalculatorAop implements Ordered {
      *
      * @param point
      */
+    @After("pointcut()")
     public void afterMethod(JoinPoint point) {
         String className = point.getTarget().getClass().getName();
         String methodName = className + "#" + point.getSignature().getName();
@@ -73,6 +89,7 @@ public class CalculatorAop implements Ordered {
      * @return
      * @throws Throwable
      */
+    @Around("pointcut()")
     public Object aroundMethod(ProceedingJoinPoint joinPoint) throws Throwable {
 
         String className = joinPoint.getTarget().getClass().getName();
@@ -88,4 +105,5 @@ public class CalculatorAop implements Ordered {
         // 目标方法的返回值
         return result;
     }
+
 }

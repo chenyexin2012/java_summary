@@ -3,14 +3,25 @@ package com.holmes.spring.aop;
 import org.springframework.aop.AfterReturningAdvice;
 import org.springframework.aop.MethodBeforeAdvice;
 import org.springframework.aop.ThrowsAdvice;
+import org.springframework.core.Ordered;
 
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ExecutionTimeLoggingAop implements MethodBeforeAdvice, AfterReturningAdvice, ThrowsAdvice {
+public class ExecutionTimeLoggingAop implements MethodBeforeAdvice, AfterReturningAdvice, ThrowsAdvice, Ordered {
 
     private final static String PRE = "[ExecutionTimeLoggingAop]";
+
+    /**
+     * 指定AOP的执行顺序
+     * @return
+     */
+    @Override
+    public int getOrder() {
+        return 0;
+    }
+
     /**
      * 方法执行前通知
      *
