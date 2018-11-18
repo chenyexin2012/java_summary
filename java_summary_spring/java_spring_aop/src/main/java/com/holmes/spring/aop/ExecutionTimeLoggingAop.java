@@ -5,8 +5,12 @@ import org.springframework.aop.MethodBeforeAdvice;
 import org.springframework.aop.ThrowsAdvice;
 
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class ExecutionTimeLoggingAop implements MethodBeforeAdvice, AfterReturningAdvice, ThrowsAdvice {
+
+    private final static String PRE = "[ExecutionTimeLoggingAop]";
     /**
      * 方法执行前通知
      *
@@ -19,7 +23,8 @@ public class ExecutionTimeLoggingAop implements MethodBeforeAdvice, AfterReturni
     public void before(Method method, Object[] args, Object target) throws Throwable {
 
         String methodName = method.getDeclaringClass().getName() + "#" + method.getName();
-        System.out.println("before " + methodName + " execute...");
+        System.out.println(PRE + "before " + methodName + " execute["
+                + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSS").format(new Date()) + "]");
     }
 
     /**
@@ -34,7 +39,8 @@ public class ExecutionTimeLoggingAop implements MethodBeforeAdvice, AfterReturni
     @Override
     public void afterReturning(Object returnValue, Method method, Object[] args, Object target) throws Throwable {
         String methodName = method.getDeclaringClass().getName() + "#" + method.getName();
-        System.out.println("after " + methodName + " execute...");
+        System.out.println(PRE + "after " + methodName + " returning["
+                + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSS").format(new Date()) + "]");
     }
 
     /**
@@ -51,6 +57,7 @@ public class ExecutionTimeLoggingAop implements MethodBeforeAdvice, AfterReturni
 //        int a = 1 / 0;
 
         String methodName = method.getDeclaringClass().getName() + "#" + method.getName();
-        System.out.println(methodName + " throwing exception...");
+        System.out.println(PRE + methodName + " throwing exception["
+                + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSS").format(new Date()) + "]");
     }
 }

@@ -13,18 +13,22 @@
     <bean name="executionTimeLoggingAop" class="com.holmes.spring.aop.ExecutionTimeLoggingAop"/>
 
     <aop:config>
+        <aop:pointcut id="executionTimeLoggingPointcut" expression="execution(public * *(..))"/>
+        <aop:advisor advice-ref="executionTimeLoggingAop" pointcut-ref="executionTimeLoggingPointcut"/>
+    </aop:config>
+
+    <aop:config>
         <aop:aspect ref="operator">
             <aop:pointcut id="calculatorMethod" expression="execution(* com.holmes.spring.aop.Calculator.*(..))"/>
             <aop:before method="beforeMethod" pointcut-ref="calculatorMethod"/>
+            <aop:after-returning method="afterReturning" pointcut-ref="calculatorMethod"/>
+            <aop:after-throwing method="afterThrowing" pointcut-ref="calculatorMethod"/>
             <aop:after method="afterMethod" pointcut-ref="calculatorMethod"/>
             <aop:around method="aroundMethod" pointcut-ref="calculatorMethod"/>
         </aop:aspect>
     </aop:config>
 
-    <aop:config>
-        <aop:pointcut id="executionTimeLoggingPointcut" expression="execution(public * *(..))"/>
-        <aop:advisor advice-ref="executionTimeLoggingAop" pointcut-ref="executionTimeLoggingPointcut"/>
-    </aop:config>
+
 
 
 </beans>
