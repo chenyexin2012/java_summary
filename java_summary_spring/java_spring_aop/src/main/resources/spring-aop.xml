@@ -8,16 +8,23 @@
        http://www.springframework.org/schema/aop/spring-aop.xsd">
 
     <bean name="calculator" class="com.holmes.spring.aop.Calculator"/>
-    <bean name="operator" class="com.holmes.spring.aop.Operator"/>
+    <bean name="operator" class="com.holmes.spring.aop.CalculatorAop"/>
+
+    <bean name="executionTimeLoggingAop" class="com.holmes.spring.aop.ExecutionTimeLoggingAop"/>
 
     <aop:config>
         <aop:aspect ref="operator">
-            <aop:pointcut id="allMethods" expression="execution(* com.holmes.spring.aop.Calculator.*(..))"/>
-            <aop:before method="beforeMethod" pointcut-ref="allMethods"/>
-            <aop:before method="afterMethod" pointcut-ref="allMethods"/>
+            <aop:pointcut id="calculatorMethod" expression="execution(* com.holmes.spring.aop.Calculator.*(..))"/>
+            <aop:before method="beforeMethod" pointcut-ref="calculatorMethod"/>
+            <aop:after method="afterMethod" pointcut-ref="calculatorMethod"/>
+            <aop:around method="aroundMethod" pointcut-ref="calculatorMethod"/>
         </aop:aspect>
     </aop:config>
 
+    <aop:config>
+        <aop:pointcut id="executionTimeLoggingPointcut" expression="execution(public * *(..))"/>
+        <aop:advisor advice-ref="executionTimeLoggingAop" pointcut-ref="executionTimeLoggingPointcut"/>
+    </aop:config>
 
 
 </beans>
