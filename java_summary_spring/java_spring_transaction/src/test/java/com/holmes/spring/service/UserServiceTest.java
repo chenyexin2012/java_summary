@@ -11,7 +11,31 @@ public class UserServiceTest extends BaseTest {
     private UserService userService;
 
     @Test
-    public void test() {
-        userService.addUser(new User("张三", 10000));
+    public void addUserTest() {
+        userService.addUser(new User("王五", 1000));
+    }
+    @Test
+    public void getUserByIdTest() {
+
+        System.out.println(userService.getUserById(1L));
+    }
+
+    @Test
+    public void selectListTest() {
+        System.out.println(userService.selectList(new User()));
+    }
+
+    @Test
+    public void updateUserTest() {
+
+    }
+
+    @Test
+    public void transferTest() {
+
+        User user1 = userService.getUserById(1L);
+        User user2 = userService.getUserById(10L);
+
+        userService.transfer(user1, user2, 100);
     }
 }
