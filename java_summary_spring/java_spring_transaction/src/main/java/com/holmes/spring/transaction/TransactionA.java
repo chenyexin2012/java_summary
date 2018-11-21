@@ -50,6 +50,20 @@ public class TransactionA {
     }
 
     /**
+     * 测试requiredNewTx中事务否能单独提交
+     */
+    @Transactional
+    public void requiredNewTxC() {
+        transactionB.requiredNewTx(new User("嬴稷", 10000));
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        userDao.addUser(new User("嬴稷", 10000));
+    }
+
+    /**
      * 此处不开启事务，抛出异常
      * org.springframework.transaction.IllegalTransactionStateException:
      * No existing transaction found for transaction marked with propagation 'mandatory'
@@ -141,7 +155,20 @@ public class TransactionA {
     @Transactional
     public void nestedTxB() {
         transactionB.nestedTx(new User("张仪", 10000));
-        transactionB.nestedTx(new User("张仪", 10000));
+    }
+
+    /**
+     * 测试nestedTx中的事务能否单独提交
+     */
+    @Transactional
+    public void nestedTxC() {
+        transactionB.nestedTx(new User("白起", 10000));
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        userDao.addUser(new User("白起", 10000));
     }
 
 }

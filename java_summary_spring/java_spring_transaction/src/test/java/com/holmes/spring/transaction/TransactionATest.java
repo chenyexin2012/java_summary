@@ -30,6 +30,11 @@ public class TransactionATest extends BaseTest {
     }
 
     @Test
+    public void requiredNewTxCTest() {
+        transactionA.requiredNewTxC();
+    }
+
+    @Test
     public void mandatoryTxATest() {
         transactionA.mandatoryTxA();
     }
@@ -77,6 +82,11 @@ public class TransactionATest extends BaseTest {
     @Test
     public void nestedTxBTest() {
         transactionA.nestedTxB();
+    }
+
+    @Test
+    public void nestedTxCTest() {
+        transactionA.nestedTxC();
     }
 
 }

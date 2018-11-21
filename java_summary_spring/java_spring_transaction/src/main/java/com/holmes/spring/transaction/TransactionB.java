@@ -1,6 +1,5 @@
 package com.holmes.spring.transaction;
 
-import com.holmes.spring.dao.UserDao;
 import com.holmes.spring.pojo.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
