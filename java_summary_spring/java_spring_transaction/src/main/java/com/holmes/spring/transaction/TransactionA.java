@@ -37,30 +37,33 @@ public class TransactionA {
      * transactionB.requiredNewTx --> Propagation.REQUIRES_NEW
      */
     public void requiredNewTxA() {
-        transactionB.requiredNewTx(new User("嬴荡", 10000));
+        transactionB.requiredNewTxA(new User("嬴荡", 10000));
     }
 
     /**
-     * 此处开启一个事务，requiredNewTx方法中会开启一个新的事务，并将事务挂起
+     * 此处开启一个事务，requiredNewTx方法中会开启一个新的事务，并将事务挂起。
+     *
      * transactionB.requiredNewTx --> Propagation.REQUIRES_NEW
      */
     @Transactional
     public void requiredNewTxB() {
-        transactionB.requiredNewTx(new User("嬴稷", 10000));
+        userDao.addUser(new User("嬴荡", 10000));
+
+        // requiredNewTxA方法中的事务不依赖与外部事务
+        // 会单独的提交
+        transactionB.requiredNewTxA(new User("嬴稷", 10000));
+        userDao.addUser(new User("嬴柱", 10000));
     }
 
     /**
-     * 测试requiredNewTx中事务否能单独提交
+     * 测试requiredNewTxB中事务回滚
      */
     @Transactional
     public void requiredNewTxC() {
-        transactionB.requiredNewTx(new User("嬴稷", 10000));
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         userDao.addUser(new User("嬴稷", 10000));
+        // requiredNewTxB中出现异常
+        transactionB.requiredNewTxB(new User("范睢", 10000));
+        userDao.addUser(new User("司马错", 10000));
     }
 
     /**
@@ -142,33 +145,32 @@ public class TransactionA {
      * transactionB.nestedTx --> Propagation.NESTED
      */
     public void nestedTxA() {
-        transactionB.nestedTx(new User("商鞅", 10000));
+        transactionB.nestedTxA(new User("商鞅", 10000));
     }
 
     /**
-     * 此处开启事务，nestedTx方法中会开启一个事务，并单独提交或回滚
-     * 需要在事务管理器中配置
-     * <property name="nestedTransactionAllowed" value="true"/>
-     * <p>
+     * 此处开启事务，nestedTx方法中会在嵌套事务中运行
+     * 且嵌套事务在外部事务结束时提交
      * transactionB.nestedTx --> Propagation.NESTED
      */
     @Transactional
     public void nestedTxB() {
-        transactionB.nestedTx(new User("张仪", 10000));
+        userDao.addUser(new User("苏秦", 10000));
+        transactionB.nestedTxA(new User("张仪", 10000));
+        userDao.addUser(new User("苏代", 10000));
     }
 
     /**
-     * 测试nestedTx中的事务能否单独提交
+     *
      */
     @Transactional
     public void nestedTxC() {
-        transactionB.nestedTx(new User("白起", 10000));
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         userDao.addUser(new User("白起", 10000));
+        // nestedTxB中出现异常
+        // 在nestedTxB方法执行前，会生成一个保存点，保存当前的状态，
+        // 若nestedTxB执行失败，则会恢复到之前保存的状态。
+        transactionB.nestedTxB(new User("魏冉", 10000));
+        userDao.addUser(new User("芈戎", 10000));
     }
 
 }

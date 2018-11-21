@@ -15,12 +15,12 @@ public class TransactionB {
     private SessionFactory sessionFactory;
 
     private Session getCurrentSession() {
+        Session session = sessionFactory.getCurrentSession();
         return sessionFactory.getCurrentSession();
     }
 
-
     /**
-     * 当前方法必须运行在事务中。如果当前事务存在，方法将会在该事务中运行。否则，会启动一个新的事务
+     * 如果存在事务，则支持当前事务。如果没有事务，则单独开启一个事务。
      */
     @Transactional(propagation = Propagation.REQUIRED)
     public void requiredTx(User user) {
@@ -28,12 +28,18 @@ public class TransactionB {
     }
 
     /**
-     * 表示当前方法必须运行在它自己的事务中。一个新的事务将被启动。如果存在当前事务，在该方法执
-     * 行期间，当前事务会被挂起。如果使用JTATransactionManager的话，则需要访问TransactionManager。
+     * 总是开启一个新的事务，如果已经有事务存在，则挂起这个事务。
      */
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void requiredNewTx(User user) {
+    public void requiredNewTxA(User user) {
         getCurrentSession().save(user);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
+    public void requiredNewTxB(User user) {
+        getCurrentSession().save(user);
+        // 模拟异常
+        int i = 1 / 0;
     }
 
     /**
@@ -75,8 +81,19 @@ public class TransactionB {
      * 对这种传播行为的支持是有所差异的。可以参考资源管理器的文档来确认它们是否支持嵌套事务。
      */
     @Transactional(propagation = Propagation.NESTED)
-    public void nestedTx(User user) {
+    public void nestedTxA(User user) {
         getCurrentSession().save(user);
+    }
+
+    /**
+     *
+     * @param user
+     */
+    @Transactional(propagation = Propagation.NESTED, rollbackFor = Exception.class)
+    public void nestedTxB(User user) {
+        getCurrentSession().save(user);
+        // 模拟异常
+        int i = 1 / 0;
     }
 
 }
