@@ -57,9 +57,9 @@
     </bean>
 
     <!-- DataSource事务管理器 -->
-    <bean id="dataSourceTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+<!--    <bean id="dataSourceTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
-    </bean>
+    </bean>-->
 
     <!-- Hibernate事务管理器 -->
     <bean id="hibernateTransactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
@@ -68,14 +68,14 @@
     </bean>
 
     <!-- Jpa事务管理器 -->
-    <bean id="jpaTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+<!--    <bean id="jpaTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="dataSource" ref="dataSource"/>
-    </bean>
+    </bean>-->
 
     <!-- Jta事务管理器 -->
-    <bean id="jtaTransactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
+<!--    <bean id="jtaTransactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
         <property name="transactionManagerName" value=""/>
-    </bean>
+    </bean>-->
 
     <!-- 配置事务事务属性 -->
 <!--    <tx:advice id="txAdvice" transaction-manager="transactionManager">
