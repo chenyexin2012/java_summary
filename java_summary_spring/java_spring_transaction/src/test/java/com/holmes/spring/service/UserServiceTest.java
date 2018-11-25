@@ -22,7 +22,7 @@ public class UserServiceTest extends BaseTest {
 
     @Test
     public void selectListTest() {
-        System.out.println(userService.selectList(new User()));
+        System.out.println(userService.selectList());
     }
 
     @Test

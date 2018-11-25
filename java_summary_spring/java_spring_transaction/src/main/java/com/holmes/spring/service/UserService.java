@@ -19,8 +19,8 @@ public class UserService {
         return userDao.getUserById(id);
     }
 
-    public List<User> selectList(User user) {
-        return userDao.selectList(user);
+    public List<User> selectList() {
+        return userDao.selectList();
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED, rollbackFor = Exception.class)

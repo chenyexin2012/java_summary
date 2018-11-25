@@ -26,7 +26,7 @@ public class UserDao {
         return user;
     }
 
-    public List<User> selectList(User user) {
+    public List<User> selectList() {
         Query query = getCurrentSession().createQuery("from User");
         List<User> list = query.list();
         return list;
