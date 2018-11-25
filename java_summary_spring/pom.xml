@@ -16,6 +16,7 @@
         <module>java_spring_aop</module>
         <module>java_spring_transaction</module>
         <module>java_spring_jdbc</module>
+        <module>java_spring_jpa</module>
     </modules>
 
     <properties>
