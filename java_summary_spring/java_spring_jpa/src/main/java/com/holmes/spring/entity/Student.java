@@ -49,6 +49,15 @@ public class Student {
     @JoinColumn(name = "STUDENT_ID")
     private Set<Book> books = new HashSet<>();
 
+    /**
+     * 多对多关联
+     * student_course: Student与Course关联的中间表
+     */
+    @ManyToMany
+    @JoinTable(name = "student_course", joinColumns = @JoinColumn(name = "STUDENT_ID", referencedColumnName = "ID"),
+            inverseJoinColumns = @JoinColumn(name = "COURSE_ID", referencedColumnName = "ID"))
+    private Set<Course> courses = new HashSet<>();
+
     public Long getId() {
         return id;
     }
@@ -111,6 +120,14 @@ public class Student {
 
     public void setBooks(Set<Book> books) {
         this.books = books;
+    }
+
+    public Set<Course> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(Set<Course> courses) {
+        this.courses = courses;
     }
 
     @Override

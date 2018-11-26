@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "student")
+@Table(name = "course")
 public class Course {
 
     @Id
@@ -21,8 +21,8 @@ public class Course {
      * student_course: Student与Course关联的中间表
      */
     @ManyToMany
-    @JoinTable(name = "student_course", joinColumns = @JoinColumn(name = "COURSE_ID"),
-            inverseJoinColumns = @JoinColumn(name = "STUDENT_ID"))
+    @JoinTable(name = "student_course", joinColumns = @JoinColumn(name = "COURSE_ID", referencedColumnName = "ID"),
+            inverseJoinColumns = @JoinColumn(name = "STUDENT_ID", referencedColumnName = "ID"))
     private Set<Student> students = new HashSet<>();
 
     public Long getId() {
