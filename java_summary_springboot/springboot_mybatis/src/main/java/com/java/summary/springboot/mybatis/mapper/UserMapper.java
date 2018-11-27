@@ -3,9 +3,11 @@ package com.java.summary.springboot.mybatis.mapper;
 
 import com.java.summary.springboot.mybatis.entity.User;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 public interface UserMapper {
 
     /**

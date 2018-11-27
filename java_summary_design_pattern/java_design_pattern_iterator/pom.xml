@@ -13,8 +13,8 @@
     <artifactId>java_design_pattern_iterator</artifactId>
 
     <name>java_design_pattern_iterator</name>
-    <!-- FIXME change it to the project's website -->
-    <url>http://www.example.com</url>
+
+
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -22,7 +22,6 @@
         <maven.compiler.target>1.7</maven.compiler.target>
     </properties>
 
-    <dependencies>
-    </dependencies>
+
 
 </project>

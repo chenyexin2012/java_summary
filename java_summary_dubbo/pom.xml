@@ -14,25 +14,12 @@
     <packaging>pom</packaging>
 
     <name>java_summary_dubbo</name>
-    <url>http://www.example.com</url>
+
     <modules>
         <module>dubbo_demo_api</module>
         <module>dubbo_demo_consumer</module>
         <module>dubbo_demo_provider</module>
     </modules>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-    </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.11</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
 </project>
