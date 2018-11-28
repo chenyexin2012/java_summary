@@ -65,6 +65,7 @@
         <module>java_summary_dubbo</module>
         <module>java_summary_rmi</module>
         <module>java_summary_hibernate</module>
+        <module>java_summary_regex</module>
     </modules>
 
     <dependencies>
