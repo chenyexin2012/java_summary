@@ -22,6 +22,20 @@ public class Test {
 
         int a = 0;
         try {
+            a = 1;
+        } catch (Exception e) {
+            a = 2;
+            return a;
+        } finally {
+            a = 3;
+        }
+        return a;
+    }
+
+    private int getValue3() {
+
+        int a = 0;
+        try {
             a = 1 / 0;
             return a;
         } catch (Exception e) {
@@ -32,7 +46,7 @@ public class Test {
         }
     }
 
-    private int getValue3() {
+    private int getValue4() {
 
         int a = 0;
         try {
@@ -51,8 +65,10 @@ public class Test {
 
         Assert.assertEquals(getValue1(), 1);
 
-        Assert.assertEquals(getValue2(), 2);
+        Assert.assertEquals(getValue2(), 3);
 
-        Assert.assertEquals(getValue3(), 3);
+        Assert.assertEquals(getValue3(), 2);
+
+        Assert.assertEquals(getValue4(), 3);
     }
 }
