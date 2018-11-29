@@ -29,7 +29,8 @@ public class JedisPoolUtil {
             config.setMaxWaitMillis(Long.valueOf(properties.get("redis.maxWaitMillis").toString()));
 
             jedisPool = new JedisPool(config, properties.get("redis.host").toString(),
-                    Integer.valueOf(properties.get("redis.port").toString()), 10000);
+                    Integer.valueOf(properties.get("redis.port").toString()), 10000,
+                    properties.get("redis.password").toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
