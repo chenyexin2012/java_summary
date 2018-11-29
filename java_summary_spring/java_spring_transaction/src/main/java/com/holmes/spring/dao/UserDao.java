@@ -6,12 +6,13 @@ import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Component
-//@Transactional
+@Transactional(propagation = Propagation.REQUIRED)
 public class UserDao {
 
     @Autowired

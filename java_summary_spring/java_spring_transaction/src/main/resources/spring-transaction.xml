@@ -2,7 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context
@@ -37,6 +37,9 @@
         <property name="removeAbandonedTimeout" value="${removeAbandonedTimeout}"/>
         <property name="logAbandoned" value="${logAbandoned}"/>
         <property name="filters" value="${filters}"/>
+        <!-- 开启数据库密码加密 -->
+        <property name="connectionProperties"
+                  value="druid.stat.slowSqlMillis=5000;config.decrypt=true;config.decrypt.key=${jdbc_publickey}"/>
     </bean>
 
     <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
@@ -55,9 +58,9 @@
     </bean>
 
     <!-- DataSource事务管理器 -->
-<!--    <bean id="dataSourceTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <property name="dataSource" ref="dataSource"/>
-    </bean>-->
+    <!--    <bean id="dataSourceTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+            <property name="dataSource" ref="dataSource"/>
+        </bean>-->
 
     <!-- Hibernate事务管理器 -->
     <bean id="hibernateTransactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
@@ -66,27 +69,27 @@
     </bean>
 
     <!-- Jpa事务管理器 -->
-<!--    <bean id="jpaTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-        <property name="dataSource" ref="dataSource"/>
-    </bean>-->
+    <!--    <bean id="jpaTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+            <property name="dataSource" ref="dataSource"/>
+        </bean>-->
 
     <!-- Jta事务管理器 -->
-<!--    <bean id="jtaTransactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
-        <property name="transactionManagerName" value=""/>
-    </bean>-->
+    <!--    <bean id="jtaTransactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
+            <property name="transactionManagerName" value=""/>
+        </bean>-->
 
     <!-- 配置事务事务属性 -->
-<!--    <tx:advice id="txAdvice" transaction-manager="transactionManager">
-        <tx:attributes>
-            <tx:method name="get*" read-only="true"/>
-            <tx:method name="*"/>
-        </tx:attributes>
-    </tx:advice>-->
+    <!--    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+            <tx:attributes>
+                <tx:method name="get*" read-only="true"/>
+                <tx:method name="*"/>
+            </tx:attributes>
+        </tx:advice>-->
     <!-- 配置事务切点，并把切点和事务属性关联起来 -->
-<!--
-    <aop:config>
-        <aop:pointcut expression="execution(* com.holmes.spring.dao.UserDao.*(..))" id="txPointcut"/>
-        <aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut"/>
-    </aop:config>
--->
+    <!--
+        <aop:config>
+            <aop:pointcut expression="execution(* com.holmes.spring.dao.UserDao.*(..))" id="txPointcut"/>
+            <aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut"/>
+        </aop:config>
+    -->
 </beans>

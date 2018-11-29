@@ -37,6 +37,9 @@
         <property name="removeAbandonedTimeout" value="${removeAbandonedTimeout}"/>
         <property name="logAbandoned" value="${logAbandoned}"/>
         <property name="filters" value="${filters}"/>
+        <!-- 开启数据库密码加密 -->
+        <property name="connectionProperties"
+                  value="druid.stat.slowSqlMillis=5000;config.decrypt=true;config.decrypt.key=${jdbc_publickey}"/>
     </bean>
 
     <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
