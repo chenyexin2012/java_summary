@@ -17,4 +17,7 @@
         <module>java_spring_transaction</module>
         <module>java_spring_jdbc</module>
         <module>java_spring_jpa</module>
-    </modules></project>
+        <module>java_spring_security</module>
+    </modules>
+
+</project>

@@ -11,8 +11,6 @@
 
     <artifactId>java_spring_jpa</artifactId>
 
-
-
     <dependencies>
         <dependency>
             <groupId>org.springframework</groupId>
