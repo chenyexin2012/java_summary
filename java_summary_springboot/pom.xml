@@ -13,8 +13,7 @@
     <artifactId>java_summary_springboot</artifactId>
     <packaging>pom</packaging>
 
-    <name>java_summary_springboot Maven Webapp</name>
-
+    <name>java_summary_springboot</name>
 
     <modules>
         <module>springboot_mybatis</module>

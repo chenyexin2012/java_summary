@@ -31,9 +31,9 @@
         <javax.servlet.jstl.version>1.2</javax.servlet.jstl.version>
         <javax.servlet.jsp.api.version>2.3.1</javax.servlet.jsp.api.version>
         <mysql.connector.version>5.1.35</mysql.connector.version>
-        <spring.version>4.3.17.RELEASE</spring.version>
+        <spring.version>5.0.9.RELEASE</spring.version>
         <spring.security.version>3.2.5.RELEASE</spring.security.version>
-        <spring.boot.version>2.0.4.RELEASE</spring.boot.version>
+        <spring.boot.version>2.0.5.RELEASE</spring.boot.version>
         <mybatis.spring.boot.version>1.3.1</mybatis.spring.boot.version>
         <mybatis.version>3.4.1</mybatis.version>
         <dubbo.version>2.5.3</dubbo.version>
@@ -48,7 +48,6 @@
         <zkclient.version>0.10</zkclient.version>
         <commons.logging.version>1.2</commons.logging.version>
     </properties>
-
 
     <modules>
         <module>java_summary_web</module>
@@ -107,6 +106,11 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
+                <artifactId>spring-core</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
                 <artifactId>spring-tx</artifactId>
                 <version>${spring.version}</version>
             </dependency>
@@ -151,6 +155,7 @@
                 <version>${spring.version}</version>
             </dependency>
             <!-- spring end -->
+
             <!-- spring boot start -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -166,7 +171,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-test</artifactId>
                 <version>${spring.boot.version}</version>
-                <!--<scope>test</scope>-->
+                <scope>test</scope>
             </dependency>
             <!-- spring boot end -->
 
@@ -189,6 +194,7 @@
                 <artifactId>mybatis</artifactId>
                 <version>${mybatis.version}</version>
             </dependency>
+
             <!-- mybatis spring boot -->
             <dependency>
                 <groupId>org.mybatis.spring.boot</groupId>
@@ -196,12 +202,14 @@
                 <version>1.3.1</version>
             </dependency>
 
+            <!-- dubbo -->
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>dubbo</artifactId>
                 <version>${dubbo.version}</version>
             </dependency>
 
+            <!-- aspectjweaver -->
             <dependency>
                 <groupId>org.aspectj</groupId>
                 <artifactId>aspectjweaver</artifactId>
@@ -214,31 +222,29 @@
                 <artifactId>druid</artifactId>
                 <version>${druid.version}</version>
             </dependency>
+
             <!-- MySql -->
             <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
                 <version>${mysql.connector.version}</version>
             </dependency>
-            <!-- log4j -->
-            <dependency>
-                <groupId>log4j</groupId>
-                <artifactId>log4j</artifactId>
-                <version>${log4j.version}</version>
-            </dependency>
+
             <!-- jedis -->
             <dependency>
                 <groupId>redis.clients</groupId>
                 <artifactId>jedis</artifactId>
                 <version>${jedis.version}</version>
             </dependency>
+
             <!-- spring redis -->
             <dependency>
                 <groupId>org.springframework.data</groupId>
                 <artifactId>spring-data-redis</artifactId>
                 <version>${spring.redis.version}</version>
             </dependency>
-            <!-- activemq -->
+
+            <!-- activemq start -->
             <dependency>
                 <groupId>org.apache.activemq</groupId>
                 <artifactId>activemq-all</artifactId>
@@ -249,18 +255,22 @@
                 <artifactId>activemq-pool</artifactId>
                 <version>${activemq.version}</version>
             </dependency>
+            <!-- activemq end -->
+
             <!-- cglib -->
             <dependency>
                 <groupId>cglib</groupId>
                 <artifactId>cglib</artifactId>
                 <version>${cglib.version}</version>
             </dependency>
+
             <!-- fastjson -->
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>fastjson</artifactId>
                 <version>${fastjson.version}</version>
             </dependency>
+
             <!-- zkclient -->
             <dependency>
                 <groupId>com.101tec</groupId>
@@ -268,10 +278,18 @@
                 <version>${zkclient.version}</version>
             </dependency>
 
+            <!-- commons-logging -->
             <dependency>
                 <groupId>commons-logging</groupId>
                 <artifactId>commons-logging</artifactId>
                 <version>${commons.logging.version}</version>
+            </dependency>
+
+            <!-- log4j -->
+            <dependency>
+                <groupId>log4j</groupId>
+                <artifactId>log4j</artifactId>
+                <version>${log4j.version}</version>
             </dependency>
         </dependencies>
 

@@ -4,7 +4,7 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://localhost:3306/holmes?useUnicode=true&characterEncoding=utf-8
     username: root
-    password:
+    password: Mysql@2018
     type: com.alibaba.druid.pool.DruidDataSource
     # 初始化大小，最小，最大
     initialSize: 5
