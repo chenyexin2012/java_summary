@@ -16,9 +16,11 @@
         <result column="USER_PASSWORD" property="userPassword" jdbcType="VARCHAR"/>
         <result column="USER_EMAIL" property="userEmail" jdbcType="VARCHAR"/>
 
+        <!-- one to one -->
         <association property="address" column="ADDRESS_ID"
                      javaType="com.java.summary.mybatis.pojo.Address" select="selectAddressById">
         </association>
+        <!-- one to many -->
         <collection property="orders" column="USER_ID" javaType="java.util.List"
                     ofType="com.java.summary.mybatis.pojo.Order" select="selectOrdersByUserId">
         </collection>
@@ -37,30 +39,140 @@
         <result column="STREET" property="street" jdbcType="VARCHAR"/>
     </resultMap>
 
+    <!-- 根据指定条件查询 -->
+    <select id="selectList" resultMap="UserResultMap">
+        select *from t_user
+        where 1=1
+        <if test="userId != null and userId != ''">
+            and USER_ID = #{userId}
+        </if>
+        <if test="userName != null and userName != ''">
+            and USER_NAME like concat('%', #{userName}, '%')
+        </if>
+    </select>
+
+    <select id="selectList1" resultMap="UserResultMap">
+        select *from t_user
+        <!-- 按顺序判断when中的条件出否成立，如果有一个成立，则choose结束，且当标签生成的语句存在无用的and或or，会自动剔除 -->
+        <where>
+            <choose>
+                <when test="userId != null and userId != ''">
+                    and USER_ID = #{userId}
+                </when>
+                <when test="userName != null and userName != ''">
+                    and USER_NAME like concat('%', #{userName}, '%')
+                </when>
+                <otherwise>
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+
+    <select id="selectList2" resultMap="UserResultMap">
+        select *from t_user
+        <where>
+            <if test="userId != null and userId != ''">
+                and USER_ID = #{userId}
+            </if>
+            <if test="userName != null and userName != ''">
+                and USER_NAME like concat('%', #{userName}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectList3" resultMap="UserResultMap">
+        select *from t_user
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="userId != null and userId != ''">
+                AND USER_ID = #{userId}
+            </if>
+            <if test="userName != null and userName != ''">
+                AND USER_NAME like concat('%', #{userName}, '%')
+            </if>
+        </trim>
+    </select>
+
     <!-- 查询单条记录 -->
     <select id="selectUserById" parameterType="int" resultMap="UserResultMap">
         SELECT * FROM t_user WHERE USER_ID = #{userId}
     </select>
+
     <insert id="insert" useGeneratedKeys="true" keyProperty="userId" parameterType="com.java.summary.mybatis.pojo.User">
         insert into t_user(USER_NAME,USER_PASSWORD,USER_EMAIL) values(#{userName}, #{userPassword}, #{userEmail})
     </insert>
+
     <delete id="deleteById" parameterType="int">
         delete from t_user WHERE USER_ID = #{userId}
     </delete>
+
+    <delete id="deleteByIdList" parameterType="int">
+        delete from t_user WHERE USER_ID in
+        <foreach collection="idList" item="item" index="index" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+        <!--
+           collection：collection属性的值有三个可以是list、array、map，分别对应的参数类型为：List、数组、map集合，
+                        也可以是用户指定的参数名，如：idList
+    　　　　item： 表示在迭代过程中每一个元素的别名
+    　　　　index：表示在迭代过程中每次迭代到的位置（下标），一般用不到
+    　　　　open：前缀
+    　　　　close：后缀
+    　　　　separator：分隔符，表示迭代时每个元素之间以什么分隔
+        -->
+    </delete>
+
+    <delete id="deleteByIdArray" parameterType="int">
+        delete from t_user WHERE USER_ID in
+        <foreach collection="array" item="item" index="index" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
     <insert id="insertList" useGeneratedKeys="true" keyProperty="userId" parameterType="java.util.List">
         insert into t_user(USER_NAME,USER_PASSWORD,USER_EMAIL) values
         <foreach collection="list" item="item" index="index" separator=",">
-            ( #{item.userName}, #{item.userPassword}, #{item.userEmail})
+            (#{item.userName}, #{item.userPassword}, #{item.userEmail})
         </foreach>
     </insert>
+
     <update id="update" parameterType="com.java.summary.mybatis.pojo.User">
         update t_user set USER_NAME = #{userName}, USER_PASSWORD = #{userPassword}, USER_EMAIL = #{userEmail}
         where USER_ID = #{userId}
     </update>
 
-    <select id="selectList" resultMap="UserResultMap" fetchSize="10">
-        SELECT * FROM t_user
-    </select>
+    <update id="update1" parameterType="com.java.summary.mybatis.pojo.User">
+        update t_user
+        <!--当标签生成的语句存在不相关的逗号，会自动剔除-->
+        <set>
+            <if test="userName != null and userName != ''">
+                USER_NAME = #{userName},
+            </if>
+            <if test="userPassword != null and userPassword != ''">
+                USER_PASSWORD = #{userPassword},
+            </if>
+            <if test="userEmail != null and userEmail != ''">
+                USER_EMAIL = #{userEmail},
+            </if>
+        </set>
+        where USER_ID = #{userId}
+    </update>
+
+    <update id="update2" parameterType="com.java.summary.mybatis.pojo.User">
+        update t_user
+        <trim prefix="set" suffixOverrides=",">
+            <if test="userName != null and userName != ''">
+                USER_NAME = #{userName},
+            </if>
+            <if test="userPassword != null and userPassword != ''">
+                USER_PASSWORD = #{userPassword},
+            </if>
+            <if test="userEmail != null and userEmail != ''">
+                USER_EMAIL = #{userEmail},
+            </if>
+        </trim>
+        where USER_ID = #{userId}
+    </update>
+
     <select id="selectListByAddressId" resultMap="UserResultMap" fetchSize="10">
         SELECT * FROM t_user where ADDRESS_ID = #{addressId}
     </select>
