@@ -39,9 +39,15 @@
         <result column="STREET" property="street" jdbcType="VARCHAR"/>
     </resultMap>
 
+    <!-- 可复用的sql片段-->
+    <sql id="selectFrom">
+      select *from t_user
+    </sql>
+
     <!-- 根据指定条件查询 -->
     <select id="selectList" resultMap="UserResultMap">
-        select *from t_user
+        <!--复用sql片段-->
+        <include refid="selectFrom"/>
         where 1=1
         <if test="userId != null and userId != ''">
             and USER_ID = #{userId}
@@ -52,7 +58,8 @@
     </select>
 
     <select id="selectList1" resultMap="UserResultMap">
-        select *from t_user
+        <!--复用sql片段-->
+        <include refid="selectFrom"/>
         <!-- 按顺序判断when中的条件出否成立，如果有一个成立，则choose结束，且当标签生成的语句存在无用的and或or，会自动剔除 -->
         <where>
             <choose>
@@ -69,7 +76,8 @@
     </select>
 
     <select id="selectList2" resultMap="UserResultMap">
-        select *from t_user
+        <!--复用sql片段-->
+        <include refid="selectFrom"/>
         <where>
             <if test="userId != null and userId != ''">
                 and USER_ID = #{userId}
@@ -81,7 +89,8 @@
     </select>
 
     <select id="selectList3" resultMap="UserResultMap">
-        select *from t_user
+        <!--复用sql片段-->
+        <include refid="selectFrom"/>
         <trim prefix="where" prefixOverrides="and|or">
             <if test="userId != null and userId != ''">
                 AND USER_ID = #{userId}
@@ -94,7 +103,9 @@
 
     <!-- 查询单条记录 -->
     <select id="selectUserById" parameterType="int" resultMap="UserResultMap">
-        SELECT * FROM t_user WHERE USER_ID = #{userId}
+        <!--复用sql片段-->
+        <include refid="selectFrom"/>
+        WHERE USER_ID = #{userId}
     </select>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="userId" parameterType="com.java.summary.mybatis.pojo.User">
