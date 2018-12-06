@@ -17,9 +17,12 @@
         <security:authentication-provider user-service-ref="userService"/>
     </security:authentication-manager>
 
+    <!-- 配置不用过滤的资源 -->
     <security:http pattern="/favicon.ico" security="none"/>
+    <security:http pattern="/index.jsp" security="none" />
 
     <security:http auto-config="true">
+        <!-- 拦截所有请求，并且只有ROLE_USER能够访问 -->
         <sercurity:intercept-url pattern="/**" access="ROLE_USER"/>
     </security:http>
 </beans>

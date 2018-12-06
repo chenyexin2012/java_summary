@@ -10,6 +10,12 @@
         <param-value>classpath:applicationContext.xml</param-value>
     </context-param>
 
+    <!--
+        配置使用Spring Security过滤器，此处的DelegatingFilterProxy仅仅是一个起代理作用的过滤器，
+        真正的过滤器是spring-security里面配置的过滤器。
+        springSecurityFilterChain，也可称为FilterChainProxy．它可以链接任意多个其它的过滤器，
+        根据这些过滤器提供不同的安全特性，并且不需要在spring文件中配置。
+     -->
     <filter>
         <filter-name>springSecurityFilterChain</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
