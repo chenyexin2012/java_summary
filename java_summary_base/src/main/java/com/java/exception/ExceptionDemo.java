@@ -14,8 +14,12 @@ public class ExceptionDemo {
     public void method1 () {
         try {
             method2();
+            method3();
         } catch (MyException e) {
             System.out.println("MyException...");
+            e.printStackTrace();
+        } catch (MyException1 e) {
+            System.out.println("MyException1...");
             e.printStackTrace();
         } catch (Exception e) {
             System.out.println("Exception...");
@@ -24,11 +28,10 @@ public class ExceptionDemo {
     }
 
     public void method2() throws MyException {
-        try {
-            throw new MyException("MyException test...");
-        } catch (MyException e) {
-            int i = 1 / 0;
-            throw new MyException("MyException test...");
-        }
+        throw new MyException("MyException test...");
+    }
+
+    public void method3() throws MyException1 {
+        throw new MyException1("MyException1 test...");
     }
 }
