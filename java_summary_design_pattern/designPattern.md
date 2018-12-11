@@ -37,3 +37,15 @@
 
 
 #### 外观模式 facade
+
+
+
+#### 建造模式 builder
+
+
+
+#### 迭代模式 iterator
+
+
+#### 桥接模式 bridge
+
