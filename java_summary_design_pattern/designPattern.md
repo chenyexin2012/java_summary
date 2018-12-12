@@ -47,5 +47,9 @@
 #### 迭代模式 iterator
 
 
+
 #### 桥接模式 bridge
 
+
+
+#### 原型模式 prototype
