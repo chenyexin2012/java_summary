@@ -29,6 +29,7 @@
         <module>java_design_pattern_iterator</module>
         <module>java_design_pattern_bridge</module>
         <module>java_design_pattern_prototype</module>
+        <module>java_design_pattern_chain</module>
     </modules>
 
 
