@@ -1,6 +1,69 @@
-### Executor
+## 线程池
 
-#### ThreadPoolExecutor
+### 创建线程池的方式
+
+- 使用Executors的静态方法创建线程池。
+- 直接使用ThreadPoolExecutor手动创建线程池。
+
+### 几种常用的线程池
+
+1.单个工作线程的线程池 
+
+ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+    public static ExecutorService newSingleThreadExecutor() {
+        return new FinalizableDelegatedExecutorService
+            (new ThreadPoolExecutor(1, 1,
+                                    0L, TimeUnit.MILLISECONDS,
+                                    new LinkedBlockingQueue<Runnable>()));
+    }
+    
+- 启动一个单独的工作线程。
+
+
+2.指定工作线程数量的线程池
+
+ExecutorService executorService = Executors.newFixedThreadPool(3);
+
+    public static ExecutorService newFixedThreadPool(int nThreads) {
+        return new ThreadPoolExecutor(nThreads, nThreads,
+                                      0L, TimeUnit.MILLISECONDS,
+                                      new LinkedBlockingQueue<Runnable>());
+    }
+    
+3.可缓存线程池
+
+ExecutorService executorService = Executors.newCachedThreadPool();
+
+    public static ExecutorService newCachedThreadPool() {
+        return new ThreadPoolExecutor(0, Integer.MAX_VALUE,
+                                      60L, TimeUnit.SECONDS,
+                                      new SynchronousQueue<Runnable>());
+    }
+
+- 创建工作线程的数量没有限制，为Integer.MAX_VALUE。
+- 指定工作线程的空闲时间为60s。
+
+4.支持定时及周期性任务执行的定长线程池
+
+ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
+
+    public ScheduledThreadPoolExecutor(int corePoolSize) {
+        super(corePoolSize, Integer.MAX_VALUE, 0, NANOSECONDS,
+              new DelayedWorkQueue());
+    }
+    
+    public ThreadPoolExecutor(int corePoolSize,
+                              int maximumPoolSize,
+                              long keepAliveTime,
+                              TimeUnit unit,
+                              BlockingQueue<Runnable> workQueue) {
+        this(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue,
+             Executors.defaultThreadFactory(), defaultHandler);
+    }
+
+
+### ThreadPoolExecutor
 
 1.corePoolSize：表示一个线程池的核心线程数，当活线程数小于corePoolSize，每提交一个任务就会开启一个线程来处理。
 
@@ -26,3 +89,21 @@
 3.taskCount > corePoolSize && taskCount < (workQueue.size + maxmumPoolSize) && workQueue.ifFull --> taskCount - workQueue.size
 
 4.taskCount > workQueue.size + maxmumPoolSize --> maxmumPoolSize
+
+### 判断线程池是否终止
+
+1.使用shutdown方法和isTerminated方法。
+
+    threadPoolExecutor.shutdown();
+    while(!threadPoolExecutor.isTerminated()) {
+    }
+    System.out.println("all threads has finished ...");
+    
+2.使用shutdown方法和iawaitTermination方法。
+
+    threadPoolExecutor.shutdown();
+    while(!threadPoolExecutor.isTerminated()) {
+    }
+    System.out.println("all threads had finished ...");
+       
+3.
