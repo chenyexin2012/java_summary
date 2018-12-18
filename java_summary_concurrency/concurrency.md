@@ -1,5 +1,11 @@
 ## 线程池
 
+### 线程池的生命周期
+
+- 运行
+- 关闭
+- 已终止
+
 ### 创建线程池的方式
 
 - 使用Executors的静态方法创建线程池。
@@ -106,4 +112,3 @@ ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
     }
     System.out.println("all threads had finished ...");
        
-3.
