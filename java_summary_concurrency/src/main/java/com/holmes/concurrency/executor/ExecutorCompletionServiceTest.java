@@ -22,7 +22,7 @@ public class ExecutorCompletionServiceTest {
 
     @Before
     public void before() {
-        executor = Executors.newFixedThreadPool(10);
+        executor = Executors.newFixedThreadPool(THREAD_COUNT);
     }
 
     @After
@@ -54,8 +54,8 @@ public class ExecutorCompletionServiceTest {
 
         for (int i = 0; i < TASK_COUNT; i++) {
             try {
-                Future<String> task = completionService.take();
-                System.out.println(task.get());
+                Future<String> future = completionService.take();
+                System.out.println(future.get());
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {

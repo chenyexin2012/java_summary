@@ -6,10 +6,54 @@
 - 关闭
 - 已终止
 
+### 几个重要的接口
+
+#### Executor
+    
+    public interface Executor {
+        void execute(Runnable command);
+    }
+
+#### ExecutorService
+
+    public interface ExecutorService extends Executor {
+    
+        void shutdown();
+    
+        List<Runnable> shutdownNow();
+    
+        boolean isShutdown();
+    
+        boolean isTerminated();
+    
+        boolean awaitTermination(long timeout, TimeUnit unit)
+            throws InterruptedException;
+    
+        <T> Future<T> submit(Callable<T> task);
+    
+        <T> Future<T> submit(Runnable task, T result);
+    
+        Future<?> submit(Runnable task);
+    
+        <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks)
+            throws InterruptedException;
+    
+        <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks,
+                                      long timeout, TimeUnit unit)
+            throws InterruptedException;
+    
+        <T> T invokeAny(Collection<? extends Callable<T>> tasks)
+            throws InterruptedException, ExecutionException;
+    
+        <T> T invokeAny(Collection<? extends Callable<T>> tasks,
+                        long timeout, TimeUnit unit)
+            throws InterruptedException, ExecutionException, TimeoutException;
+    }
+
 ### 创建线程池的方式
 
 - 使用Executors的静态方法创建线程池。
-- 直接使用ThreadPoolExecutor手动创建线程池。
+- 直接使用ThreadPoolExecutor手动创建线程池（推荐）。
 
 ### 几种常用的线程池
 
