@@ -1,5 +1,6 @@
 package com.holmes.concurrency.threadpool;
 
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -25,7 +26,9 @@ public class SingleThreadExecutorTest {
                 public void run() {
                     System.out.println(Thread.currentThread().getName());
                     try {
-                        Thread.sleep((long) (Math.random() * 10000));
+                        Random random = new Random();
+                        long workingTime = random.nextInt(10000) + 1;
+                        Thread.sleep(workingTime);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

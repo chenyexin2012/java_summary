@@ -4,6 +4,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
 import java.util.concurrent.*;
 
 /**
@@ -11,7 +14,7 @@ import java.util.concurrent.*;
  * @Author: holmes
  * @CreateDate: 2018/12/21 10:56
  * @Version: 1.0.0
-*/
+ */
 public class ExecutorServiceTest {
 
     private static final int TASK_COUNT = 20;
@@ -28,7 +31,7 @@ public class ExecutorServiceTest {
     @After
     public void after() {
         executor.shutdown();
-        while(!executor.isTerminated()){
+        while (!executor.isTerminated()) {
         }
     }
 
@@ -101,7 +104,7 @@ public class ExecutorServiceTest {
     }
 
     @Test
-    public void testSubmitCallable() {
+    public void submitCallableTest() {
 
         try {
             // <T> Future<T> submit(Callable<T> task);
@@ -122,13 +125,139 @@ public class ExecutorServiceTest {
         }
     }
 
-
-
+    @Test
     public void invokeAllTest() {
 
+        List<Callable<String>> taskList = new LinkedList<>();
+        for (int i = 0; i < TASK_COUNT; i++) {
+            final int index = i;
+            taskList.add(new Callable<String>() {
+                @Override
+                public String call() throws Exception {
+                    Random random = new Random();
+                    long workingTime = random.nextInt(10000) + 1;
+                    Thread.sleep(workingTime);
+                    return String.valueOf(index) + " " + String.valueOf(workingTime) + " "
+                            + Thread.currentThread().getName();
+                }
+            });
+        }
+
+        try {
+            // <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks) throws InterruptedException;
+            // 所有任务执行完后返回
+            List<Future<String>> futureList = executor.invokeAll(taskList);
+            System.out.println("所有任务执行完成：" + futureList.size());
+            for(Future<String> future : futureList) {
+                String result = future.get();
+                System.out.println(result);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
     }
 
+    @Test
+    public void invokeAllWithTimeoutTest() {
+
+        List<Callable<String>> taskList = new LinkedList<>();
+        for (int i = 0; i < TASK_COUNT; i++) {
+            final int index = i;
+            taskList.add(new Callable<String>() {
+                @Override
+                public String call() throws Exception {
+                    Random random = new Random();
+                    long workingTime = random.nextInt(10000) + 1;
+                    Thread.sleep(workingTime);
+                    return String.valueOf(index) + " " + String.valueOf(workingTime) + " "
+                            + Thread.currentThread().getName();
+                }
+            });
+        }
+
+        try {
+            // <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit)
+            //        throws InterruptedException;
+            // 所有任务执行完后返回，任务超时则会退出
+            List<Future<String>> futureList = executor.invokeAll(taskList, 5000L, TimeUnit.MILLISECONDS);
+            System.out.println("所有任务执行完成：" + futureList.size());
+            for(Future<String> future : futureList) {
+                if(!future.isCancelled()) {
+                    String result = future.get();
+                    System.out.println(result);
+                }
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
     public void invokeAnyTest() {
 
+        List<Callable<String>> taskList = new LinkedList<>();
+        for (int i = 0; i < TASK_COUNT; i++) {
+            final int index = i;
+            taskList.add(new Callable<String>() {
+                @Override
+                public String call() throws Exception {
+                    Random random = new Random();
+                    long workingTime = random.nextInt(10000) + 1;
+                    Thread.sleep(workingTime);
+                    return String.valueOf(index) + " " + String.valueOf(workingTime) + " "
+                            + Thread.currentThread().getName();
+                }
+            });
+        }
+
+        try {
+            // <T> T invokeAny(Collection<? extends Callable<T>> tasks)
+            //        throws InterruptedException, ExecutionException;
+            // 任意一个任务成功后返回
+            String result = executor.invokeAny(taskList);
+
+            System.out.println(result);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void invokeAnyWithTimeoutTest() {
+
+        List<Callable<String>> taskList = new LinkedList<>();
+        for (int i = 0; i < TASK_COUNT; i++) {
+            final int index = i;
+            taskList.add(new Callable<String>() {
+                @Override
+                public String call() throws Exception {
+                    Random random = new Random();
+                    long workingTime = random.nextInt(10000) + 1;
+                    Thread.sleep(workingTime);
+                    return String.valueOf(index) + " " + String.valueOf(workingTime) + " "
+                            + Thread.currentThread().getName();
+                }
+            });
+        }
+
+        try {
+            // <T> T invokeAny(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit)
+            //        throws InterruptedException, ExecutionException, TimeoutException;
+            // 任意一个任务成功后返回
+            String result = executor.invokeAny(taskList, 500L, TimeUnit.MILLISECONDS);
+            System.out.println(result);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
     }
 }

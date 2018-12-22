@@ -1,5 +1,6 @@
 package com.holmes.concurrency.threadpool;
 
+import java.util.Random;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -64,7 +65,9 @@ public class ThreadPoolExecutorTest {
                 public void run() {
                     System.out.println(Thread.currentThread().getName() + " run...");
                     try {
-                        Thread.sleep((long) (Math.random() * 10000));
+                        Random random = new Random();
+                        long workingTime = random.nextInt(10000) + 1;
+                        Thread.sleep(workingTime);Thread.sleep((long) (Math.random() * 10000));
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

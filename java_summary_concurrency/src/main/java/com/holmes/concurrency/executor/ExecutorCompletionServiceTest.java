@@ -4,6 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Random;
 import java.util.concurrent.*;
 
 /**
@@ -44,7 +45,8 @@ public class ExecutorCompletionServiceTest {
                 @Override
                 public String call() throws Exception {
 
-                    long workingTime = (long) (Math.random() * 10000);
+                    Random random = new Random();
+                    long workingTime = random.nextInt(10000) + 1;
                     Thread.sleep(workingTime);
                     return String.valueOf(index) + " " + String.valueOf(workingTime) + " "
                             + Thread.currentThread().getName() + " finished...";

@@ -1,5 +1,6 @@
 package com.holmes.concurrency.threadpool;
 
+import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -26,7 +27,9 @@ public class ScheduleThreadPoolTest {
                 public void run() {
                     System.out.println(Thread.currentThread());
                     try {
-                        Thread.sleep((long) (Math.random() * 10000));
+                        Random random = new Random();
+                        long workingTime = random.nextInt(10000) + 1;
+                        Thread.sleep(workingTime);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

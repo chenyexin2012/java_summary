@@ -17,34 +17,48 @@
 #### ExecutorService
 
     public interface ExecutorService extends Executor {
-    
+        
+        // 不再接收新的任务，所有任务执行完成后关闭ExecutorService
         void shutdown();
     
+        // 不再接收新的任务，立即关闭ExecutorService并返回没有执行的任务列表
         List<Runnable> shutdownNow();
     
+        // 是否关闭
         boolean isShutdown();
     
+        // 是否终止
         boolean isTerminated();
-    
+ 
+        // 等待指定时间，若在此时间内，所有任务执行完毕，则立即返回true
+        // 否则返回false
         boolean awaitTermination(long timeout, TimeUnit unit)
             throws InterruptedException;
     
+        // 提交一个任务，可通过Future.get()获取返回值
         <T> Future<T> submit(Callable<T> task);
     
+        // 提交一个任务，且在任务执行完成后可通过Future.get()获取result
         <T> Future<T> submit(Runnable task, T result);
     
+        // 提交一个任务，且在任务执行完成后Future.get()返回null
         Future<?> submit(Runnable task);
     
+        // 批量提交任务，并且获取它们的future，future与提交的task一一对应
         <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks)
             throws InterruptedException;
     
+        // 批量提交任务，并且获取它们的future，future与提交的task一一对应，
+        // 当任务超时时，该任务结束，Future.isCancelled()返回true
         <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks,
                                       long timeout, TimeUnit unit)
             throws InterruptedException;
     
+        // 批量提交任务，并且获取一个成功执行的任务的返回结果
         <T> T invokeAny(Collection<? extends Callable<T>> tasks)
             throws InterruptedException, ExecutionException;
     
+        // 批量提交任务，并且获取限定时间内一个成功执行的任务的返回结果
         <T> T invokeAny(Collection<? extends Callable<T>> tasks,
                         long timeout, TimeUnit unit)
             throws InterruptedException, ExecutionException, TimeoutException;
