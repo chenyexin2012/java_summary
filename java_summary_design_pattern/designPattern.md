@@ -119,3 +119,7 @@ Inheritance should ensure that any property proved about supertype objects also 
 
 
 #### 组合模式 composite
+
+
+
+#### 享元模式 flyweight
