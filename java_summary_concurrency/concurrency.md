@@ -1,3 +1,19 @@
+## 线程
+
+### java实现线程的方式
+
+在java中实现一个线程常用的方法有两种：继承Thread类、实现Runnable接口。但在开发过程中一般推荐使用第二种方式。
+当需要实现一个带有返回结果的线程时，还可以通过使用ExecutorService、Callable、Future来完成。
+
+    com.holmes.concurrency.thread.ThreadDemo
+    com.holmes.concurrency.thread.RunnableDemo
+    com.holmes.concurrency.thread.CallableDemo
+
+
+## 线程的取消与中断
+
+
+
 ## 线程池
 
 ### 线程池的生命周期
