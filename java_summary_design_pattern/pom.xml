@@ -32,6 +32,7 @@
         <module>java_design_pattern_chain</module>
         <module>java_design_pattern_composite</module>
         <module>java_design_pattern_flyweight</module>
+        <module>java_design_pattern_state</module>
     </modules>
 
 

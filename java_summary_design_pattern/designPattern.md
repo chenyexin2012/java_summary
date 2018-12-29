@@ -123,3 +123,7 @@ Inheritance should ensure that any property proved about supertype objects also 
 
 
 #### 享元模式 flyweight
+
+
+
+#### 状态模式 state
