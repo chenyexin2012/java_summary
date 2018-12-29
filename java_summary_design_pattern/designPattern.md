@@ -127,3 +127,6 @@ Inheritance should ensure that any property proved about supertype objects also 
 
 
 #### 状态模式 state
+
+
+#### 备忘录模式 memento

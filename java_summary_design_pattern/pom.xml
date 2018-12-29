@@ -33,6 +33,7 @@
         <module>java_design_pattern_composite</module>
         <module>java_design_pattern_flyweight</module>
         <module>java_design_pattern_state</module>
+        <module>java_design_pattern_memento</module>
     </modules>
 
 
