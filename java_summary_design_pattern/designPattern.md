@@ -135,3 +135,11 @@ Inheritance should ensure that any property proved about supertype objects also 
 
 
 #### 访问者模式 visitor
+
+
+
+#### 中介者模式 mediator
+
+
+
+#### 解释器模式 interpreter

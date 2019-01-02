@@ -35,6 +35,8 @@
         <module>java_design_pattern_state</module>
         <module>java_design_pattern_memento</module>
         <module>java_design_pattern_visitor</module>
+        <module>java_design_pattern_mediator</module>
+        <module>java_design_pattern_interpreter</module>
     </modules>
 
 
