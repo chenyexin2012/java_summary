@@ -1,15 +1,24 @@
 ## 线程
 
+    demo：com.holmes.concurrency.thread
+    
+### 线程的状态
+
+- 创建：生成一个线程对象，还没有调用start方法。
+
+- 就绪：调用了线程对象的start方法之后，该线程就进入了就绪状态，但是此时线程调度程序还没有把该线程设置为当前线程，此时处于就绪状态。在线程运行之后，从等待或者睡眠中回来之后，也会处于就绪状态。
+
+- 运行：线程调度程序将处于就绪状态的线程设置为当前线程，此时线程就进入了运行状态，开始运行run函数当中的代码。
+
+- 阻塞：线程正在运行的时候，被暂停，通常是为了等待某个时间的发生(比如说某项资源就绪)之后再继续运行。sleep、suspend、wait等方法都可以导致线程阻塞。
+
+- 结束：如果一个线程的run方法执行结束或者调用stop方法后，该线程就会死亡。对于已经死亡的线程，无法再使用start方法令其进入就绪。
+
 ### java实现线程的方式
 
 在java中实现一个线程常用的方法有两种：继承Thread类、实现Runnable接口。但在开发过程中一般推荐使用第二种方式。
 当需要实现一个带有返回结果的线程时，还可以通过使用ExecutorService、Callable、Future来完成。
-
-    demo：
-        com.holmes.concurrency.thread.ThreadDemo
-        com.holmes.concurrency.thread.RunnableDemo
-        com.holmes.concurrency.thread.CallableDemo
-    
+        
 ### Thread的几个重要方法
 
     // 启动线程
@@ -26,7 +35,40 @@
     
     // Thread的静态方法，返回当前线程的中断状态，并将中断状态置为false。
     public static boolean interrupted()
+    
+    // 线程是否为守护线程，返回ture则为守护线程，返回false则为用户线程
+    public final boolean isDaemon()
+    
+    // 放弃执行当前线程，并等待调用join方法的线程执行完毕
+    public final void join() throws InterruptedException
+    
+    // Thread的静态方法，将当前线程由运行状态转变为就绪状态，即放弃自己的CPU时间，让自己或其它线程执行
+    public static native void yield();
 
+### 用户线程与守护线程
+
+
+
+### 线程的优先级
+
+        Thread中定义了线程的优先级：
+        
+        /**
+         * The minimum priority that a thread can have.
+         */
+        public final static int MIN_PRIORITY = 1;
+    
+       /**
+         * The default priority that is assigned to a thread.
+         */
+        public final static int NORM_PRIORITY = 5;
+    
+        /**
+         * The maximum priority that a thread can have.
+         */
+        public final static int MAX_PRIORITY = 10;
+        
+java中线程的优先级的取值范围为MIN_PRIORITY(1)至MAX_PRIORITY(10)，默认为NORM_PRIORITY(5)，优先级值越大则线程会优先执行。
 
 ## 线程的取消与中断
 
