@@ -5,9 +5,27 @@
 在java中实现一个线程常用的方法有两种：继承Thread类、实现Runnable接口。但在开发过程中一般推荐使用第二种方式。
 当需要实现一个带有返回结果的线程时，还可以通过使用ExecutorService、Callable、Future来完成。
 
-    com.holmes.concurrency.thread.ThreadDemo
-    com.holmes.concurrency.thread.RunnableDemo
-    com.holmes.concurrency.thread.CallableDemo
+    demo：
+        com.holmes.concurrency.thread.ThreadDemo
+        com.holmes.concurrency.thread.RunnableDemo
+        com.holmes.concurrency.thread.CallableDemo
+    
+### Thread的几个重要方法
+
+    // 启动线程
+    public synchronized void start()
+    
+    // 中断线程，实际上并不立即中断线程，而是将线程的中断标志置为true。
+    public void interrupt()
+  
+    // 返回线程的中断状态
+    public boolean isInterrupted()
+    
+    // Thread的静态方法，返回当前线程
+    public static native Thread currentThread()
+    
+    // Thread的静态方法，返回当前线程的中断状态，并将中断状态置为false。
+    public static boolean interrupted()
 
 
 ## 线程的取消与中断

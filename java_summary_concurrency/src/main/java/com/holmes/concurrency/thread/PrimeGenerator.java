@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * @Description: 测试线程的中断
+ * @Description: 使用一个中断标志来判断是否结束线程
  * @Author: holmes
  * @Version: 1.0.0
  */
@@ -39,5 +39,20 @@ public class PrimeGenerator implements Runnable {
 
     public synchronized List<BigInteger> get() {
         return primes;
+    }
+
+    public static void main(String[] args) {
+
+        PrimeGenerator primeGenerator = new PrimeGenerator();
+        new Thread(primeGenerator).start();
+
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            primeGenerator.cancel();
+        }
+        System.out.println(primeGenerator.get());
     }
 }
