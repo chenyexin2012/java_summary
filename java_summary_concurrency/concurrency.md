@@ -24,6 +24,9 @@
     // 启动线程
     public synchronized void start()
     
+    // 线程休眠指定毫秒数
+    public static native void sleep(long millis) throws InterruptedException;
+    
     // 中断线程，实际上并不立即中断线程，而是将线程的中断标志置为true。
     public void interrupt()
   
@@ -64,23 +67,6 @@
 - 等待获取某个对象锁的排他性访问权限。
 
 ### 线程的优先级
-
-        Thread中定义了线程的优先级：
-        
-        /**
-         * The minimum priority that a thread can have.
-         */
-        public final static int MIN_PRIORITY = 1;
-    
-       /**
-         * The default priority that is assigned to a thread.
-         */
-        public final static int NORM_PRIORITY = 5;
-    
-        /**
-         * The maximum priority that a thread can have.
-         */
-        public final static int MAX_PRIORITY = 10;
         
 java中线程的优先级的取值范围为MIN_PRIORITY(1)至MAX_PRIORITY(10)，默认为NORM_PRIORITY(5)，优先级值越大则线程会优先执行。
 

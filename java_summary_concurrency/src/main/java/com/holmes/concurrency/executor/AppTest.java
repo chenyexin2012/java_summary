@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import java.util.Random;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 
 /**
  * @Description:
@@ -40,7 +41,35 @@ public class AppTest {
             });
         }
         try {
-            Thread.sleep(11000);
+            Thread.sleep(1000000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void simpleThreadPoolExecutorTest() {
+
+        Executor executor = new SimpleThreadPoolExecutor(3);
+
+        for (int i = 0; i < TASK_COUNT; i++) {
+            final int index = i;
+            executor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        for (int i = 0; i < 3; i++) {
+                            System.out.println(Thread.currentThread() + " " + index);
+                            Thread.sleep(1000);
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+        try {
+            Thread.sleep(1000000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
