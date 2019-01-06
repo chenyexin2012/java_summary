@@ -146,4 +146,4 @@ Inheritance should ensure that any property proved about supertype objects also 
 
 
 
-#### 模板方法模式
+#### 模板方法模式 template method

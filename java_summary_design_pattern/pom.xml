@@ -37,6 +37,7 @@
         <module>java_design_pattern_visitor</module>
         <module>java_design_pattern_mediator</module>
         <module>java_design_pattern_interpreter</module>
+        <module>java_design_pattern_template_method</module>
     </modules>
 
 
