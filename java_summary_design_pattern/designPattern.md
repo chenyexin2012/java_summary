@@ -143,3 +143,7 @@ Inheritance should ensure that any property proved about supertype objects also 
 
 
 #### 解释器模式 interpreter
+
+
+
+#### 模板方法模式
