@@ -69,6 +69,7 @@
         <module>java_summary_hibernate</module>
         <module>java_summary_regex</module>
         <module>java_summary_collection</module>
+        <module>java_summary_annotation</module>
     </modules>
 
     <dependencies>
