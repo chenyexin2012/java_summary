@@ -37,15 +37,15 @@
 
 1.注解内部的属性只支持基本类型，String类型、数组类型和枚举类型，注解内部的属性被定义为方法，且可以设置默认值，不指定默认值，则使用注解时必须赋值。
 
-        public enum Status {
-            READY, RUNNING, BLOCKING, FINISHED
-        }
-    
-        String name();
-    
-        int level();
-    
-        Status status() default Status.READY;
+    public enum Status {
+        READY, RUNNING, BLOCKING, FINISHED
+    }
+
+    String name();
+
+    int level();
+
+    Status status() default Status.READY;
 
 2.注解内部只有一个属性，且属性名为value，则使用该注解时，无需指定属性名。
 

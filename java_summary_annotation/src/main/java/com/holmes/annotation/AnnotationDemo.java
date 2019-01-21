@@ -11,7 +11,7 @@ public class AnnotationDemo {
     @FieldAnnotation("field")
     private String field;
 
-    @MehodAnnotation(name = "myAnnotation", level = 1)
+    @MethodAnnotation(name = "myAnnotation", level = 1)
     @SingleAttributeAnnotation("value")
     public void method() {
     }
