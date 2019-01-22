@@ -6,22 +6,24 @@
 
 存在于java.util.concurrent.atomic包中。
 
-#### 用于操作基本类型原子操作类
+#### 用于操作变量的原子操作类
 
-    AtomicBoolean、AtomicInteger、AtomicLong
+    AtomicBoolean、AtomicInteger、AtomicLong、AtomicReference
     
 #### 用于操作数组的原子操作类
 
     AtomicIntegerArray、AtomicLongArray、AtomicReferenceArray
     
-#### 用于操作引用的原子操作类
+#### 用于操作字段的原子操作类（利用反射原理）
 
-    AtomicReference、AtomicIntegerFieldUpdater、AtomicMarkableReference
-    
-#### 用于操作字段的原子操作类
+    AtomicIntegerFieldUpdater、AtomicLongFieldUpdater、AtomicReferenceFieldUpdater
+   
+使用原子操作类操作字段注意事项：
 
-    AtomicIntegerFieldUpdater、AtomicLongFieldUpdater、AtomicStampedReference
-    
+- 字段必须是volatile类型的。
+- 只能操作实例变量，不能操作类变量。
+- 只能操作调用者能够直接访问的字段，public、protect等修饰符修饰的字段。
+- AtomicIntegerFieldUpdater/AtomicLongFieldUpdater只能操作int/long类型的字段，不能操作其包装类。
     
 
 ### CyclicBarrier 障碍器
