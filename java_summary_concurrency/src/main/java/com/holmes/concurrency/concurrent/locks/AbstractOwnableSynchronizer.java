@@ -4,7 +4,7 @@
  * http://creativecommons.org/publicdomain/zero/1.0/
  */
 
-package com.holmes.concurrency.concurrent.lock;
+package com.holmes.concurrency.concurrent.locks;
 
 /**
  * A synchronizer that may be exclusively owned by a thread.  This

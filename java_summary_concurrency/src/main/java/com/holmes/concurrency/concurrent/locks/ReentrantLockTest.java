@@ -1,11 +1,11 @@
-package com.holmes.concurrency.concurrent.lock;
+package com.holmes.concurrency.concurrent.locks;
 
 import org.junit.Test;
 
 import java.util.concurrent.locks.Lock;
 
 
-public class LockTest {
+public class ReentrantLockTest {
 
     @Test
     public void lockTest() {

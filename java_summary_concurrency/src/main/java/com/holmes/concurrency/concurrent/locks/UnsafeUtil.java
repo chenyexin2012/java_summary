@@ -1,4 +1,4 @@
-package com.holmes.concurrency.concurrent.lock;
+package com.holmes.concurrency.concurrent.locks;
 
 import sun.misc.Unsafe;
 

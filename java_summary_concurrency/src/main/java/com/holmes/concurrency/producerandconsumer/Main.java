@@ -7,30 +7,23 @@ import java.util.concurrent.Executors;
 
 public class Main {
 
+    private final static ExecutorService EXECUTOR = Executors.newFixedThreadPool(10);
+
+    private final static int MAX_SIZE = 10;
+
+    private final static int CONSUMER_COUNT = 8;
+
+    private final static int PRODUCER_COUNT = 2;
+
     public static void main(String[] args) {
 
         List<Data> dataList = new LinkedList<>();
-        int capacity = 10;
 
-        Producer producer1 = new Producer(dataList, capacity);
-        Producer producer2 = new Producer(dataList, capacity);
-        Producer producer3 = new Producer(dataList, capacity);
-
-        Consumer consumer1 = new Consumer(dataList);
-        Consumer consumer2 = new Consumer(dataList);
-        Consumer consumer3 = new Consumer(dataList);
-        Consumer consumer4 = new Consumer(dataList);
-        Consumer consumer5 = new Consumer(dataList);
-
-        ExecutorService executorService = Executors.newFixedThreadPool(8);
-        executorService.submit(producer1);
-        executorService.submit(producer2);
-        executorService.submit(producer3);
-
-        executorService.submit(consumer1);
-        executorService.submit(consumer2);
-        executorService.submit(consumer3);
-        executorService.submit(consumer4);
-        executorService.submit(consumer5);
+        for (int i = 0; i < CONSUMER_COUNT; i++) {
+            EXECUTOR.execute(new Consumer(dataList));
+        }
+        for (int i = 0; i < PRODUCER_COUNT; i++) {
+            EXECUTOR.execute(new Producer(dataList, MAX_SIZE));
+        }
     }
 }

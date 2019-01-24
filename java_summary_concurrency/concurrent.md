@@ -148,6 +148,38 @@ ReentrantLock的内部类：FairSync、NonfairSync、Sync
 ReentrantReadWriteLock允许多个读线程同时访问，但不允许写线程和读线程、写线程和写线程同时访问。在实际的应用场景中，一般对共享数据的读操
 作要多于写操作，因此ReentrantReadWriteLock能够提供比排他锁更好的并发性和吞吐量。
 
+ReentrantReadWriteLock中实现了两个锁：
+
+    // 读操作相关的锁，称为共享锁
+    private final ReentrantReadWriteLock.ReadLock readerLock;
+    // 写相关的锁，称为排他锁
+    private final ReentrantReadWriteLock.WriteLock writerLock;
+
+    
+    参考博文：
+        https://www.cnblogs.com/xiaoxi/p/9140541.html
+
+#### 条件变量 Condition 
+
+Condition是在java 1.5中才出现的，它用来替代传统的Object的wait()、notify()实现线程间的协作，相比使用Object的wait()、notify()，
+使用Condition的await()、signal()这种方式实现线程间协作更加安全和高效。
+
+    public interface Condition {
+        
+        void await() throws InterruptedException;
+       
+        void awaitUninterruptibly();
+
+        long awaitNanos(long nanosTimeout) throws InterruptedException;
+        
+        boolean await(long time, TimeUnit unit) throws InterruptedException;
+        
+        boolean awaitUntil(Date deadline) throws InterruptedException;
+        
+        void signal();
+        
+        void signalAll();
+    }
 
 
 

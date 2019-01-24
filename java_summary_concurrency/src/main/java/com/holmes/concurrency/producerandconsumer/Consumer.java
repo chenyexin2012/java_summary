@@ -20,21 +20,19 @@ public class Consumer implements Runnable {
     public void run() {
         try {
             while (true) {
-
                 if (Thread.currentThread().isInterrupted()) {
                     break;
                 }
                 Data data = null;
                 synchronized (dataList) {
-                    if (dataList.size() == 0) {
+                    while (dataList.size() == 0) {
                         dataList.wait();
-                        dataList.notifyAll();
-                    } else {
-                        data = dataList.remove(0);
-                        System.out.println(Thread.currentThread().getId() + "线程消费了：" + data);
                     }
+                    data = dataList.remove(0);
+                    System.out.println(Thread.currentThread().getId() + "线程消费了：" + data);
+                    dataList.notifyAll();
                 }
-                Thread.sleep(500);
+                Thread.sleep(1000);
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
