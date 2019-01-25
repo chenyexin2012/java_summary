@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!-- 数据源  dataSourceA -->
+    <bean id="dataSourceA" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="${dataSourceA.jdbc_driverClassName}"/>
+        <property name="url" value="${dataSourceA.jdbc_url}"/>
+        <property name="username" value="${dataSourceA.jdbc_username}"/>
+        <property name="password" value="${dataSourceA.jdbc_password}"/>
+        <property name="initialSize" value="${dataSourceA.initialSize}"/>
+        <property name="maxActive" value="${dataSourceA.maxActive}"/>
+        <property name="minIdle" value="${dataSourceA.minIdle}"/>
+        <property name="maxWait" value="${dataSourceA.maxWait}"/>
+        <property name="validationQuery" value="${dataSourceA.validationQuery}"/>
+        <property name="testOnBorrow" value="${dataSourceA.testOnBorrow}"/>
+        <property name="testOnReturn" value="${dataSourceA.testOnReturn}"/>
+        <property name="testWhileIdle" value="${dataSourceA.testWhileIdle}"/>
+        <property name="timeBetweenEvictionRunsMillis" value="${dataSourceA.timeBetweenEvictionRunsMillis}"/>
+        <property name="minEvictableIdleTimeMillis" value="${dataSourceA.minEvictableIdleTimeMillis}"/>
+        <property name="removeAbandoned" value="${dataSourceA.removeAbandoned}"/>
+        <property name="removeAbandonedTimeout" value="${dataSourceA.removeAbandonedTimeout}"/>
+        <property name="logAbandoned" value="${dataSourceA.logAbandoned}"/>
+        <property name="filters" value="${dataSourceA.filters}"/>
+        <!-- 开启数据库密码加密 -->
+        <property name="connectionProperties"
+                  value="druid.stat.slowSqlMillis=5000;config.decrypt=true;config.decrypt.key=${dataSourceA.jdbc_publickey}"/>
+    </bean>
+
+    <!-- 数据源  dataSourceB -->
+    <bean id="dataSourceB" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="${dataSourceB.jdbc_driverClassName}"/>
+        <property name="url" value="${dataSourceB.jdbc_url}"/>
+        <property name="username" value="${dataSourceB.jdbc_username}"/>
+        <property name="password" value="${dataSourceB.jdbc_password}"/>
+        <property name="initialSize" value="${dataSourceB.initialSize}"/>
+        <property name="maxActive" value="${dataSourceB.maxActive}"/>
+        <property name="minIdle" value="${dataSourceB.minIdle}"/>
+        <property name="maxWait" value="${dataSourceB.maxWait}"/>
+        <property name="validationQuery" value="${dataSourceB.validationQuery}"/>
+        <property name="testOnBorrow" value="${dataSourceB.testOnBorrow}"/>
+        <property name="testOnReturn" value="${dataSourceB.testOnReturn}"/>
+        <property name="testWhileIdle" value="${dataSourceB.testWhileIdle}"/>
+        <property name="timeBetweenEvictionRunsMillis" value="${dataSourceB.timeBetweenEvictionRunsMillis}"/>
+        <property name="minEvictableIdleTimeMillis" value="${dataSourceB.minEvictableIdleTimeMillis}"/>
+        <property name="removeAbandoned" value="${dataSourceB.removeAbandoned}"/>
+        <property name="removeAbandonedTimeout" value="${dataSourceB.removeAbandonedTimeout}"/>
+        <property name="logAbandoned" value="${dataSourceB.logAbandoned}"/>
+        <property name="filters" value="${dataSourceB.filters}"/>
+        <!-- 开启数据库密码加密 -->
+        <property name="connectionProperties"
+                  value="druid.stat.slowSqlMillis=5000;config.decrypt=true;config.decrypt.key=${dataSourceB.jdbc_publickey}"/>
+    </bean>
+
+    <!-- 数据源  dataSourceC -->
+    <bean id="dataSourceC" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="${dataSourceC.jdbc_driverClassName}"/>
+        <property name="url" value="${dataSourceC.jdbc_url}"/>
+        <property name="username" value="${dataSourceC.jdbc_username}"/>
+        <property name="password" value="${dataSourceC.jdbc_password}"/>
+        <property name="initialSize" value="${dataSourceC.initialSize}"/>
+        <property name="maxActive" value="${dataSourceC.maxActive}"/>
+        <property name="minIdle" value="${dataSourceC.minIdle}"/>
+        <property name="maxWait" value="${dataSourceC.maxWait}"/>
+        <property name="validationQuery" value="${dataSourceC.validationQuery}"/>
+        <property name="testOnBorrow" value="${dataSourceC.testOnBorrow}"/>
+        <property name="testOnReturn" value="${dataSourceC.testOnReturn}"/>
+        <property name="testWhileIdle" value="${dataSourceC.testWhileIdle}"/>
+        <property name="timeBetweenEvictionRunsMillis" value="${dataSourceC.timeBetweenEvictionRunsMillis}"/>
+        <property name="minEvictableIdleTimeMillis" value="${dataSourceC.minEvictableIdleTimeMillis}"/>
+        <property name="removeAbandoned" value="${dataSourceC.removeAbandoned}"/>
+        <property name="removeAbandonedTimeout" value="${dataSourceC.removeAbandonedTimeout}"/>
+        <property name="logAbandoned" value="${dataSourceC.logAbandoned}"/>
+        <property name="filters" value="${dataSourceC.filters}"/>
+        <!-- 开启数据库密码加密 -->
+        <property name="connectionProperties"
+                  value="druid.stat.slowSqlMillis=5000;config.decrypt=true;config.decrypt.key=${dataSourceC.jdbc_publickey}"/>
+    </bean>
+
+    <!-- 多数据源 -->
+    <bean id="dataSource" class="com.holmes.datasource.ThreadLocalRoutingDataSource">
+        <property name="defaultTargetDataSource" ref="dataSourceA"/>
+        <property name="targetDataSources">
+            <map key-type="com.holmes.enums.DataSourceType">
+                <entry key="DATA_SOURCE_A" value-ref="dataSourceA"/>
+                <entry key="DATA_SOURCE_B" value-ref="dataSourceB"/>
+                <entry key="DATA_SOURCE_C" value-ref="dataSourceC"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation" value="classpath:spring/mybatis/mybatis-config.xml"/>
+        <property name="mapperLocations" value="classpath:spring/mybatis/mappers/**/*.xml"/>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+</beans>

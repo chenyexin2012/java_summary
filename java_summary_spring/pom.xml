@@ -18,6 +18,7 @@
         <module>java_spring_jdbc</module>
         <module>java_spring_jpa</module>
         <module>java_spring_security</module>
+        <module>java_spring_multipledatasources</module>
     </modules>
 
 </project>
