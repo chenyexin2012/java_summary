@@ -70,11 +70,9 @@ Lock接口位于java.util.concurrent.locks包中。
         
 3.tryLock(long time, TimeUnit unit)：与tryLock()方法类似，只是加上了一个时间限制，在指定一段时间内能否成功获取锁，获取失败则返回false。
     
-4.lockInterruptibly()方法：
-
-    当使用lockInterruptibly方法获取锁时一直处于等待中，可以通过使用interrupt()方法中断该线程的等待过程。
-    该方法声明了异常InterruptedException。
-    一般使用方式：
+4.lockInterruptibly()方法：当使用lockInterruptibly方法获取锁时一直处于等待中，可以通过使用interrupt()方法中断该线程的等待过程。
+该方法声明了异常InterruptedException。一般使用方式如下：
+    
     Lock lock = ...;
     try {
         lock.lockInterruptibly();
@@ -158,6 +156,14 @@ ReentrantReadWriteLock中实现了两个锁：
     
     参考博文：
         https://www.cnblogs.com/xiaoxi/p/9140541.html
+        
+        
+#### StampedLock 改进版的读写锁
+
+    参考博文：
+        https://segmentfault.com/a/1190000015808032?utm_source=tag-newest
+        http://www.importnew.com/14941.html
+        
 
 #### 条件变量 Condition 
 
