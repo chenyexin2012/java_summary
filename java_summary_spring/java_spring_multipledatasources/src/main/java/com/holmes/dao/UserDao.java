@@ -2,7 +2,6 @@ package com.holmes.dao;
 
 
 import com.holmes.pojo.User;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;

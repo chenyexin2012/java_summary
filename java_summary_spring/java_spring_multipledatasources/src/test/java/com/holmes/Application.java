@@ -1,5 +1,6 @@
 package com.holmes;
 
+import com.holmes.datasource.DataSourceManager;
 import com.holmes.enums.DataSourceType;
 import com.holmes.pojo.User;
 import com.holmes.service.UserService;
@@ -11,6 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -54,7 +56,11 @@ public class Application {
 
     @Test
     public void insert() {
-//        userService.insert(user);
+        User user = new User();
+        user.setUserName("holmes");
+        user.setUserPassword("123456");
+        user.setUserEmail("www.baidu.com");
+        userService.insert(user);
     }
 
     @Test
@@ -64,7 +70,17 @@ public class Application {
 
     @Test
     public void insertList() {
-//        userService.insertList(list);
+
+        DataSourceManager.set(DataSourceType.DATA_SOURCE_B);
+
+        List<User> list = new LinkedList<>();
+        User user = new User();
+        user.setUserName("holmes");
+        user.setUserPassword("123456");
+        user.setUserEmail("www.baidu.com");
+        list.add(user);
+
+        userService.insertList(list);
     }
 
     @Test

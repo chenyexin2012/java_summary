@@ -2,6 +2,9 @@ package com.holmes.datasource;
 
 import com.holmes.enums.DataSourceType;
 
+/**
+ * @author Administrator
+ */
 public class DataSourceManager {
 
     private static ThreadLocal<DataSourceType> dataSourceThreadLocal = new ThreadLocal<DataSourceType>(){

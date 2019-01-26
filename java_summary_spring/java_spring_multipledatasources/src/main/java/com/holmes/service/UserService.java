@@ -12,6 +12,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author Administrator
+ */
 @Service
 public class UserService {
 
@@ -26,46 +29,36 @@ public class UserService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void insert(User user, DataSourceType dataSourceType) {
-        if(null != dataSourceType) {
-            DataSourceManager.set(dataSourceType);
-        }
+    public void insert(User user) {
         userDao.insert(user);
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void deleteById(Integer userId, DataSourceType dataSourceType) {
-        if(null != dataSourceType) {
-            DataSourceManager.set(dataSourceType);
-        }
+    public void deleteById(Integer userId) {
         userDao.deleteById(userId);
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void insertList(List<User> list, DataSourceType dataSourceType) {
-        if(null != dataSourceType) {
-            DataSourceManager.set(dataSourceType);
-        }
+    public void insertList(List<User> list) {
         userDao.insertList(list);
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void update(User user, DataSourceType dataSourceType) {
-        if(null != dataSourceType) {
-            DataSourceManager.set(dataSourceType);
-        }
+    public void update(User user) {
         userDao.update(user);
     }
 
-    @Transactional(rollbackFor = Exception.class)
+//    @Transactional(rollbackFor = Exception.class)
     public void copyData() {
 
         DataSourceManager.set(DataSourceType.DATA_SOURCE_A);
         Map<String, Object> paramMap = new HashMap<>();
         List<User> userList = userDao.selectList(paramMap);
         if(null != userList) {
-            this.insertList(userList, DataSourceType.DATA_SOURCE_B);
-            this.insertList(userList, DataSourceType.DATA_SOURCE_C);
+            DataSourceManager.set(DataSourceType.DATA_SOURCE_B);
+            this.insertList(userList);
+            DataSourceManager.set(DataSourceType.DATA_SOURCE_C);
+            this.insertList(userList);
         }
     }
 }
