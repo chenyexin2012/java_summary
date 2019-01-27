@@ -22,6 +22,11 @@ public class DataSourceManager {
         dataSourceThreadLocal.set(dataSourceType);
     }
 
+    public static void clear() {
+        if(null != dataSourceThreadLocal.get()) {
+            dataSourceThreadLocal.remove();
+        }
+    }
     public static void reset(){
         dataSourceThreadLocal.set(DataSourceType.DATA_SOURCE_A);
     }
