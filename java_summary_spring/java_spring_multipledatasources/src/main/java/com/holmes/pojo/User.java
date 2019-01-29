@@ -1,8 +1,9 @@
 package com.holmes.pojo;
 
-import java.io.Serializable;
-
-public class User implements Serializable {
+/**
+ * @author Administrator
+ */
+public class User extends BasePo {
 
     private Integer userId;
     private String userName;
@@ -13,6 +14,13 @@ public class User implements Serializable {
     }
 
     public User(String userName, String userPassword, String userEmail) {
+        this.userName = userName;
+        this.userPassword = userPassword;
+        this.userEmail = userEmail;
+    }
+
+    public User(String userName, String userPassword, String userEmail, String dataSourceFlag) {
+        super(dataSourceFlag);
         this.userName = userName;
         this.userPassword = userPassword;
         this.userEmail = userEmail;

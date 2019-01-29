@@ -1,7 +1,6 @@
 package com.holmes;
 
 import com.holmes.datasource.DataSourceManager;
-import com.holmes.enums.DataSourceType;
 import com.holmes.pojo.User;
 import com.holmes.service.UserService;
 import org.junit.Test;
@@ -35,19 +34,19 @@ public class Application {
     public void selectList() {
 
         Map<String, Object> paramMap = new HashMap<>();
-        List<User> userList = userService.selectList(paramMap, DataSourceType.DATA_SOURCE_A);
+        List<User> userList = userService.selectList(paramMap);
         for (User user : userList) {
             System.out.println(user);
         }
         System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 
-        userList = userService.selectList(paramMap, DataSourceType.DATA_SOURCE_B);
+        userList = userService.selectList(paramMap);
         for (User user : userList) {
             System.out.println(user);
         }
         System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 
-        userList = userService.selectList(paramMap, DataSourceType.DATA_SOURCE_C);
+        userList = userService.selectList(paramMap);
         for (User user : userList) {
             System.out.println(user);
         }
@@ -65,13 +64,11 @@ public class Application {
 
     @Test
     public void deleteById() {
-//        userService.deleteById(userId);
+//        userService.deleteById();
     }
 
     @Test
     public void insertList() {
-
-        DataSourceManager.set(DataSourceType.DATA_SOURCE_B);
 
         List<User> list = new LinkedList<>();
         User user = new User();

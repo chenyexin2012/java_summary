@@ -2,15 +2,10 @@ package com.holmes.service;
 
 import com.holmes.dao.UserDao;
 import com.holmes.datasource.DataSourceManager;
-import com.holmes.enums.DataSourceType;
 import com.holmes.pojo.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -29,10 +24,7 @@ public class UserService {
     @Resource(name = "transactionManager")
     private PlatformTransactionManager transactionManager;
 
-    public List<User> selectList(Map<String, Object> map, DataSourceType dataSourceType) {
-        if (null != dataSourceType) {
-            DataSourceManager.set(dataSourceType);
-        }
+    public List<User> selectList(Map<String, Object> map) {
         return userDao.selectList(map);
     }
 
@@ -41,11 +33,17 @@ public class UserService {
     }
 
     public void deleteById(Integer userId) {
-        userDao.deleteById(userId);
+//        userDao.deleteById(userId);
     }
 
     public void insertList(List<User> list) {
-        userDao.insertList(list);
+        System.out.println(">>>>>>>>>>>>>>>>>" + DataSourceManager.get());
+        userDao.insertList(list, "");
+        System.out.println(">>>>>>>>>>>>>>>>>" + DataSourceManager.get());
+        userDao.insertList(list, "");
+        System.out.println(">>>>>>>>>>>>>>>>>" + DataSourceManager.get());
+        userDao.insertList(list, "");
+        System.out.println(">>>>>>>>>>>>>>>>>" + DataSourceManager.get());
     }
 
     public void update(User user) {
@@ -54,26 +52,11 @@ public class UserService {
 
     public void copyData() {
 
-        TransactionDefinition definition = new DefaultTransactionDefinition();
-        TransactionStatus status = transactionManager.getTransaction(definition);
-
-        try {
-            DataSourceManager.set(DataSourceType.DATA_SOURCE_A);
-            Map<String, Object> paramMap = new HashMap<>();
-            List<User> userList = userDao.selectList(paramMap);
-            if (null != userList) {
-                DataSourceManager.set(DataSourceType.DATA_SOURCE_B);
-                this.insertList(userList);
-                DataSourceManager.set(DataSourceType.DATA_SOURCE_C);
-                this.insertList(userList);
-            }
-            int i = 1 / 0;
-            transactionManager.commit(status);
-        } catch (Exception e) {
-            if (null != status) {
-                transactionManager.rollback(status);
-            }
-            throw e;
+        Map<String, Object> paramMap = new HashMap<>();
+        List<User> userList = userDao.selectList(paramMap);
+        if (null != userList && userList.size() > 0) {
+            insertList(userList);
+            insertList(userList);
         }
     }
 }

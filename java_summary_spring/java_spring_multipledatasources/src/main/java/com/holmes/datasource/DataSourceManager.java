@@ -1,33 +1,25 @@
 package com.holmes.datasource;
 
-import com.holmes.enums.DataSourceType;
-
 /**
  * @author Administrator
  */
 public class DataSourceManager {
+    /**
+     * 保存当前线程所使用的数据源
+     */
+    private static ThreadLocal<String> dataSourceThreadLocal = new ThreadLocal<String>();
 
-    private static ThreadLocal<DataSourceType> dataSourceThreadLocal = new ThreadLocal<DataSourceType>(){
-        @Override
-        protected DataSourceType initialValue() {
-            return DataSourceType.DATA_SOURCE_A;
-        }
-    };
-
-    public static DataSourceType get(){
+    public static String get() {
         return dataSourceThreadLocal.get();
     }
 
-    public static void set(DataSourceType dataSourceType){
+    public static void set(String dataSourceType) {
         dataSourceThreadLocal.set(dataSourceType);
     }
 
     public static void clear() {
-        if(null != dataSourceThreadLocal.get()) {
+        if (null != dataSourceThreadLocal.get()) {
             dataSourceThreadLocal.remove();
         }
-    }
-    public static void reset(){
-        dataSourceThreadLocal.set(DataSourceType.DATA_SOURCE_A);
     }
 }
