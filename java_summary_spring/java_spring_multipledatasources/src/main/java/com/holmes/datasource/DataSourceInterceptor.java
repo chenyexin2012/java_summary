@@ -2,7 +2,6 @@ package com.holmes.datasource;
 
 import com.alibaba.druid.util.StringUtils;
 import com.holmes.pojo.BasePo;
-import com.holmes.utils.PropertyUtil;
 import org.apache.ibatis.annotations.Param;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -33,25 +32,28 @@ public class DataSourceInterceptor {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
 
-        // 通过@Param注解判断数据源
         Annotation[][] annotationTd = method.getParameterAnnotations();
 
         Object[] args = joinPoint.getArgs();
         if (args != null && args.length != 0) {
             for (int i = 0; i < args.length; i++) {
+
                 if (args[i] instanceof BasePo) {
+                    // 通过对象字段值判断数据源
                     BasePo basePo = (BasePo) args[i];
                     if (!StringUtils.isEmpty(basePo.getDataSourceFlag())) {
                         DataSourceManager.set(basePo.getDataSourceFlag());
                         break;
                     }
                 } else if (args[i] instanceof Map) {
+                    // 通过map值判断数据源
                     HashMap map = (HashMap) args[i];
                     if (map.get("dataSourceFlag") != null && !StringUtils.isEmpty(map.get("dataSourceFlag").toString())) {
                         DataSourceManager.set(map.get("dataSourceFlag").toString());
                         break;
                     }
                 } else if (args[i] instanceof String) {
+                    // 通过@Param注解判断数据源
                     String arg = (String) args[i];
                     Annotation[] annotations = annotationTd[i];
                     if (annotations.length != 0) {
