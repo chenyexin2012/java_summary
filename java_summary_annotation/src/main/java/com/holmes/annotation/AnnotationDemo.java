@@ -15,4 +15,8 @@ public class AnnotationDemo {
     @SingleAttributeAnnotation("value")
     public void method() {
     }
+
+    public void method(@ParamAnnotation("paramA") String paramA, @ParamAnnotation("paramB") String paramB) {
+
+    }
 }
