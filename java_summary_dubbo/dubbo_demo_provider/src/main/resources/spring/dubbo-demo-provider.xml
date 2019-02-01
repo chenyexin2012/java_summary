@@ -14,6 +14,7 @@
     <dubbo:registry id="zkRegistry" address="zookeeper://localhost:2181"/>
 
     <!-- use dubbo protocol to export service on port 20880 -->
+    <!-- 协议由提供方指定，消费方被动接受 -->
     <dubbo:protocol name="dubbo" port="20880"/>
 
     <!-- service implementation, as same as regular local bean -->
