@@ -3,12 +3,16 @@ package com.holmes.spring.aop;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
-import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
 
+/**
+ * 通过注解配置AOP
+ *
+ * @author Administrator
+ */
 @Component
 @Aspect
 @Order(1)
@@ -27,6 +31,9 @@ public class CalculatorAnnotationAop {
 //    }
 
 
+    /**
+     * 统一配置切面
+     */
     @Pointcut("execution(* com.holmes.spring.aop.Calculator.*(..))")
     public void pointcut() {
     }

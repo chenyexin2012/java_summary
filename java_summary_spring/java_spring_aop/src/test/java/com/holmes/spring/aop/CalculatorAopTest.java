@@ -11,8 +11,8 @@ public class CalculatorAopTest extends BaseTest {
         Calculator calculator = context.getBean(Calculator.class);
 
         System.out.println(calculator.add(1, 1));
-        System.out.println(calculator.sub(1, 1));
-        System.out.println(calculator.mul(1, 1));
-        System.out.println(calculator.div(1, 0));
+//        System.out.println(calculator.sub(1, 1));
+//        System.out.println(calculator.mul(1, 1));
+//        System.out.println(calculator.div(1, 0));
     }
 }

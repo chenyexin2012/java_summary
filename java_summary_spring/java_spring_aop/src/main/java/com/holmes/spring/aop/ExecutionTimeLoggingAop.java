@@ -9,6 +9,9 @@ import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * @author Administrator
+ */
 public class ExecutionTimeLoggingAop implements MethodBeforeAdvice, AfterReturningAdvice, ThrowsAdvice, Ordered {
 
     private final static String PRE = "[ExecutionTimeLoggingAop]";
