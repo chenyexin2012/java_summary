@@ -9,56 +9,61 @@
 
 ### List
 
-    List接口继承自Collection，常用的实现类有：ArrayList、LinkedList、Vector
+List接口继承自Collection，常用的实现类有：ArrayList、LinkedList、Vector
     
-#### ArrayList
+1.ArrayList
 
-以数组作为存储结构（长度不够，动态扩容，长度为之前的1.5倍）
-
-访问成员速度较快，插入删除对象速度较慢
-
+- 以数组作为存储结构（长度不够，动态扩容，长度为之前的1.5倍）
+- 访问成员速度较快，插入删除对象速度较慢
+- 线程不安全
 	
-#### LinkedList
+2.LinkedList
 
-以链表作为存储结构
-
-能够快速执行插入删除操作，但访问速度较慢
+- 以链表作为存储结构
+- 能够快速执行插入删除操作，但访问速度较慢
+- 线程不安全
 	
-#### Vector	
+3.Vector	
 
-    以数组作为存储结构
-    线程安全
-    一般不用
-	
+- 以数组作为存储结构
+- 线程安全
+- 效率低，一般不用
+
+
 ### Set （成员不能重复）
 
-    Set接口继承自Collection，表示数学中的集合，常用的实现类有：
-        HashSet、TreeSet、LinkedHashSet
+Set接口继承自Collection，表示数学中的集合，常用的实现类有：HashSet、TreeSet、LinkedHashSet
 
 1.HashSet 
 
-    不能保证元素的排列顺序，顺序有可能发生变化。
-    不是同步的。
-    成员可以为任何Object子类的对象，同时需要覆盖eqauls和hashCode方法，否则无法判断成员是否相等。
-    成员可以为null，且只有一个成员可以为null。
+- 不能保证元素的排列顺序，顺序有可能发生变化
+- 线程不安全
+- 成员可以为任何Object子类的对象，同时需要覆盖eqauls和hashCode方法，否则无法判断成员是否相等
+- 成员可以为null，且只有一个成员可以为null
+
+
     注：hashSet通过equals方法来判断两个成员是否相等，同时两个对象返回的hashCode值也应该相等。因此在重写成员对象的对应类
-        的equals方法时也应当使用同种规则重写hashCode方法。
+    的equals方法时也应当使用同种规则重写hashCode方法。
 			
 2.TreeSet
 
-    元素遍历是有序
-    成员不能为null
+- 元素遍历是有序
+- 成员不能为null
+- 线程不安全
+
+
     注：TreeSet通过equals判断成员是否相等的情况下还要判断CompareTo返回值是否为0，因此hashSet中成员对象的对应类必须实现
         Comparable接口中的compareTo方法。
     实现排序方法分为内部排序和外部排序：
         内部排序是指对象对应类的内部实现Comparable接口中的compareTo方法。
         外部排序是指通过比较器Comparator来实现排序规则，使用外部排序可以在不改变对象自身的情况下改变排序策略对对象进行排序。
+        
     注：当两种方法都实现的情况下，优先使用外部排序规则。
 	
 3.LinkedHashSet
 
-    遍历顺序和插入顺序是一致
-    与HashSet类似
+- 遍历顺序和插入顺序是一致
+- 与HashSet类似
 
 ### Queue
 
