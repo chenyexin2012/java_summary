@@ -65,33 +65,7 @@ Set接口继承自Collection，表示数学中的集合，常用的实现类有�
 - 遍历顺序和插入顺序是一致
 - 与HashSet类似
 
-### Queue
 
-Queue接口继承自Collection，常用的实现类有：
-    
-    java.util.PriorityQueue
-    java.util.concurrent.LinkedBlockingQueue
-    java.util.concurrent.ArrayBlockingQueue
-    java.util.concurrent.PriorityBlockingQueue
-
-1.阻塞队列与非阻塞队列
-
-2.Queue与Deque的区别
-    
-3.一些方法的区别：
-    
-|head|head|head|
-|:----|:----|----|
-|add|增加一个元素|如果队列已满，则抛出一个IIIegaISlabEepeplian异常|
-|remove|移除并返回队列头部的元素|如果队列为空，则抛出一个NoSuchElementException异常|
-|element|返回队列头部的元素|如果队列为空，则抛出一个NoSuchElementException异常|
-|offer|添加一个元素并返回true|如果队列已满，则返回false|
-|poll|移除并返问队列头部的元素|如果队列为空，则返回null|
-|peek|返回队列头部的元素|如果队列为空，则返回null|
-|put|添加一个元素|如果队列满，则阻塞|
-|take|移除并返回队列头部的元素|如果队列为空，则阻塞|
-    
-		
 ### Map
 
 1.HashMap、Hashtable与ConcurrentHashMap
@@ -121,8 +95,37 @@ Queue接口继承自Collection，常用的实现类有：
         for (Entry<Long, String> entry2 : entry) {
             System.out.println(entry2.getKey() + " = " + entry2.getValue());
         }
+
+
+
+### Queue
+
+Queue接口继承自Collection，常用的实现类有：
     
-		
+    java.util.PriorityQueue
+    java.util.concurrent.LinkedBlockingQueue
+    java.util.concurrent.ArrayBlockingQueue
+    java.util.concurrent.PriorityBlockingQueue
+
+1.阻塞队列与非阻塞队列
+
+2.Queue与Deque的区别
+    
+3.一些方法的区别：
+    
+|方法|功能|备注|
+|:----|:----|----|
+|add|增加一个元素|如果队列已满，则抛出一个IllegalStateException异常|
+|remove|移除并返回队列头部的元素|如果队列为空，则抛出一个NoSuchElementException异常|
+|element|返回队列头部的元素|如果队列为空，则抛出一个NoSuchElementException异常|
+|offer|添加一个元素并返回true|如果队列已满，则返回false|
+|poll|移除并返问队列头部的元素|如果队列为空，则返回null|
+|peek|返回队列头部的元素|如果队列为空，则返回null|
+|put|添加一个元素|如果队列满，则阻塞|
+|take|移除并返回队列头部的元素|如果队列为空，则阻塞|
+
+
+	
 		
 		
 		
