@@ -1,5 +1,7 @@
 package com.holmes.controller;
 
+import com.holmes.bean.Student;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -10,14 +12,15 @@ import org.springframework.web.bind.annotation.RestController;
  * @Version: 1.0.0
  */
 @RestController
-@RequestMapping("/spring/boot/")
 public class HelloWorldController {
 
+    @Autowired
+    private Student student;
     /**
      * @return
      */
     @RequestMapping("/hello")
     public String hello() {
-        return "Hello Spring Boot!";
+        return "Hello " + student;
     }
 }

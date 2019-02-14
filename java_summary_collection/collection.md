@@ -72,7 +72,7 @@ Set接口继承自Collection，表示数学中的集合，常用的实现类有�
 
     利用哈希表作为键值存储
     HashMap的键与值都可以为null，后两者不可以
-    HashMap非线程安全，后两者线程安全
+    HashMap非线程安全，后两者线程安全，且ConcurrentHashMap使用了分段锁
 		
 2.遍历方法
 
@@ -125,10 +125,9 @@ Queue接口继承自Collection，常用的实现类有：
 |take|移除并返回队列头部的元素|如果队列为空，则阻塞|
 
 
-	
-		
-		
-		
+### Collections	
+
+提供了集合操作的工具类。
 		
 		
 		
