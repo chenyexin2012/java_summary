@@ -11,14 +11,15 @@ import java.nio.charset.Charset;
 
 public class FileUploadClient {
     public static void main(String[] args) {
-        for (int i = 0; i < 1; i++) {
+
+        for (int i = 0; i < 3; i++) {
             // 模拟三个发端
             new Thread() {
                 public void run() {
                     try {
                         SocketChannel socketChannel = SocketChannel.open();
                         socketChannel.socket().connect(new InetSocketAddress("127.0.0.1", 9090));
-                        File file = new File("I://XXX");
+                        File file = new File("H://XXX");
                         FileChannel fileChannel = new FileInputStream(file).getChannel();
                         ByteBuffer buffer = ByteBuffer.allocate(1024 * 1024);
                         socketChannel.read(buffer);
@@ -48,8 +49,6 @@ public class FileUploadClient {
                     }
 
                 }
-
-                ;
             }.start();
 
         }

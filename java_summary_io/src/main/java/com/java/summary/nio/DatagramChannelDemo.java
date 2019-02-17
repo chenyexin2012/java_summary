@@ -1,5 +1,7 @@
 package com.java.summary.nio;
 
+import org.junit.Test;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -8,6 +10,7 @@ import java.nio.channels.DatagramChannel;
 
 public class DatagramChannelDemo {
 
+    @Test
     public void test() {
 
         DatagramChannel datagramChannel = null;
@@ -35,6 +38,7 @@ public class DatagramChannelDemo {
         }
     }
 
+    @Test
     public void test2() {
 
         DatagramChannel datagramChannel = null;

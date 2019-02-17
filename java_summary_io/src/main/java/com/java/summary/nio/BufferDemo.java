@@ -25,16 +25,16 @@ public class BufferDemo {
         System.out.println("limit=" + buffer.limit());
         System.out.println("position=" + buffer.position());
 
-        buffer.clear();
-        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>");
-        System.out.println("capacity=" + buffer.capacity());
-        System.out.println("limit=" + buffer.limit());
-        System.out.println("position=" + buffer.position());
-//		
-//		buffer.flip();
-//		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>");
-//		System.out.println("capacity=" + buffer.capacity());
-//		System.out.println("limit=" + buffer.limit());
-//		System.out.println("position=" + buffer.position());
+//        buffer.clear();
+//        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>");
+//        System.out.println("capacity=" + buffer.capacity());
+//        System.out.println("limit=" + buffer.limit());
+//        System.out.println("position=" + buffer.position());
+
+		buffer.flip();
+		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>");
+		System.out.println("capacity=" + buffer.capacity());
+		System.out.println("limit=" + buffer.limit());
+		System.out.println("position=" + buffer.position());
     }
 }
