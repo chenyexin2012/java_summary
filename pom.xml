@@ -71,6 +71,7 @@
         <module>java_summary_regex</module>
         <module>java_summary_collection</module>
         <module>java_summary_annotation</module>
+        <module>java_summary_serializable</module>
     </modules>
 
     <dependencies>

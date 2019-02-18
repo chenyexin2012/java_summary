@@ -1,12 +1,6 @@
-package com.holmes.learn.classloader;
+package com.holmes.summary.jvm.classload;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 public class MyClassLoader extends ClassLoader {
 
