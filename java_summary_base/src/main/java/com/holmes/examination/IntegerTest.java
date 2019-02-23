@@ -1,11 +1,13 @@
-package com;
+package com.holmes.examination;
 
-import java.io.IOException;
+/**
+ * Integer 常见笔试面试要点
+ *
+ * @author Administrator
+ */
+public class IntegerTest {
 
-public class Main {
-
-
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
 
         Integer a = 1;
 
@@ -32,7 +34,5 @@ public class Main {
         System.out.println(g == (a + b));
 
         System.out.println(g.equals(a + b));
-
     }
-
 }
