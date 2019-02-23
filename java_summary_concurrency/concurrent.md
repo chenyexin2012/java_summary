@@ -191,7 +191,19 @@ Condition是在java 1.5中才出现的，它用来替代传统的Object的wait()
 
 ### CyclicBarrier 障碍器
 
-当用户希望在一组并发任务都结束后，执行某个任务，可以通过使用障碍器来实现。
+通过它可以实现让一组线程等待至某个状态之后再全部同时执行。
+
+### CountDownLatch 计数器
+
+允许一个或多个线程一直等待,直到其他线程执行完后再执行。
+
+#### CountDownLatch与CyclicBarrier的不同
+
+- CyclicBarrier可以重复使用，调用reset方法。
+
+- CyclicBarrier中任务执行完成之后会调用await()方法，其实线程本身没有退出，而是等待其它所有线程执行到某个节点。
+CountDownLatch每个线程执行完自己的任务之后将计数器减一就会继续执行直到退出。
+即在CyclicBarrier中是多个线程相互等待，CountDownLatch中是一个（或多个）线程等待另外多个线程执行完成。
 
 ### Semaphore 信号量
 

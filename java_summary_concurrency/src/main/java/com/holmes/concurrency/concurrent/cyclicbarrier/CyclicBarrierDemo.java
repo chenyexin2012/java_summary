@@ -20,6 +20,18 @@ public class CyclicBarrierDemo {
         new Thread(new Task("task 1", cb)).start();
         new Thread(new Task("task 2", cb)).start();
         new Thread(new Task("task 3", cb)).start();
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // 可以重复使用
+        cb.reset();
+        new Thread(new Task("task 1", cb)).start();
+        new Thread(new Task("task 2", cb)).start();
+        new Thread(new Task("task 3", cb)).start();
     }
 
 }

@@ -197,5 +197,37 @@ BlackHorse中的eat方法。
 
 
 
+## ClassLoader 类加载器
+
+类加载器就是根据指定全限定名称将class文件加载到JVM内存，转为Class对象。
+
+在JVM中，判断一个对象是否是某个类型时，如果该对象的实际类型与待比较的类型的类加载器不同，那么也会返回false。
+
+- Bootstrap ClassLoader：启动类加载器
+
+- Extension ClassLoader：扩展类加载器
+
+- Application ClassLoader：应用程序类加载器
+
+- User ClassLoader：自定义加载器
+
+### 双亲委派模型
+
+任何一个类加载器接收到类加载请求时，首先不会自己去加载该类，而是将这个请求交给父类去完成，如果父类无法加载，才会自己尝试去加载该类。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
