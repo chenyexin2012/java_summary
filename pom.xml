@@ -72,6 +72,7 @@
         <module>java_summary_collection</module>
         <module>java_summary_annotation</module>
         <module>java_summary_serializable</module>
+        <module>java_summary_jdbc</module>
     </modules>
 
     <dependencies>
