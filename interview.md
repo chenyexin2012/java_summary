@@ -1,5 +1,15 @@
-﻿
-不同服务之间调用的常用方式
+﻿## java基础
+
+synchronized修饰静态方法和修饰类方法的不同
+
+动态代理
+
+	jdk: InvocationHandler  --> invoke(proxy, method, args) --> Proxy.newInstance(classloader, interfaces, invocationHandler)
+	
+	cglib: MethodInterceptor --> intercept(obj, method, args, proxy) --> Enhancer  classloader, superclass, MethodInterceptor
+
+
+## 不同服务之间调用的常用方式
 
 	1.RPC：远程过程调用，每个服务都运行在自己的JVM中，用户分布式系统中各个服务之间的调用。
 		
@@ -7,13 +17,12 @@
 		
 		目前Java使用比较多的RPC方案主要有RMI（JDK自带）、Hessian、Dubbo以及Thrift等。
 		
-		
 	2.RESTFul：
 	
 		GET、PUT、DELETE、POST
 		
 		
-常用的序列化框架
+## 常用的序列化框架
 
 	序列化：将java对象转化成二进制文件
 	反序列化：
@@ -22,13 +31,12 @@
 	kryo、hessian、java、protostuff
 
 
+## 设计模式
+    
 常见设计模式的优点以及缺点
 
 
-
-
-synchronized修饰静态方法和修饰类方法的不同
-
+## 数据库
 
 mysql
 
@@ -40,9 +48,6 @@ mysql
 		InnoDB支持表锁与行锁
 		
 		MyISAM更适合读密集的表，而InnoDB更适合写密集的的表
-	
-	
-	
 
 	行级锁，表级锁，页级锁
 
@@ -54,6 +59,18 @@ mysql
 	悲观锁，乐观锁
 
 	数据库索引
+
+	    唯一索引、主键索引、联合索引
+
+        主键索引也是唯一索引，但唯一索引不一定是主键索引
+        一张表可以有多个唯一索引，但只能有一个主键索引
+        主键索引不能为null，而唯一索引可以为null且可以有多个
+
+        联合索引：最左前缀
+
+        innoDB中索引的数据结构：B+Tree
+
+        索引什么情况下会失效？
 	
 事务
 
@@ -66,8 +83,17 @@ mysql
 		持久性： 一个事务被提交之后。它对数据库中数据的改变是持久的，即使数据库 发生故障也不应该对其有任何影响。
 
 	隔离级别
+	
+	
+存储过程
 
+    
 
+## spring 
+
+spring mvc 与 struts2 的区别
+
+spring mvc的重定向和转发
 
 spring mvc的工作原理
 
@@ -94,14 +120,9 @@ spring mvc的工作原理
 
 	（8）把 View 返回给请求者（浏览器）
 
+## mybatis
 
-
-动态代理
-
-	jdk: InvocationHandler  --> invoke(proxy, method, args) --> Proxy.newInstance(classloader, interfaces, invocationHandler)
-	
-	cglib: MethodInterceptor --> intercept(obj, method, args, proxy) --> Enhancer  classloader, superclass, MethodInterceptor
-
+“#{}” 和 “${}” 的区别
 
 Mybatis和JDBC区别
 
@@ -118,11 +139,23 @@ Mybatis和JDBC区别
 	Mybatis可以动态的生成sql。
 
 
+## 网络协议
 
+TCP的三次握手和四次挥手的过程。
 
+四次挥手中客户端在TIME-WAIT状态为什么要等待2MSL时间才能进入CLOSED状态？
 
+    
 
+## 同步与异步 阻塞与非阻塞
 
+同步：调用方主动等待被调用方返回结果。
+
+异步：调用方不需要等待被调用方返回结果，而是通过其它手段，如状态通知，回调函数等。
+
+阻塞：指结果返回之前，当前线程被挂起。
+
+非阻塞：指返回结果之前，当前线程可以做其它事，不会被挂起。
 
 
 

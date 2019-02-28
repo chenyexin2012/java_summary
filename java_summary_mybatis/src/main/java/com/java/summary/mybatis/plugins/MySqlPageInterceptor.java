@@ -13,6 +13,8 @@ import java.util.Properties;
 
 /**
  * 一个简单的mysql分页插件
+ *
+ * @author Administrator
  */
 @Intercepts(@Signature(method = "prepare", type = StatementHandler.class, args = {Connection.class, Integer.class}))
 public class MySqlPageInterceptor implements Interceptor {
@@ -22,7 +24,7 @@ public class MySqlPageInterceptor implements Interceptor {
 
         Object target = invocation.getTarget();
         if (target instanceof RoutingStatementHandler) {
-            StatementHandler statementHandler = (RoutingStatementHandler) invocation.getTarget();
+            StatementHandler statementHandler = (RoutingStatementHandler) target;
             StatementHandler handler = (StatementHandler) Reflector.getPrivateField(statementHandler, "delegate");
 
             BoundSql boundSql = handler.getBoundSql();

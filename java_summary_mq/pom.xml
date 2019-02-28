@@ -13,7 +13,6 @@
     <artifactId>java_summary_mq</artifactId>
 
 
-
     <dependencies>
         <!-- Spring jms-->
         <dependency>
@@ -33,6 +32,13 @@
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-pool</artifactId>
+        </dependency>
+
+        <!--RabbitMq依赖-->
+        <dependency>
+            <groupId>com.rabbitmq</groupId>
+            <artifactId>amqp-client</artifactId>
+            <version>5.3.0</version>
         </dependency>
     </dependencies>
 
