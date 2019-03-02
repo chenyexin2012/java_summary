@@ -227,26 +227,26 @@ public class HttpRequest {
 
     public static void main(String[] args) {
 
-        System.out.println(HttpRequest.sendGet("http://localhost:9090/hello/user/get/1", ""));
-        System.out.println(HttpRequest.sendGet("http://localhost:9090/hello/user/get/2", ""));
+//        System.out.println(HttpRequest.sendGet("http://localhost:9090/hello/user/get/1", ""));
+//        System.out.println(HttpRequest.sendGet("http://localhost:9090/hello/user/get/2", ""));
+//
+//        HashMap<String, Object> paramMap = new HashMap<>(2);
+//        paramMap.put("name", "张三");
+//        paramMap.put("age", 26);
+//
+//        System.out.println(HttpRequest.sendPost("http://localhost:9090/hello/user/addUser", JSON.toJSONString(paramMap)));
+//
+//        paramMap = new HashMap<>(3);
+//        paramMap.put("name", "张三");
+//        paramMap.put("age", 28);
+//        paramMap.put("id", 1);
+//
+//        System.out.println(HttpRequest.sendPut("http://localhost:9090/hello/user/update", JSON.toJSONString(paramMap)));
+//
+//        System.out.println(HttpRequest.sendDelete("http://localhost:9090/hello/user/delete/5", ""));
+//        System.out.println(HttpRequest.sendDelete("http://localhost:9090/hello/user/delete/9", ""));
 
-        HashMap<String, Object> paramMap = new HashMap<>(2);
-        paramMap.put("name", "张三");
-        paramMap.put("age", 26);
-
-        System.out.println(HttpRequest.sendPost("http://localhost:9090/hello/user/addUser", JSON.toJSONString(paramMap)));
-
-        paramMap = new HashMap<>(3);
-        paramMap.put("name", "张三");
-        paramMap.put("age", 28);
-        paramMap.put("id", 1);
-
-        System.out.println(HttpRequest.sendPut("http://localhost:9090/hello/user/update", JSON.toJSONString(paramMap)));
-
-        System.out.println(HttpRequest.sendDelete("http://localhost:9090/hello/user/delete/5", ""));
-        System.out.println(HttpRequest.sendDelete("http://localhost:9090/hello/user/delete/9", ""));
-
-        System.out.println(HttpRequest.sendGet("http://localhost:9090/hello/user/getAll", ""));
+        System.out.println(HttpRequest.sendGet("http://localhost:9090/test/user/getAll", ""));
 
     }
 }

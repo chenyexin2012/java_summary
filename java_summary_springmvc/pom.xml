@@ -13,7 +13,9 @@
     <artifactId>java_summary_springmvc</artifactId>
     <packaging>war</packaging>
 
-    <name>java_summary_springmvc</name>    <dependencies>
+    <name>java_summary_springmvc</name>
+
+    <dependencies>
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>

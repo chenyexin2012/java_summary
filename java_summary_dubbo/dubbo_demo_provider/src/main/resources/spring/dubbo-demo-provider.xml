@@ -22,6 +22,6 @@
 
     <!-- declare the service interface to be exported -->
     <dubbo:service ref="helloService" group="helloService" interface="org.apache.dubbo.api.IService"
-        timeout="60000" version="1.0.0"/>
+                   timeout="60000" version="1.0.0"/>
 
 </beans>
