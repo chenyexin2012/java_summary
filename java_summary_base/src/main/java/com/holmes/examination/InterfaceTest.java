@@ -15,6 +15,9 @@ public class InterfaceTest {
 //        String str;
         static String str1 = "hello";
         final static String str2 = "hello";
+        
+        // 不能用protected修改接口中的方法
+//    protected void protectedMethod();
 
         // 不能用private修改接口中的方法
 //    private void privateMethod();

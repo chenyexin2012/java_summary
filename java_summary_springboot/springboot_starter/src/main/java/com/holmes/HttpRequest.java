@@ -248,5 +248,9 @@ public class HttpRequest {
 
         System.out.println(HttpRequest.sendGet("http://localhost:9090/test/user/getAll", ""));
 
+        HashMap<String, Object> paramMap = new HashMap<>(1);
+        paramMap.put("id", "1");
+        System.out.println(HttpRequest.sendPost("http://localhost:9090/test/user/getUser", JSON.toJSONString(paramMap)));
+
     }
 }

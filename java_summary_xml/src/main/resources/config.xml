@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+
+    <bean id="zhangsan" class="com.holmes.xml.entity.Student">
+        <property name="id" value="1001"/>
+        <property name="name" value="张三"/>
+        <property name="age" value="18"/>
+        <property name="address" value="浙江省杭州市"/>
+    </bean>
+
+    <bean id="lisi" class="com.holmes.xml.entity.Student">
+        <property name="id" value="1002"/>
+        <property name="name" value="李四"/>
+        <property name="age" value="18"/>
+        <property name="address" value="安徽省合肥市"/>
+    </bean>
+
+</beans>
