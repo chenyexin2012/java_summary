@@ -20,6 +20,7 @@
         <module>java_spring_security</module>
         <module>java_spring_multipledatasources</module>
         <module>java_spring_mybatis</module>
+        <module>java_spring_bean</module>
     </modules>
 
 </project>

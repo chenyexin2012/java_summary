@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+    <bean id="myBeanFactoryPostProcessor" class="com.holmes.bean.MyBeanFactoryPostProcessor"/>
+
+    <bean id="myBeanPostProcessor" class="com.holmes.bean.MyBeanPostProcessor"/>
+
+    <bean id="myInstantiationAwareBeanPostProcessor" class="com.holmes.bean.MyInstantiationAwareBeanPostProcessorAdapter"/>
+
+    <bean id="studentA" class="com.holmes.bean.Student" init-method="initMethod" destroy-method="destroyMethod">
+        <constructor-arg index="0" value="1001"/>
+        <constructor-arg index="1" value="张三"/>
+        <constructor-arg index="2" value="19"/>
+        <constructor-arg index="3" value="安徽省合肥市"/>
+    </bean>
+
+    <bean id="studentB" class="com.holmes.bean.Student" init-method="initMethod" destroy-method="destroyMethod">
+        <property name="id" value="1002"/>
+        <property name="name" value="李四"/>
+        <property name="age" value="18"/>
+        <property name="address" value="浙江省杭州市"/>
+    </bean>
+
+</beans>
