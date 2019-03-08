@@ -14,7 +14,7 @@ import java.util.concurrent.TimeoutException;
  */
 public class ChannelUtil {
 
-    private final static String HOST = "127.0.0.1";
+    private final static String HOST = "47.101.32.50";
 
     private final static String USER_NAME = "root";
 

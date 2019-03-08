@@ -35,15 +35,28 @@ public class Customer {
             @Override
             public void handleDelivery(String consumerTag, Envelope envelope,
                                        AMQP.BasicProperties properties, byte[] body) throws IOException {
-                System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-                System.out.println("consumerTag:" + consumerTag);
-                System.out.println("exchange:" + envelope.getExchange());
-                System.out.println("routing key:" + envelope.getRoutingKey());
-                System.out.println("delivery tag:" + envelope.getDeliveryTag());
-                System.out.println("content:" + new String(body));
-                System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+                try {
+                    String content = new String(body);
+                    if ("".equals(content)) {
+                        throw new Exception("消息错误");
+                    }
+                    System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+                    System.out.println("consumerTag:" + consumerTag);
+                    System.out.println("exchange:" + envelope.getExchange());
+                    System.out.println("routing key:" + envelope.getRoutingKey());
+                    System.out.println("delivery tag:" + envelope.getDeliveryTag());
+                    System.out.println("content:" + new String(body));
+                    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+                    // 确认消息
+                    channel.basicAck(envelope.getDeliveryTag(), false);
+                } catch (Exception e) {
+                    // 拒绝消息，并将消息保留在队列中
+                    channel.basicNack(envelope.getDeliveryTag(), false, true);
+                    System.out.println(e.getMessage());
+                }
             }
         };
-        channel.basicConsume(declareOk.getQueue(), true, "rabbitmq消费者处理测试", consumer);
+        // 将自动确认置为false，通过basicAck确认
+        channel.basicConsume(declareOk.getQueue(), false, "rabbitmq消费者处理测试", consumer);
     }
 }
