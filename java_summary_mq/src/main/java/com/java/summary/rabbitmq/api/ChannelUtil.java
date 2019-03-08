@@ -48,7 +48,7 @@ public class ChannelUtil {
 
         Map<String, Object> clientProperties = new HashMap(3);
         clientProperties.put("name", "Holmes");
-        clientProperties.put("description", "rabbitmq生产者消费者测试");
+        clientProperties.put("description", "rabbitmq测试");
         clientProperties.put("address", "holmes2019@126.com");
         connectionFactory.setClientProperties(clientProperties);
 

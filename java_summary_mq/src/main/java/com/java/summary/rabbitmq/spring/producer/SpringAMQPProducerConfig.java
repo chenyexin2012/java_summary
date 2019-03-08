@@ -18,6 +18,12 @@ public class SpringAMQPProducerConfig {
     private final static String USER_NAME = "root";
 
     private final static String PASSWORD = "rabbitmq@2018";
+
+    public final static String EXCHANGE_NAME = "holmes-direct-exchange";
+
+    public final static String ROUTING_KEY = "holmes-routing-key";
+
+    public final static String QUEUE_NAME = "holmes-queue-name";
     
     @Bean
     public CachingConnectionFactory connectionFactory() {

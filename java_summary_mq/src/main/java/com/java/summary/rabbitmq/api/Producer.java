@@ -4,7 +4,6 @@ import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
 
 import java.io.IOException;
-import java.util.concurrent.TimeoutException;
 
 /**
  * 消息生成者
@@ -13,11 +12,9 @@ import java.util.concurrent.TimeoutException;
  */
 public class Producer {
 
-    public final static String EXCHANGE_NAME = "exchange-test";
+    public final static String EXCHANGE_NAME = "holmes-direct-exchange";
 
-    public final static String ROUTING_KEY = "test-producer";
-
-    public final static String QUEUE_NAME = "holmes-queue";
+    public final static String ROUTING_KEY = "holmes-routing-key";
 
     public static void main(String[] args) throws IOException {
 
@@ -25,6 +22,10 @@ public class Producer {
 
         channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.DIRECT, true, false, false, null);
 
-        channel.basicPublish(EXCHANGE_NAME, ROUTING_KEY, false, null, "rabbitmq生产者测试".getBytes());
+        int i = 10;
+        while (i-- > 0) {
+            channel.basicPublish(EXCHANGE_NAME, ROUTING_KEY, false, null, "rabbitmq生产者测试".getBytes());
+            System.out.println(">>>>>>>>>>>>>>>>>>>>发送成功");
+        }
     }
 }

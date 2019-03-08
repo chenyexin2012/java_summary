@@ -14,21 +14,16 @@ public class Subscriber {
 
     public static void main(String[] args) throws IOException, TimeoutException {
 
-        ConnectionFactory connectionFactory = new ConnectionFactory();
-        connectionFactory.setHost("47.101.32.50");
-        connectionFactory.setUsername("root");
-        connectionFactory.setPassword("rabbitmq@2018");
+        Channel channel = ChannelUtil.createChannel("rabbitmq发布/订阅模式发布方");
 
-        Connection connection = connectionFactory.newConnection();
-        Channel channel = connection.createChannel();
-
+        // 扇形交换机
         channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.FANOUT);
-
 
         String queueName = channel.queueDeclare().getQueue();
 
         System.out.println("queue name : " + queueName);
 
+        // 将队列绑定至扇形交换机中
         channel.queueBind(queueName, EXCHANGE_NAME, "");
 
         Consumer consumer = new DefaultConsumer(channel) {

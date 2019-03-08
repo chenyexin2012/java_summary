@@ -17,14 +17,9 @@ public class Publisher {
 
     public static void main(String[] args) throws IOException, TimeoutException, InterruptedException {
 
-        ConnectionFactory connectionFactory = new ConnectionFactory();
-        connectionFactory.setHost("47.101.32.50");
-        connectionFactory.setUsername("root");
-        connectionFactory.setPassword("rabbitmq@2018");
+        Channel channel = ChannelUtil.createChannel("rabbitmq发布/订阅模式订阅方");
 
-        Connection connection = connectionFactory.newConnection();
-        Channel channel = connection.createChannel();
-
+        // 使用扇形交换机，实现发布/订阅模式
         channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.FANOUT);
 
 //        while(true) {
@@ -33,7 +28,6 @@ public class Publisher {
 //        }
 
         channel.close();
-        connection.close();
     }
 
 }

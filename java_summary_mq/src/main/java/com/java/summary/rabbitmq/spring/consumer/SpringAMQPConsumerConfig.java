@@ -1,6 +1,6 @@
 package com.java.summary.rabbitmq.spring.consumer;
 
-import com.java.summary.rabbitmq.spring.producer.MessageHandle;
+import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -12,6 +12,9 @@ import org.springframework.amqp.support.ConsumerTagStrategy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.jms.Message;
+import javax.jms.MessageListener;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,6 +29,12 @@ public class SpringAMQPConsumerConfig {
     private final static String USER_NAME = "root";
 
     private final static String PASSWORD = "rabbitmq@2018";
+
+    public final static String EXCHANGE_NAME = "holmes-direct-exchange";
+
+    public final static String ROUTING_KEY = "holmes-routing-key";
+
+    public final static String QUEUE_NAME = "holmes-queue-name";
 
     @Bean
     public ConnectionFactory connectionFactory() {
@@ -60,17 +69,17 @@ public class SpringAMQPConsumerConfig {
 
     @Bean
     public Exchange exchange() {
-        return new DirectExchange("roberto.order", true, false, new HashMap<>());
+        return new DirectExchange(EXCHANGE_NAME, true, false, new HashMap<>());
     }
 
     @Bean
     public Queue queue() {
-        return new Queue("roberto.order.add", true, false, false, new HashMap<>());
+        return new Queue(QUEUE_NAME, true, false, false, new HashMap<>());
     }
 
     @Bean
     public Binding binding() {
-        return new Binding("roberto.order.add", Binding.DestinationType.QUEUE, "roberto.order", "add", new HashMap<>());
+        return new Binding(QUEUE_NAME, Binding.DestinationType.QUEUE, EXCHANGE_NAME, ROUTING_KEY, new HashMap<>());
     }
 
     @Bean
@@ -78,10 +87,10 @@ public class SpringAMQPConsumerConfig {
 
         SimpleMessageListenerContainer messageListenerContainer = new SimpleMessageListenerContainer();
         messageListenerContainer.setConnectionFactory(connectionFactory);
-        messageListenerContainer.setQueueNames("roberto.order.add");
+        messageListenerContainer.setQueueNames(QUEUE_NAME);
 
         // 设置消费者线程数
-        messageListenerContainer.setConcurrentConsumers(50);
+        messageListenerContainer.setConcurrentConsumers(10);
         // 设置最大消费者线程数
         messageListenerContainer.setMaxConcurrentConsumers(100);
 
@@ -93,7 +102,7 @@ public class SpringAMQPConsumerConfig {
         messageListenerContainer.setConsumerTagStrategy(new ConsumerTagStrategy() {
             @Override
             public String createConsumerTag(String s) {
-                return "RGP订单系统ADD处理逻辑消费者";
+                return "rabbitmq消费者测试";
             }
         });
 
@@ -101,29 +110,27 @@ public class SpringAMQPConsumerConfig {
         messageListenerContainer.setAutoStartup(true);
 
         // 使用setAfterReceivePostProcessors方法可以增加消息后置处理器
-        // messageListenerContainer.setAfterReceivePostProcessors();
+        messageListenerContainer.setAfterReceivePostProcessors(new MessagePostProcessor() {
+            @Override
+            public org.springframework.amqp.core.Message postProcessMessage(org.springframework.amqp.core.Message message)
+                    throws AmqpException {
+                try {
+                    System.out.println("postProcessMessage<<<<<<<<<<<<<<<");
+                    System.out.println("content : " + new String(message.getBody(), "UTF-8"));
+                    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                return message;
+            }
+        });
 
-//        messageListenerContainer.setMessageListener(new MessageListener() {
-//            @Override
-//            public void onMessage(Message message) {
-//                try {
-//                    System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-//                    System.out.println(Thread.currentThread().getName());
-//                    System.out.println("content:" + new String(message.getBody(), "UTF-8"));
-//                    System.out.println(message.getMessageProperties());
-//                    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-
-        MessageListenerAdapter messageListenerAdapter = new MessageListenerAdapter(new MessageHandle());
+        MessageListenerAdapter messageListenerAdapter = new MessageListenerAdapter(new MessageHandler());
         messageListenerAdapter.setDefaultListenerMethod("handleMessage");
 
         Map<String, String> queueOrTagToMethodName = new HashMap<>();
-        // 将roberto.order.add队列的消息 使用add方法进行处理
-        queueOrTagToMethodName.put("roberto.order.add","add");
+        // 将队列的消息 使用handle方法进行处理
+        queueOrTagToMethodName.put(QUEUE_NAME, "handle");
         messageListenerAdapter.setQueueOrTagToMethodName(queueOrTagToMethodName);
 
         messageListenerContainer.setMessageListener(messageListenerAdapter);
