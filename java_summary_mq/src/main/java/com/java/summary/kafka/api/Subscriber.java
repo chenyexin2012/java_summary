@@ -6,7 +6,6 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.Properties;
 
@@ -29,7 +28,9 @@ public class Subscriber {
     private static Properties initConfig() {
         Properties properties = new Properties();
         properties.put("bootstrap.servers", BROKER_LIST);
+        // 通过不同分组实现发布订阅/模式，同一个消息在每个分组中只有一个消费者能够消费
         properties.put("group.id", "group-001");
+//        properties.put("group.id", "group-002");
         properties.put("enable.auto.commit", "true");
         properties.put("auto.commit.interval.ms", "1000");
         properties.put("session.timeout.ms", "30000");

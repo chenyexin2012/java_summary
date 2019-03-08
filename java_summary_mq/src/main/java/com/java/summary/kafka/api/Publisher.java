@@ -29,7 +29,6 @@ public class Publisher {
 
     private static Properties initConfig() {
         Properties properties = new Properties();
-        properties.put("group.id", "group-001");
         properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BROKER_LIST);
         properties.put(ProducerConfig.ACKS_CONFIG, "all");
         properties.put(ProducerConfig.RETRIES_CONFIG, "0");
