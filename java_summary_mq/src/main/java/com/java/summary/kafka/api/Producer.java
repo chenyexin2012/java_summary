@@ -62,9 +62,9 @@ public class Producer {
             @Override
             public void onCompletion(RecordMetadata recordMetadata, Exception e) {
                 if (null != e) {
-                    log.info("send error" + e.getMessage());
+                    System.out.println(String.format("消息发送失败-->offset:%s,partition:%s", recordMetadata.offset(), recordMetadata.partition()));
                 } else {
-                    System.out.println(String.format("offset:%s,partition:%s", recordMetadata.offset(), recordMetadata.partition()));
+                    System.out.println(String.format("消息发送成功-->offset:%s,partition:%s", recordMetadata.offset(), recordMetadata.partition()));
                 }
             }
         });
@@ -73,18 +73,13 @@ public class Producer {
     public static void main(String[] args) throws InterruptedException {
 
         //消息实体
-        ProducerRecord<String, String> record1 = new ProducerRecord<String, String>(TOPIC_001, "kafka生产者消费者测试-001");
-        ProducerRecord<String, String> record2 = new ProducerRecord<String, String>(TOPIC_002, "kafka生产者消费者测试-002");
-        ProducerRecord<String, String> record3 = new ProducerRecord<String, String>(TOPIC_003, "kafka生产者消费者测试-003");
+        ProducerRecord<String, String> record = null;
 
         for (int i = 0; i < 1000; i++) {
-            sendMessage(record1);
+            record = new ProducerRecord<String, String>(TOPIC_001, 0, String.format("生产者%d", i), "kafka生产者消费者测试-001");
+            sendMessage(record);
             System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<");
-            sendMessage(record2);
-            System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<");
-            sendMessage(record3);
-            System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<");
-            Thread.sleep(1000);
+            Thread.sleep(3000);
         }
         producer.close();
     }

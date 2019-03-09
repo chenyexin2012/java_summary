@@ -15,7 +15,7 @@ public class HashMapTest {
     @Test
     public void HashMapTest() {
 
-        Map<Long, String> map = new HashMap<>(1000);
+        Map<Long, String> map = new HashMap<>(32);
 
         for (int i = 0; i < 1000; i++) {
             map.put(System.nanoTime(), System.nanoTime() + "");

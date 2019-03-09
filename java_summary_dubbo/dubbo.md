@@ -24,3 +24,20 @@
 ### 特点
 
 连通性、健壮性、伸缩性、以及向未来架构的升级性
+
+### 序列化
+
+[http://dangdangdotcom.github.io/dubbox/serialization.html]
+
+### 负载均衡策略
+
+- RandomLoadBalance：基于权重随机算法，默认。
+
+- LeastActiveLoadBalance：基于最少活跃调用数算法
+
+- ConsistentHashLoadBalance：基于hash一致性算法
+
+- RoundRobinLoadBalance：基于加权轮询算法
+
+[http://dubbo.apache.org/zh-cn/docs/source_code_guide/loadbalance.html]
+

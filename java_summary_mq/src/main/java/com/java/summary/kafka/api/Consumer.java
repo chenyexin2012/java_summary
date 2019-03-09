@@ -1,13 +1,14 @@
 package com.java.summary.kafka.api;
 
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.consumer.*;
+import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.log4j.Logger;
 
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 /**
  * @author Administrator
@@ -36,8 +37,9 @@ public class Consumer {
         Properties properties = new Properties();
         properties.put("bootstrap.servers", BROKER_LIST);
         properties.put("group.id", "0");
-        properties.put("enable.auto.commit", "true");
-        properties.put("auto.commit.interval.ms", "1000");
+        // 设置不自动提交
+        properties.put("enable.auto.commit", "false");
+//        properties.put("auto.commit.interval.ms", "1000");
         properties.put("session.timeout.ms", "30000");
         properties.put("auto.offset.reset", "earliest");
         properties.put("key.deserializer", StringDeserializer.class.getName());
@@ -59,6 +61,28 @@ public class Consumer {
                 System.out.println("key : " + record.key());
                 System.out.println("value : " + record.value());
                 System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+                // 同步提交
+//                consumer.commitSync();
+                // 异步提交
+//                consumer.commitAsync();
+
+                consumer.commitAsync(new OffsetCommitCallback() {
+                    @Override
+                    public void onComplete(Map<TopicPartition, OffsetAndMetadata> offsets, Exception exception) {
+
+                        Set<Map.Entry<TopicPartition, OffsetAndMetadata>> set = offsets.entrySet();
+                        for (Map.Entry<TopicPartition, OffsetAndMetadata> entry : set) {
+                            System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+                            TopicPartition topicPartition = entry.getKey();
+                            OffsetAndMetadata metadata = entry.getValue();
+                            System.out.println("topic:" + topicPartition.topic());
+                            System.out.println("partition:" + topicPartition.partition());
+                            System.out.println("offset:" + metadata.offset());
+                            System.out.println("metadata:" + metadata.metadata());
+                            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+                        }
+                    }
+                });
             }
         }
     }
