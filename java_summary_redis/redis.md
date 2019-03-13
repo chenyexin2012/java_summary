@@ -1,6 +1,18 @@
-###
+## Redis
 
-#### Jedis的常用操作
+Redis是一种高性能的数据存储服务，支持string、list、hash、set、sorted set等多种数据类型。
+
+### Redis的持久化
+
+Redis提供两种持久化机制RDB和AOF机制:
+
+- RDB(Redis DataBase)持久化方式：通过使用数据集快照（半持久化模式）的方式将键值对写入一个临时文件，在持久化结束后，
+用这个文件替换上次持久化的文件。
+
+- AOF(Append-only file)持久化方式：是指所有的命令行记录以redis命令请求协议的格式（完全持久化存储）保存为aof文件。
+
+
+### Jedis的常用操作
 
 1.对value操作的命令
 
