@@ -1,6 +1,7 @@
 package com.java.summary.mybatis.dao;
 
 
+import com.java.summary.mybatis.annotation.AuthAop;
 import com.java.summary.mybatis.plugins.Page;
 import com.java.summary.mybatis.pojo.User;
 import org.apache.ibatis.annotations.Param;
@@ -14,6 +15,7 @@ public interface UserDao {
      * @param map
      * @return
      */
+    @AuthAop("user")
     public List<User> selectList(Map<String, Object> map);
 
     /**

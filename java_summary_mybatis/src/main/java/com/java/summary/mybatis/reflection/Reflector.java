@@ -15,13 +15,21 @@ public class Reflector {
 
         Class clazz = object.getClass();
         Field field = null;
-        try {
-            field = clazz.getDeclaredField(fieldName);
-        } catch (NoSuchFieldException e) {
+
+        while (clazz != Object.class) {
+            try {
+                field = clazz.getDeclaredField(fieldName);
+                if (null != field) {
+                    break;
+                }
+            } catch (NoSuchFieldException e) {
+            }
+            clazz = clazz.getSuperclass();
+        }
+
+        if (field == null) {
             return null;
         }
-        if (field == null)
-            return null;
         try {
             field.setAccessible(true);
             return field.get(object);

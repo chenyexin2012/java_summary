@@ -38,8 +38,8 @@ public class UserDaoTest extends BaseTest{
 
         Map<String, Object> param = new HashMap<>();
 //        param.put("userId", 1);
-        param.put("userName", "h");
-        param.put("page", new Page(1, 10));
+//        param.put("userName", "h");
+//        param.put("page", new Page(1, 10));
 
         List<User> list = userDao.selectList(param);
         for (User user : list) {

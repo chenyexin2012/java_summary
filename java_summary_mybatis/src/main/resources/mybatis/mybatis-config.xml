@@ -18,7 +18,7 @@
 
     <settings>
         <!-- 打印查询语句 -->
-        <setting name="logImpl" value="STDOUT_LOGGING"/>
+<!--        <setting name="logImpl" value="STDOUT_LOGGING"/>-->
         <!-- 延迟加载 -->
         <setting name="lazyLoadingEnabled" value="true"/>
         <!-- 执行器 SIMPLE REUSE BATCH -->
@@ -59,8 +59,9 @@
             StatementHandler (prepare, parameterize, batch, update, query)
         -->
     <plugins>
-        <plugin interceptor="com.java.summary.mybatis.plugins.MySqlPageInterceptor">
-        </plugin>
+        <plugin interceptor="com.java.summary.mybatis.plugins.MySqlPageInterceptor"/>
+        <plugin interceptor="com.java.summary.mybatis.plugins.AuthInterceptor"/>
+        <plugin interceptor="com.java.summary.mybatis.plugins.ResultInterceptor"/>
     </plugins>
 
     <!--
