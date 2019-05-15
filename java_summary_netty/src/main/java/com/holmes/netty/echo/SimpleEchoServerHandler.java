@@ -1,4 +1,4 @@
-package com.holmes.netty;
+package com.holmes.netty.echo;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
