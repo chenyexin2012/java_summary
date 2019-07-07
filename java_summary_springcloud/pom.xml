@@ -13,6 +13,8 @@
     <packaging>pom</packaging>
     <modules>
         <module>springcloud_eureka</module>
+        <module>springcloud_provider</module>
+        <module>springcloud_consumer</module>
     </modules>
 
     <properties>
