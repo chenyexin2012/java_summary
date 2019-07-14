@@ -1,6 +1,6 @@
 spring:
   application:
-    name: springcloud-eureka
+    name: springcloud-eureka-peer1
 
 server:
   port: 8000
