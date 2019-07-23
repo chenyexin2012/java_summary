@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: springcloud-feign-consumer
+
+server:
+  port: 9101
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8000/eureka/

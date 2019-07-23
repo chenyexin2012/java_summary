@@ -15,6 +15,7 @@
         <module>springcloud_eureka_peer1</module>
         <module>springcloud_provider</module>
         <module>springcloud_ribbon_consumer</module>
+        <module>springcloud_feign_consumer</module>
     </modules>
 
     <properties>
