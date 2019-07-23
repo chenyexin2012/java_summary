@@ -12,9 +12,9 @@
     <artifactId>java_summary_springcloud</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>springcloud_eureka</module>
+        <module>springcloud_eureka_peer1</module>
         <module>springcloud_provider</module>
-        <module>springcloud_consumer</module>
+        <module>springcloud_ribbon_consumer</module>
     </modules>
 
     <properties>

@@ -9,9 +9,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>springcloud_eureka</artifactId>
+    <artifactId>springcloud_eureka_peer1</artifactId>
 
-    <name>springcloud_eureka</name>
+    <name>springcloud_eureka_peer1</name>
 
     <dependencies>
         <dependency>
