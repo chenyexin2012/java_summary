@@ -3,7 +3,7 @@ spring:
     name: springcloud-provider
 
 server:
-  port: 9001
+  port: 7001
 
 eureka:
   client:

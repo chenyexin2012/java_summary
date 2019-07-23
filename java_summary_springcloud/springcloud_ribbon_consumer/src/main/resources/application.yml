@@ -3,7 +3,7 @@ spring:
     name: springcloud-ribbon-consumer
 
 server:
-  port: 7001
+  port: 9001
 eureka:
   client:
     serviceUrl:
