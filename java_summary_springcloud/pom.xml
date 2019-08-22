@@ -17,6 +17,7 @@
         <module>springcloud_ribbon_consumer</module>
         <module>springcloud_feign_consumer</module>
         <module>springcloud_eureka_peer2</module>
+        <module>springcloud_common_service</module>
     </modules>
 
     <properties>
