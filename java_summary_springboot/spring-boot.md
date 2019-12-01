@@ -24,4 +24,4 @@
  
 ### spring-boot入门博客
 
-快速入门 [https://www.cnblogs.com/wmyskxz/p/9010832.html]
+[快速入门] (https://www.cnblogs.com/wmyskxz/p/9010832.html)
