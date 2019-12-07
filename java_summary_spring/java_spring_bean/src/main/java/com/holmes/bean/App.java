@@ -13,9 +13,12 @@ public class App {
         ApplicationContext context = new ClassPathXmlApplicationContext("classpath:spring-config.xml");
         ((ClassPathXmlApplicationContext) context).start();
 
-        Student student = (Student) context.getBean("studentB");
+        System.out.println();
+        Student studentA = (Student) context.getBean("studentA");
+        System.out.println(studentA);
 
-        System.out.println(student);
+        Student studentB = (Student) context.getBean("studentB");
+        System.out.println(studentB);
 
         ((ClassPathXmlApplicationContext) context).close();
 
