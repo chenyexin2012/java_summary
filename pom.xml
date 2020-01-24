@@ -76,7 +76,6 @@
         <module>java_summary_jdbc</module>
         <module>java_summary_internet</module>
         <module>java_summary_xml</module>
-        <module>java_summary_netty</module>
         <module>java_summary_springcloud</module>
     </modules>
 
