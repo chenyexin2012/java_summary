@@ -47,6 +47,7 @@
         <activemq.version>5.11.1</activemq.version>
         <fastjson.version>1.2.47</fastjson.version>
         <zkclient.version>0.10</zkclient.version>
+        <curator.version>4.2.0</curator.version>
         <commons.logging.version>1.2</commons.logging.version>
         <netty-version>4.1.25.Final</netty-version>
     </properties>
@@ -77,6 +78,7 @@
         <module>java_summary_internet</module>
         <module>java_summary_xml</module>
         <module>java_summary_springcloud</module>
+        <module>java_summary_zookeeper</module>
     </modules>
 
     <dependencies>
@@ -303,6 +305,18 @@
                 <groupId>com.101tec</groupId>
                 <artifactId>zkclient</artifactId>
                 <version>${zkclient.version}</version>
+            </dependency>
+
+            <!-- curator-->
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-framework</artifactId>
+                <version>${curator.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-recipes</artifactId>
+                <version>${curator.version}</version>
             </dependency>
 
             <!-- commons-logging -->
