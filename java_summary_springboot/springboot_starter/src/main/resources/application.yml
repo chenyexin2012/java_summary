@@ -1,7 +1,0 @@
-server:
-  port: 9090
-  servlet:
-    context-path: /hello
-student:
-  name: 张三
-  age: 20
