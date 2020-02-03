@@ -11,5 +11,12 @@
 
     <artifactId>java_summary_zookeeper</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.101tec</groupId>
+            <artifactId>zkclient</artifactId>
+        </dependency>
+    </dependencies>
+
 
 </project>
