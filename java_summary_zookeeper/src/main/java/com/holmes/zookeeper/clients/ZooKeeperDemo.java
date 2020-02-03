@@ -1,4 +1,4 @@
-package com.holmes.zookeeper;
+package com.holmes.zookeeper.clients;
 
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 public class ZooKeeperDemo {
@@ -89,12 +88,15 @@ public class ZooKeeperDemo {
     public void deleteAll() {
     }
 
+    /**
+     * 获取节点数据
+     */
     @Test
     public void getData() {
         try {
             Stat stat = new Stat();
             byte[] data = zooKeeper.getData("/node1", false, stat);
-            if(data != null) {
+            if (data != null) {
                 log.info("data: {}, stat: {}", new String(data), stat.toString());
             }
         } catch (KeeperException e) {
@@ -104,6 +106,9 @@ public class ZooKeeperDemo {
         }
     }
 
+    /**
+     * 修改节点数据
+     */
     @Test
     public void setData() {
         try {
@@ -116,6 +121,9 @@ public class ZooKeeperDemo {
         }
     }
 
+    /**
+     * 判断节点是否存在
+     */
     @Test
     public void exists() {
         try {
@@ -128,9 +136,29 @@ public class ZooKeeperDemo {
         }
     }
 
+    /**
+     * 测试监视器，zookeeper自带客户端监视器只能运行一次
+     */
+    @Test
+    public void watcher() {
+        try {
+            Stat stat = zooKeeper.exists("/node1", new Watcher() {
+                @Override
+                public void process(WatchedEvent event) {
+                    log.info(event.toString());
+                }
+            });
+            log.info("stat: {}", stat);
+            TimeUnit.SECONDS.sleep(100);
+        } catch (KeeperException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     @After
     public void after() throws InterruptedException {
         zooKeeper.close();
-        TimeUnit.SECONDS.sleep(10);
     }
 }
