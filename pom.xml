@@ -46,7 +46,8 @@
         <spring.redis.version>1.8.13.RELEASE</spring.redis.version>
         <activemq.version>5.11.1</activemq.version>
         <fastjson.version>1.2.47</fastjson.version>
-        <zkclient.version>0.10</zkclient.version>
+        <zookeeper.version>3.5.6</zookeeper.version>
+        <zkclient.version>0.11</zkclient.version>
         <curator.version>4.2.0</curator.version>
         <commons.logging.version>1.2</commons.logging.version>
         <netty-version>4.1.25.Final</netty-version>
@@ -297,6 +298,13 @@
                 <groupId>com.alibaba</groupId>
                 <artifactId>fastjson</artifactId>
                 <version>${fastjson.version}</version>
+            </dependency>
+
+            <!-- zookeeper -->
+            <dependency>
+                <groupId>org.apache.zookeeper</groupId>
+                <artifactId>zookeeper</artifactId>
+                <version>${zookeeper.version}</version>
             </dependency>
 
             <!-- zkclient -->

@@ -15,7 +15,7 @@ org.apache.zookeeper.ZooKeeper客户端主要提供了如下几种方法：
 - path: 节点路径
 - data： 节点数据
 - acl： 节点的权限
-- createMode：节点类型（PERSISTENT、PERSISTENT_SEQUENTIAL、EPHEMERAL、EPHEMERAL_SEQUENTIAL）
+- createMode：节点类型（PERSISTENT、PERSISTENT_SEQUENTIAL、EPHEMERAL、EPHEMERAL_SEQUENTIAL、CONTAINER、PERSISTENT_WITH_TTL、PERSISTENT_SEQUENTIAL_WITH_TTL）
 - cb: 异步回调函数
 - ctx: 用于传递上下文信息的对象
         
@@ -110,12 +110,18 @@ org.apache.zookeeper.ZooKeeper客户端主要提供了如下几种方法：
 
 ZkClient在ZooKeeper自带的客户端的基础上主要实现了以下功能：
 - 在session loss或session expire时自动创建新的ZooKeeper对象进行重连。
-- 通过在Watcher的回调方法中重新注册相同的Watcher实现持久Watcher。
+- 使用IZkDataListener、IZkChildListener、IZkStateListener提供事件监听的功能，无需关心反复注册watcher的问题。
 - 对节点中存储的内容进行序列化。
 - 对Zookeeper一些接口进行封装与改造，并增加一些接口简化操作。
 
 
+### Curator
 
+Curator是Netflix公司开源的一个Zookeeper客户端，后捐献给Apache基金会，Curator框架在zookeeper原生API接口上进行了包装，
+解决了很多ZooKeeper客户端非常底层的细节开发。提供分布式锁服务、集群领导选举、共享计数器、缓存机制、分布式队列等应用场景的
+抽象封装。
+
+ 
 
 
 
