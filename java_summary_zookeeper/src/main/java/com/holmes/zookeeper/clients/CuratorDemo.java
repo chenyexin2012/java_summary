@@ -2,13 +2,21 @@ package com.holmes.zookeeper.clients;
 
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
+import org.apache.curator.framework.api.CuratorWatcher;
+import org.apache.curator.framework.recipes.cache.NodeCache;
+import org.apache.curator.framework.recipes.cache.NodeCacheListener;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
+import org.apache.zookeeper.WatchedEvent;
+import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooDefs;
+import org.apache.zookeeper.data.Stat;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.TimeUnit;
 
 public class CuratorDemo {
 
@@ -35,10 +43,12 @@ public class CuratorDemo {
 
     @Test
     public void test() {
-//        log.info("zookeeper client: {}", client);
         log.info("curatorFramework: {}", curatorFramework);
     }
 
+    /**
+     * 创建节点
+     */
     @Test
     public void create() {
         try {
@@ -53,6 +63,9 @@ public class CuratorDemo {
         }
     }
 
+    /**
+     * 获取节点数据
+     */
     @Test
     public void getData() {
         try {
@@ -63,7 +76,79 @@ public class CuratorDemo {
         }
     }
 
+    /**
+     * 删除节点
+     */
+    @Test
     public void delete() {
+        try {
+            curatorFramework.delete()
+                    .deletingChildrenIfNeeded() // 存在子节点则一并删除
+                    .forPath("/curator");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
+    /**
+     * 判断节点是否存在
+     */
+    @Test
+    public void exists() {
+        try {
+            Stat stat = curatorFramework.checkExists().forPath("/curator");
+            log.info("stat: {}", stat);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void watcher() {
+        try {
+            curatorFramework.checkExists()
+                    // 添加监视器，只作用一次
+                    .usingWatcher(new Watcher() {
+                        @Override
+                        public void process(WatchedEvent event) {
+                            log.info(event.toString());
+                        }
+                    })
+                    .forPath("/curator");
+
+            curatorFramework.checkExists()
+                    // 添加监视器，只作用一次
+                    .usingWatcher(new CuratorWatcher() {
+                        @Override
+                        public void process(WatchedEvent event) throws Exception {
+                            log.info(event.toString());
+                        }
+                    })
+                    .forPath("/curator");
+            TimeUnit.SECONDS.sleep(1000);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void listener() {
+
+        try {
+            NodeCache nodeCache = new NodeCache(curatorFramework, "/curator");
+            nodeCache.getListenable().addListener(new NodeCacheListener() {
+                @Override
+                public void nodeChanged() throws Exception {
+                    log.info("curator changed");
+                }
+            });
+            nodeCache.start();
+
+            TimeUnit.SECONDS.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
