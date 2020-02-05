@@ -1,16 +1,16 @@
-package com.holmes.zookeeper.clients;
+package com.holmes.zookeeper.clients.curator;
 
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.api.CuratorWatcher;
-import org.apache.curator.framework.recipes.cache.NodeCache;
-import org.apache.curator.framework.recipes.cache.NodeCacheListener;
+import org.apache.curator.framework.recipes.cache.*;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.data.Stat;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -36,8 +36,10 @@ public class CuratorDemo {
 
     @Before
     public void init() {
+        // 重试策略
         ExponentialBackoffRetry retryPolicy = new ExponentialBackoffRetry(BASE_SLEEP_TIME, MAX_RETRIES, Integer.MAX_VALUE);
         curatorFramework = CuratorFrameworkFactory.newClient(CONNECTION_STRING, SESSION_TIMEOUT, CONNECTION_TIMEOUT, retryPolicy);
+        // 需要调用start开启客户端
         curatorFramework.start();
     }
 
@@ -135,20 +137,49 @@ public class CuratorDemo {
     public void listener() {
 
         try {
+            // 监听一个特定节点
             NodeCache nodeCache = new NodeCache(curatorFramework, "/curator");
             nodeCache.getListenable().addListener(new NodeCacheListener() {
                 @Override
                 public void nodeChanged() throws Exception {
-                    log.info("curator changed");
+                    log.info("节点/curator发生改变");
                 }
             });
             nodeCache.start();
 
+            // 监听子节点
+            PathChildrenCache pathChildrenCache = new PathChildrenCache(curatorFramework, "/curator", false);
+            pathChildrenCache.getListenable().addListener(new PathChildrenCacheListener() {
+                @Override
+                public void childEvent(CuratorFramework client, PathChildrenCacheEvent event) throws Exception {
+                    log.info("节点/curator的子节点发生改变：{}", event);
+                }
+            });
+            pathChildrenCache.start();
+
+            // 同时监听节点和子节点
+            TreeCache treeCache = new TreeCache(curatorFramework, "/curator");
+            treeCache.getListenable().addListener(new TreeCacheListener() {
+                @Override
+                public void childEvent(CuratorFramework client, TreeCacheEvent event) throws Exception {
+                    log.info("节点/curator或其子节点发生改变：{}", event);
+                }
+            });
+            treeCache.start();
+
             TimeUnit.SECONDS.sleep(1000);
+            nodeCache.close();
+            pathChildrenCache.close();
+            treeCache.close();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @After
+    public void destroy() {
+        curatorFramework.close();
     }
 }

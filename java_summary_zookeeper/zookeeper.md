@@ -121,7 +121,14 @@ Curator是Netflix公司开源的一个Zookeeper客户端，后捐献给Apache基
 解决了很多ZooKeeper客户端非常底层的细节开发。提供分布式锁服务、集群领导选举、共享计数器、缓存机制、分布式队列等应用场景的
 抽象封装。
 
- 
+#### Curator的监听器
+
+Curator除了使用Watcher监听节点外，还提供了三种监听方式：
+
+- NodeCache: 监控指定路径的节点，当该节点发生增删改时，触发。
+- PathChildrenCache: 监控指定路径的节点的子节点，当新增、删除、修改字节点时，触发。
+- TreeCache: 可以监控整个树上的所有节点，相当于NodeCache和PathChildrenCache的组合。
+
 
 
 
