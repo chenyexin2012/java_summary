@@ -129,6 +129,12 @@ Curator除了使用Watcher监听节点外，还提供了三种监听方式：
 - PathChildrenCache: 监控指定路径的节点的子节点，当新增、删除、修改字节点时，触发。
 - TreeCache: 可以监控整个树上的所有节点，相当于NodeCache和PathChildrenCache的组合。
 
+#### Curator分布式锁
+
+- InterProcessMutex: 可重入排它锁
+- InterProcessSemaphoreMutex: 不可重入
+- InterProcessReadWriteLock: 分布式读写锁
+- InterProcessMultiLock: 将多个锁作为单个锁的管理容器
 
 
 
