@@ -121,24 +121,42 @@ Curator是Netflix公司开源的一个Zookeeper客户端，后捐献给Apache基
 解决了很多ZooKeeper客户端非常底层的细节开发。提供分布式锁服务、集群领导选举、共享计数器、缓存机制、分布式队列等应用场景的
 抽象封装。
 
-#### Curator的监听器
+#### Curator的部分功能介绍
+
+Curator的org.apache.curator.framework.recipes包下提供了以下常用功能：
+- atomic: 分布式计数器(DistributedAtomicLong)。
+- barriers: 分布式屏障(DistributedBarrier)。
+- cache: 监听机制（NodeCache、PathChildrenCache、reeCache）。
+- leader: leader选举。
+- locks: 分布式锁（可重入锁，读写锁等）。
+- nodes: 提供持久化节点(PersistentNode)服务，即使客户端与zk服务的连接或者会话断开。
+- queue: 分布式队列(包括优先级队列DistributedPriorityQueue，延迟队列DistributedDelayQueue等)。
+- shared: 分布式共享计数器SharedCount。
+
+##### 监听器 
 
 Curator除了使用Watcher监听节点外，还提供了三种监听方式：
-
 - NodeCache: 监控指定路径的节点，当该节点发生增删改时，触发。
 - PathChildrenCache: 监控指定路径的节点的子节点，当新增、删除、修改字节点时，触发。
 - TreeCache: 可以监控整个树上的所有节点，相当于NodeCache和PathChildrenCache的组合。
 
-#### Curator分布式锁
+##### 分布式锁
 
 - InterProcessMutex: 可重入排它锁
 - InterProcessSemaphoreMutex: 不可重入互斥锁
 - InterProcessReadWriteLock: 分布式读写锁
 - InterProcessMultiLock: 将多个锁作为单个锁的管理容器
 
+##### 分布式计数器
 
+DistributedAtomicInteger、DistributedAtomicLong
+    
+    public DistributedAtomicInteger(CuratorFramework client, String counterPath, RetryPolicy retryPolicy)
+    public DistributedAtomicLong(CuratorFramework client, String counterPath, RetryPolicy retryPolicy)
+    
+    retryPolicy: 重试策略，如new RetryNTimes(3,100)，重试次数过小可能影响结果的准确性。
 
-
+  
 
 
 

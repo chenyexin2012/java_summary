@@ -1,5 +1,6 @@
-package com.holmes.zookeeper.clients.curator;
+package com.holmes.zookeeper.clients.curator.locks;
 
+import com.holmes.zookeeper.clients.curator.CuratorFrameworkCreate;
 import org.apache.curator.framework.recipes.locks.InterProcessMutex;
 import org.apache.curator.framework.recipes.locks.InterProcessReadWriteLock;
 import org.slf4j.Logger;

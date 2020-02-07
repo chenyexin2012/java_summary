@@ -1,6 +1,8 @@
-package com.holmes.zookeeper.clients.curator;
+package com.holmes.zookeeper.clients.curator.locks;
 
-import org.apache.curator.framework.recipes.locks.InterProcessMutex;
+import com.holmes.zookeeper.clients.curator.CuratorFrameworkCreate;
+import com.holmes.zookeeper.clients.curator.Increase;
+import org.apache.curator.framework.recipes.locks.InterProcessSemaphoreMutex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,12 +10,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-/**
- *
- */
-public class InterProcessMutexDemo {
+public class InterProcessSemaphoreMutexDemo {
 
-    private final static Logger log = LoggerFactory.getLogger(InterProcessMutexDemo.class);
+    private final static Logger log = LoggerFactory.getLogger(InterProcessSemaphoreMutexDemo.class);
 
     public static void main(String[] args) throws InterruptedException {
 
@@ -23,16 +22,14 @@ public class InterProcessMutexDemo {
 
         for (int i = 0; i < 10; i++) {
             executorService.submit(() -> {
-                // 可重入排它锁
-                InterProcessMutex lock = new InterProcessMutex(CuratorFrameworkCreate.getCuratorFramework(), "/increase");
+                // 分布式锁（不可重入）
+                InterProcessSemaphoreMutex lock = new InterProcessSemaphoreMutex(CuratorFrameworkCreate.getCuratorFramework(), "/increase");
                 for (int j = 0; j < 10; j++) {
                     try {
                         lock.acquire();
-//                        lock.acquire();
                         log.info(Thread.currentThread().getName() + " 获取到锁");
                         Increase.increase();
                         lock.release();
-//                        lock.release();
                         log.info(Thread.currentThread().getName() + " 释放了锁");
                     } catch (Exception e) {
                         e.printStackTrace();
