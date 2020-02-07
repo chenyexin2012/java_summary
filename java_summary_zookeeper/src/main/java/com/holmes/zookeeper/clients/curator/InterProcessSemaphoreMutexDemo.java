@@ -1,6 +1,5 @@
 package com.holmes.zookeeper.clients.curator;
 
-import com.holmes.zookeeper.distributelock.Test;
 import org.apache.curator.framework.recipes.locks.InterProcessSemaphoreMutex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 public class InterProcessSemaphoreMutexDemo {
 
-    private final static Logger log = LoggerFactory.getLogger(Test.class);
+    private final static Logger log = LoggerFactory.getLogger(InterProcessSemaphoreMutexDemo.class);
 
     public static void main(String[] args) throws InterruptedException {
 

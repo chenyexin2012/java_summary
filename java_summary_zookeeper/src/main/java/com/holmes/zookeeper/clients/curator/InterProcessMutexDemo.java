@@ -1,11 +1,6 @@
 package com.holmes.zookeeper.clients.curator;
 
-import com.holmes.zookeeper.distributelock.Test;
-import com.holmes.zookeeper.distributelock.ZookeeperDistributeLock;
-import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.recipes.locks.InterProcessMutex;
-import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +13,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class InterProcessMutexDemo {
 
-    private final static Logger log = LoggerFactory.getLogger(Test.class);
+    private final static Logger log = LoggerFactory.getLogger(InterProcessMutexDemo.class);
 
     public static void main(String[] args) throws InterruptedException {
 

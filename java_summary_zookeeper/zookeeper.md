@@ -132,7 +132,7 @@ Curator除了使用Watcher监听节点外，还提供了三种监听方式：
 #### Curator分布式锁
 
 - InterProcessMutex: 可重入排它锁
-- InterProcessSemaphoreMutex: 不可重入
+- InterProcessSemaphoreMutex: 不可重入互斥锁
 - InterProcessReadWriteLock: 分布式读写锁
 - InterProcessMultiLock: 将多个锁作为单个锁的管理容器
 
