@@ -79,6 +79,7 @@
         <module>java_summary_xml</module>
         <module>java_summary_springcloud</module>
         <module>java_summary_zookeeper</module>
+        <module>java_summary_elasticsearch</module>
     </modules>
 
     <dependencies>

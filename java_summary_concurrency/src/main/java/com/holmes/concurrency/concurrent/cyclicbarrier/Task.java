@@ -21,19 +21,15 @@ public class Task implements Runnable {
 
     @Override
     public void run() {
-        System.out.println(taskName + " 执行中。。。");
-        for (int i = 0; i < 99999; i++) {
-
-        }
         try {
-            System.out.println(taskName + " 任务执行完毕。。。");
+            System.out.println(taskName + " 进入等待。。。");
             // 等待障碍器通知
             cb.await();
+            System.out.println(taskName + " 开始执行。。。");
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (BrokenBarrierException e) {
             e.printStackTrace();
         }
-        System.out.println(taskName + " 退出。。。");
     }
 }

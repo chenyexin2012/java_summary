@@ -157,7 +157,19 @@ DistributedAtomicInteger、DistributedAtomicLong
     retryPolicy: 重试策略，如new RetryNTimes(3,100)，重试次数过小可能影响结果的准确性。
 
   
+##### 分布式屏障
 
+DistributedBarrier、DistributedDoubleBarrier
+    
+    public DistributedBarrier(CuratorFramework client, String barrierPath)
+    public DistributedDoubleBarrier(CuratorFramework client, String barrierPath, int memberQty)
+    
+单屏障和双屏障的区别：
+    
+    
+    
+    
+    
 
 
 
