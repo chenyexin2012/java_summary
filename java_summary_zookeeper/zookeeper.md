@@ -164,7 +164,11 @@ DistributedBarrier、DistributedDoubleBarrier
     public DistributedBarrier(CuratorFramework client, String barrierPath)
     public DistributedDoubleBarrier(CuratorFramework client, String barrierPath, int memberQty)
     
-单屏障和双屏障的区别：
+区别：
+    DistributedBarrier通过在一组进程中设置屏障（setBarrier），然后阻塞（waitOnBarrier）至其它进程移除（removeBarrier）这个屏障后，同时执行某个操作。
+    DistributedDoubleBarrier需要设置成员数量（memberQty），当所有成员到达（enter）第一个屏障时同时执行某个操作，然后到达（leave）第二个屏障时在执行另一个操作。
+    
+
     
     
     

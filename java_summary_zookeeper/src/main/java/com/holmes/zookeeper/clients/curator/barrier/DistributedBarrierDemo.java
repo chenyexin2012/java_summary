@@ -1,7 +1,6 @@
 package com.holmes.zookeeper.clients.curator.barrier;
 
 import com.holmes.zookeeper.clients.curator.CuratorFrameworkCreate;
-import com.holmes.zookeeper.clients.curator.locks.InterProcessMutexDemo;
 import org.apache.curator.framework.recipes.barriers.DistributedBarrier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +14,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class DistributedBarrierDemo {
 
-    private final static Logger log = LoggerFactory.getLogger(InterProcessMutexDemo.class);
+    private final static Logger log = LoggerFactory.getLogger(DistributedBarrierDemo.class);
 
     private static ExecutorService executorService = Executors.newFixedThreadPool(10);
 
@@ -30,6 +29,7 @@ public class DistributedBarrierDemo {
                 try {
                     log.info(Thread.currentThread().getName() + " 进入等待");
                     distributedBarrier.setBarrier();
+                    log.info(Thread.currentThread().getName() + " 设置屏障");
                     distributedBarrier.waitOnBarrier();
                     log.info(Thread.currentThread().getName() + " 执行操作");
                 } catch (Exception e) {
