@@ -121,6 +121,13 @@ public class ApiDemo {
         
     }
 
+    /**
+     * 新增文档
+     */
+    public void createDoc() {
+
+    }
+
     @Test
     public void destroy() throws IOException {
         client.close();

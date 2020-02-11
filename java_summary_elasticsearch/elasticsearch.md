@@ -203,9 +203,347 @@ join类型(join): join类型是Elasticsearch 6.x引入的类型，以取代淘�
 
 #### 创建索引
 
+1. 简单创建
+
+请求:
+
+    put book
+
+响应:
+    
+    {
+      "acknowledged" : true,
+      "shards_acknowledged" : true,
+      "index" : "book"
+    }
+    
+2. 添加参数
+
+请求:
+
+    put book
+    {
+      "settings": {
+        "number_of_shards": 3,
+        "number_of_replicas": 2
+      } 
+    }
+    
+响应:
+    
+    {
+      "acknowledged" : true,
+      "shards_acknowledged" : true,
+      "index" : "book"
+    }
+    
+3. 指定mappings
+
+请求:
+
+    put book
+    {
+      "settings": {
+        "number_of_shards": 3,
+        "number_of_replicas": 2
+      },
+      "mappings": {
+        "properties": {
+          "name": {
+            "type": "text",
+            "fields": {
+               "keyword": {
+                "type": "keyword", 
+                "ignore_above": 256
+              }
+            }
+          },
+          "isbn": {
+            "type": "text",
+            "fields": {
+               "keyword": {
+                "type": "keyword", 
+                "ignore_above": 256
+              }
+            }
+          },
+          "count": {
+            "type": "integer"
+          }
+        }
+      }
+    }
+    
+响应:
+
+    {
+      "acknowledged" : true,
+      "shards_acknowledged" : true,
+      "index" : "book"
+    }
+    
+#### 查看索引
+
+1. 查看指定索引配置
+
+请求:
+
+    get book/_settings
+
+响应:
+    
+    {
+      "book" : {
+        "settings" : {
+          "index" : {
+            "creation_date" : "1581406276648",
+            "number_of_shards" : "3",
+            "number_of_replicas" : "2",
+            "uuid" : "EU15QmYgSVGBqotZXBd6bQ",
+            "version" : {
+              "created" : "7050299"
+            },
+            "provided_name" : "book"
+          }
+        }
+      }
+    }
+
+2. 查看多个索引配置
 
 
+请求:
 
+    get book,student/_settings
+
+响应:
+    
+    {
+      "student" : {
+        "settings" : {
+          "index" : {
+            "creation_date" : "1581400441252",
+            "number_of_shards" : "1",
+            "number_of_replicas" : "1",
+            "uuid" : "1YF_VH8-Sna76MAbnCNYbQ",
+            "version" : {
+              "created" : "7050299"
+            },
+            "provided_name" : "student"
+          }
+        }
+      },
+      "book" : {
+        "settings" : {
+          "index" : {
+            "creation_date" : "1581406276648",
+            "number_of_shards" : "3",
+            "number_of_replicas" : "2",
+            "uuid" : "EU15QmYgSVGBqotZXBd6bQ",
+            "version" : {
+              "created" : "7050299"
+            },
+            "provided_name" : "book"
+          }
+        }
+      }
+    }
+    
+#### 删除索引
+
+请求:
+
+    delete book
+
+响应:
+    
+    {
+      "acknowledged" : true
+    }
+    
+#### 打开与关闭索引
+
+1. 打开索引
+
+请求:
+
+    post book/_open
+
+响应:
+    
+    {
+      "acknowledged" : true,
+      "shards_acknowledged" : true
+    }
+    
+2. 关闭索引
+
+请求:
+
+    post book/_close
+
+响应:
+    
+    {
+      "acknowledged" : true,
+      "shards_acknowledged" : true,
+      "indices" : {
+        "book" : {
+          "closed" : true
+        }
+      }
+    }
+    
+
+
+#### 新增文档
+
+1. 指定文档id
+
+请求:
+
+    put book/_doc/1
+    {
+      "name": "Sring Cloud微服务实战",
+      "isbn": "9787121313011",
+      "count": 10
+    }
+
+响应:
+
+    {
+      "_index" : "book",
+      "_type" : "_doc",
+      "_id" : "1",
+      "_version" : 1,
+      "result" : "created",
+      "_shards" : {
+        "total" : 3,
+        "successful" : 1,
+        "failed" : 0
+      },
+      "_seq_no" : 0,
+      "_primary_term" : 7
+    }
+    
+2. 不指定文档id
+
+请求:
+    
+    注：不指定文档id，只能使用post请求，不可以使用put请求
+    
+    post book/_doc
+    {
+      "name": "Sring Cloud微服务实战",
+      "isbn": "9787121313011",
+      "count": 10
+    }
+
+响应:
+    
+    {
+      "_index" : "book",
+      "_type" : "_doc",
+      "_id" : "dTtAM3AB45U7kfEw7dy4",
+      "_version" : 1,
+      "result" : "created",
+      "_shards" : {
+        "total" : 3,
+        "successful" : 1,
+        "failed" : 0
+      },
+      "_seq_no" : 2,
+      "_primary_term" : 7
+    }
+    
+3. 当新增文档时有不存在的字段，则动态更新索引的映射，如
+
+
+    post book/_doc/1
+    {
+      "name": "Sring Cloud微服务实战",
+      "isbn": "9787121313011",
+      "count": 10,
+      "price": 89.00
+    }
+
+请求参数说明：
+    
+    index/type/id
+    
+响应参数说明：
+
+- _index：文档所在的索引名
+- _type：文档所在的类型名
+- _id：文档ID
+- _version：文档的版本
+- result：created已经创建
+- _shards： _shards表示索引操作的复制过程的信息。
+    - total：指示应在其上执行索引操作的分片副本（主分片和副本分片）的数量。
+    - successful：表示索引操作成功的分片副本数。
+    - failed：在副本分片上索引操作失败的情况下包含复制相关错误。
+- _seq_no:
+- _primary_term: 
+
+#### 查看文档
+
+请求:
+
+    get book/_doc/1
+
+响应:
+    
+    id为1的文档存在:
+    
+    {
+      "_index" : "book",
+      "_type" : "_doc",
+      "_id" : "1",
+      "_version" : 1,
+      "_seq_no" : 0,
+      "_primary_term" : 7,
+      "found" : true,
+      "_source" : {
+        "name" : "Sring Cloud微服务实战",
+        "isbn" : "9787121313011",
+        "count" : 10
+      }
+    }
+    
+    id为1的文档不存在:
+    
+    {
+      "_index" : "book",
+      "_type" : "_doc",
+      "_id" : "1",
+      "found" : false
+    }
+
+响应参数说明：
+- found： 存在结果时为true，不存在则为false
+    
+#### 删除文档
+
+请求:
+    
+    delete book/_doc/1
+
+响应:
+    
+    {
+      "_index" : "book",
+      "_type" : "_doc",
+      "_id" : "1",
+      "_version" : 2,
+      "result" : "deleted",
+      "_shards" : {
+        "total" : 3,
+        "successful" : 1,
+        "failed" : 0
+      },
+      "_seq_no" : 4,
+      "_primary_term" : 7
+    }
 
 
 
