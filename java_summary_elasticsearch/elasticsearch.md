@@ -34,6 +34,10 @@ Elasticsearch与关系型数据库对比：
 这些复制版本（拷贝）可以称为复制分片，可以直接称之为副本。当主分片丢失时，集群可以将一个副本升级为新的主分片。
 在定义mapping时通过指定设置number_of_replicas参数指定副本数。
 
+路由机制: Elasticsearch的路由机制与其分片机制有着直接的关系。Elasticsearch的路由机制就是通过哈希算法，将具有相同哈希值的文档放到同一个
+主分片中。Elasticsearch的默认算法就是以文档的ID的哈希值作为依据将文档放到相应的主分片上，这种算法可以保证所有的数据在所有分片上均匀分布。
+用户也可以自行指定路由。
+
 ### 索引
 
 索引命名限制：
@@ -194,9 +198,9 @@ join类型(join): join类型是Elasticsearch 6.x引入的类型，以取代淘�
 |:----|:----|
 |_routing|将文档路由到特定分片的自定义路由值|
 
-- 自定义元字段: meta，用于自定义元数据。
+- 自定义元字段: _meta，用于自定义元数据。
 
-### 
+
 
 
 ### 常用接口
@@ -394,8 +398,6 @@ join类型(join): join类型是Elasticsearch 6.x引入的类型，以取代淘�
       }
     }
     
-
-
 #### 新增文档
 
 1. 指定文档id
@@ -456,8 +458,9 @@ join类型(join): join类型是Elasticsearch 6.x引入的类型，以取代淘�
       "_primary_term" : 7
     }
     
-3. 当新增文档时有不存在的字段，则动态更新索引的映射，如
+3. 当新增文档时有不存在的字段，则动态更新索引的映射
 
+例如：
 
     post book/_doc/1
     {
@@ -484,7 +487,6 @@ join类型(join): join类型是Elasticsearch 6.x引入的类型，以取代淘�
     - failed：在副本分片上索引操作失败的情况下包含复制相关错误。
 - _seq_no:
 - _primary_term: 
-
 #### 查看文档
 
 请求:
@@ -544,9 +546,563 @@ join类型(join): join类型是Elasticsearch 6.x引入的类型，以取代淘�
       "_seq_no" : 4,
       "_primary_term" : 7
     }
+#### 简单检索
+
+1. term查询
+
+请求:
+
+    get book/_search
+    {
+      "query": {
+        "term": {
+          "name": {
+            "value": "高性能"
+          }
+        }
+      }
+    }
+    
+响应:
+
+    {
+      "took" : 1,
+      "timed_out" : false,
+      "_shards" : {
+        "total" : 3,
+        "successful" : 3,
+        "skipped" : 0,
+        "failed" : 0
+      },
+      "hits" : {
+        "total" : {
+          "value" : 1,
+          "relation" : "eq"
+        },
+        "max_score" : 0.2876821,
+        "hits" : [
+          {
+            "_index" : "book",
+            "_type" : "_doc",
+            "_id" : "1",
+            "_score" : 0.2876821,
+            "_source" : {
+              "name" : "高性能MYSQL",
+              "isbn" : "9787121198854",
+              "count" : 10,
+              "price" : 128.0
+            }
+          }
+        ]
+      }
+    }
+
+2. 分页查询
+
+请求:
+    
+    get book/_search
+    {
+      "from": 0,
+      "size": 3,
+      "query": {
+        "match_all": {}
+      }
+    }
+    
+响应:
+    
+    {
+      "took" : 305,
+      "timed_out" : false,
+      "_shards" : {
+        "total" : 3,
+        "successful" : 3,
+        "skipped" : 0,
+        "failed" : 0
+      },
+      "hits" : {
+        "total" : {
+          "value" : 3,
+          "relation" : "eq"
+        },
+        "max_score" : 1.0,
+        "hits" : [
+          {
+            "_index" : "book",
+            "_type" : "_doc",
+            "_id" : "3",
+            "_score" : 1.0,
+            "_source" : {
+              "name" : "Spring Cloud微服务实战",
+              "isbn" : "9787121313011",
+              "count" : 10,
+              "price" : 12.0
+            }
+          },
+          {
+            "_index" : "book",
+            "_type" : "_doc",
+            "_id" : "2",
+            "_score" : 1.0,
+            "_source" : {
+              "name" : "Netty实战",
+              "isbn" : "9787115453686",
+              "count" : 10,
+              "price" : 69
+            }
+          },
+          {
+            "_index" : "book",
+            "_type" : "_doc",
+            "_id" : "1",
+            "_score" : 1.0,
+            "_source" : {
+              "name" : "高性能MYSQL",
+              "isbn" : "9787121198854",
+              "count" : 10,
+              "price" : 128.0
+            }
+          }
+        ]
+      }
+    }
+
+3. 显示指定字段
+
+请求:
+    
+    get book/_search
+    {
+      "_source": ["name", "isbn"],
+      "query": {
+        "term": {
+          "price": 128.00
+        }
+      }
+    }
+    
+响应:
+    
+    {
+      "took" : 1,
+      "timed_out" : false,
+      "_shards" : {
+        "total" : 3,
+        "successful" : 3,
+        "skipped" : 0,
+        "failed" : 0
+      },
+      "hits" : {
+        "total" : {
+          "value" : 1,
+          "relation" : "eq"
+        },
+        "max_score" : 1.0,
+        "hits" : [
+          {
+            "_index" : "book",
+            "_type" : "_doc",
+            "_id" : "1",
+            "_score" : 1.0,
+            "_source" : {
+              "isbn" : "9787121198854",
+              "name" : "高性能MYSQL"
+            }
+          }
+        ]
+      }
+    }
+
+4. 显示version
+
+请求:
+    
+    get book/_search
+    {
+      "version": true,
+      "query": {
+        "term": {
+          "price": 128.00
+        }
+      }
+    }
+    
+响应:
+
+    {
+      "took" : 1,
+      "timed_out" : false,
+      "_shards" : {
+        "total" : 3,
+        "successful" : 3,
+        "skipped" : 0,
+        "failed" : 0
+      },
+      "hits" : {
+        "total" : {
+          "value" : 1,
+          "relation" : "eq"
+        },
+        "max_score" : 1.0,
+        "hits" : [
+          {
+            "_index" : "book",
+            "_type" : "_doc",
+            "_id" : "1",
+            "_version" : 1,
+            "_score" : 1.0,
+            "_source" : {
+              "name" : "高性能MYSQL",
+              "isbn" : "9787121198854",
+              "count" : 10,
+              "price" : 128.0
+            }
+          }
+        ]
+      }
+    }
+
+5. 评分过滤
+
+请求:
+    
+    get book/_search
+    {
+      "min_score": 0.2,
+      "query": {
+        "term": {
+          "name": "高性能"
+        }
+      }
+    }
+
+响应:
+    
+    {
+      "took" : 0,
+      "timed_out" : false,
+      "_shards" : {
+        "total" : 3,
+        "successful" : 3,
+        "skipped" : 0,
+        "failed" : 0
+      },
+      "hits" : {
+        "total" : {
+          "value" : 1,
+          "relation" : "eq"
+        },
+        "max_score" : 0.2876821,
+        "hits" : [
+          {
+            "_index" : "book",
+            "_type" : "_doc",
+            "_id" : "1",
+            "_score" : 0.2876821,
+            "_source" : {
+              "name" : "高性能MYSQL",
+              "isbn" : "9787121198854",
+              "count" : 10,
+              "price" : 128.0
+            }
+          }
+        ]
+      }
+    }
+
+6. 高亮关键字
+
+请求:
+    
+    
+响应:
+
+7. 简单match查询
+
+与term查询的区别：match在匹配时会对所查找的关键词进行分词，然后按分词匹配查找，而term会直接对关键词进行查找。
+
+请求:
+
+    get book/_search
+    {
+      "query": {
+        "match": {
+          "name": "服务实战"
+        }
+      }
+    }
+    
+响应:
+
+    {
+      "took" : 1,
+      "timed_out" : false,
+      "_shards" : {
+        "total" : 3,
+        "successful" : 3,
+        "skipped" : 0,
+        "failed" : 0
+      },
+      "hits" : {
+        "total" : {
+          "value" : 2,
+          "relation" : "eq"
+        },
+        "max_score" : 1.3022472,
+        "hits" : [
+          {
+            "_index" : "book",
+            "_type" : "_doc",
+            "_id" : "3",
+            "_score" : 1.3022472,
+            "_source" : {
+              "name" : "Spring Cloud微服务实战",
+              "isbn" : "9787121313011",
+              "count" : 10,
+              "price" : 12.0
+            }
+          },
+          {
+            "_index" : "book",
+            "_type" : "_doc",
+            "_id" : "2",
+            "_score" : 0.22920427,
+            "_source" : {
+              "name" : "Netty实战",
+              "isbn" : "9787115453686",
+              "count" : 10,
+              "price" : 69
+            }
+          }
+        ]
+      }
+    }
+
+8. 使用操作符的match查询
+
+请求:
+    
+    // 使用and操作符，对查询条件进行分词后查找
+    get book/_search
+    {
+     "query": {
+       "match": {
+         "name": {
+           "query": "服务实战",
+           "operator": "and"
+         }
+       }
+     }
+    }
+    
+响应:
+
+    {
+      "took" : 3,
+      "timed_out" : false,
+      "_shards" : {
+        "total" : 3,
+        "successful" : 3,
+        "skipped" : 0,
+        "failed" : 0
+      },
+      "hits" : {
+        "total" : {
+          "value" : 1,
+          "relation" : "eq"
+        },
+        "max_score" : 1.3022472,
+        "hits" : [
+          {
+            "_index" : "book",
+            "_type" : "_doc",
+            "_id" : "3",
+            "_score" : 1.3022472,
+            "_source" : {
+              "name" : "Spring Cloud微服务实战",
+              "isbn" : "9787121313011",
+              "count" : 10,
+              "price" : 12.0
+            }
+          }
+        ]
+      }
+    }
 
 
+9. match_phrase查询（短语查询）
 
+使用match_phrase查询，会对查询内容进行分词，返回的数据需要满足下列要求：
+- 分词后的所有词项需要出现在该字段中
+- 字段中的词项顺序要一致
+
+请求:
+
+    get book/_search
+    {
+      "query": {
+        "match_phrase": {
+          "name": "服务实战"
+        }
+      }
+    }
+    
+响应:
+
+    {
+      "took" : 1,
+      "timed_out" : false,
+      "_shards" : {
+        "total" : 3,
+        "successful" : 3,
+        "skipped" : 0,
+        "failed" : 0
+      },
+      "hits" : {
+        "total" : {
+          "value" : 1,
+          "relation" : "eq"
+        },
+        "max_score" : 1.3022472,
+        "hits" : [
+          {
+            "_index" : "book",
+            "_type" : "_doc",
+            "_id" : "3",
+            "_score" : 1.3022472,
+            "_source" : {
+              "name" : "Spring Cloud微服务实战",
+              "isbn" : "9787121313011",
+              "count" : 10,
+              "price" : 12.0
+            }
+          }
+        ]
+      }
+    }
+
+10. match_phrase_prefix查询（前缀查询）
+
+match_phrase_prefix与match_phrase基本相同，只是它允许查询条件进行分词后的最后一个词满足前缀匹配即可。
+
+请求:
+    
+    get book/_search
+    {
+      "query": {
+        "match_phrase_prefix": {
+          "name": "Spring Clou"
+        }
+      }
+    }
+    
+响应:
+
+    {
+      "took" : 1,
+      "timed_out" : false,
+      "_shards" : {
+        "total" : 3,
+        "successful" : 3,
+        "skipped" : 0,
+        "failed" : 0
+      },
+      "hits" : {
+        "total" : {
+          "value" : 1,
+          "relation" : "eq"
+        },
+        "max_score" : 1.1508858,
+        "hits" : [
+          {
+            "_index" : "book",
+            "_type" : "_doc",
+            "_id" : "3",
+            "_score" : 1.1508858,
+            "_source" : {
+              "name" : "Spring Cloud微服务实战",
+              "isbn" : "9787121313011",
+              "count" : 10,
+              "price" : 12.0
+            }
+          }
+        ]
+      }
+    }
+
+11. multi_match查询（多字段查询）
+
+请求:
+    
+    get book/_search
+    {
+      "query": {
+         "multi_match": {
+           "query": "9787115453686 Cloud",
+           "fields": ["name", "isbn"]
+         }
+      }
+    }
+    
+响应:
+
+    {
+      "took" : 1,
+      "timed_out" : false,
+      "_shards" : {
+        "total" : 3,
+        "successful" : 3,
+        "skipped" : 0,
+        "failed" : 0
+      },
+      "hits" : {
+        "total" : {
+          "value" : 2,
+          "relation" : "eq"
+        },
+        "max_score" : 0.6931472,
+        "hits" : [
+          {
+            "_index" : "book",
+            "_type" : "_doc",
+            "_id" : "2",
+            "_score" : 0.6931472,
+            "_source" : {
+              "name" : "Netty实战",
+              "isbn" : "9787115453686",
+              "count" : 10,
+              "price" : 69
+            }
+          },
+          {
+            "_index" : "book",
+            "_type" : "_doc",
+            "_id" : "3",
+            "_score" : 0.5754429,
+            "_source" : {
+              "name" : "Spring Cloud微服务实战",
+              "isbn" : "9787121313011",
+              "count" : 10,
+              "price" : 12.0
+            }
+          }
+        ]
+      }
+    }
+    
+12. common_terms查询（常用词查询）
+
+请求:
+    
+    
+响应:  
+
+
+请求:
+    
+    
+响应:
 
 参考博客: 
 
@@ -555,3 +1111,4 @@ join类型(join): join类型是Elasticsearch 6.x引入的类型，以取代淘�
 [https://cloud.tencent.com/developer/article/1436463]
 
 [https://blog.csdn.net/chengyuqiang/category_9271005.html]
+

@@ -28,9 +28,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class ApiDemo {
+public class RestHighLevelClientApiDemo {
 
-    private static final Logger log = LoggerFactory.getLogger(ApiDemo.class);
+    private static final Logger log = LoggerFactory.getLogger(RestHighLevelClientApiDemo.class);
 
     private static final String HOST = "127.0.0.1";
 
@@ -60,9 +60,10 @@ public class ApiDemo {
 
         // 2. settings
         request.settings(Settings.builder()
-                        .put("index.number_of_shards", 3)   // 分片数
-                        .put("index.number_of_replicas", 2) // 副本数
+                .put("index.number_of_shards", 3)   // 分片数
+                .put("index.number_of_replicas", 2) // 副本数
 //                .put("analysis.analyzer.default.tokenizer", "ik_smart") // 默认分词器
+                .put("analysis.analyzer.default.tokenizer", "ik_max_word") // 将文本做最细粒度的拆分
         );
 
         // 3. 设置mapping
@@ -74,11 +75,14 @@ public class ApiDemo {
         price.put("type", "float");
         Map<String, Object> count = new HashMap<>();
         count.put("type", "integer");
+        Map<String, Object> isbn = new HashMap<>();
+        isbn.put("type", "text");
 
         Map<String, Object> properties = new HashMap<>();
         properties.put("name", name);
         properties.put("price", price);
         properties.put("count", count);
+        properties.put("isbn", isbn);
 
         mapping.put("properties", properties);
 
@@ -286,6 +290,14 @@ public class ApiDemo {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     *
+     */
+    public void search() {
+
+
     }
 
     @Test
