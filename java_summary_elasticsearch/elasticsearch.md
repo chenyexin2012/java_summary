@@ -815,8 +815,67 @@ join类型(join): join类型是Elasticsearch 6.x引入的类型，以取代淘�
 
 请求:
     
+    get book/_search
+    {
+      "query": {
+        "match": {
+          "name": {
+            "query": "高性能"
+          }
+        }
+      },
+      "highlight": {
+        "pre_tags": [
+          "<strong>"
+        ],
+        "post_tags": [
+          "</strong>"
+        ],
+        "fields": {
+          "name": {}
+        }
+      }
+    }
     
 响应:
+
+    {
+      "took" : 1,
+      "timed_out" : false,
+      "_shards" : {
+        "total" : 3,
+        "successful" : 3,
+        "skipped" : 0,
+        "failed" : 0
+      },
+      "hits" : {
+        "total" : {
+          "value" : 1,
+          "relation" : "eq"
+        },
+        "max_score" : 0.5753642,
+        "hits" : [
+          {
+            "_index" : "book",
+            "_type" : "_doc",
+            "_id" : "1",
+            "_score" : 0.5753642,
+            "_source" : {
+              "name" : "高性能MYSQL",
+              "isbn" : "9787121198854",
+              "count" : 10,
+              "price" : 128.0
+            },
+            "highlight" : {
+              "name" : [
+                "<strong>高性能</strong>MYSQL"
+              ]
+            }
+          }
+        ]
+      }
+    }
+
 
 7. 简单match查询
 
@@ -1098,6 +1157,7 @@ match_phrase_prefix与match_phrase基本相同，只是它允许查询条件进�
     
 响应:  
 
+13. 
 
 请求:
     

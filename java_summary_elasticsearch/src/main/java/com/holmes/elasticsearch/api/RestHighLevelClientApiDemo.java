@@ -11,6 +11,9 @@ import org.elasticsearch.action.get.GetRequest;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.search.SearchRequestBuilder;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
@@ -18,6 +21,12 @@ import org.elasticsearch.client.*;
 import org.elasticsearch.client.indices.CreateIndexRequest;
 import org.elasticsearch.client.indices.CreateIndexResponse;
 import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.index.query.*;
+import org.elasticsearch.index.search.MultiMatchQuery;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -60,10 +69,10 @@ public class RestHighLevelClientApiDemo {
 
         // 2. settings
         request.settings(Settings.builder()
-                .put("index.number_of_shards", 3)   // 分片数
-                .put("index.number_of_replicas", 2) // 副本数
+                        .put("index.number_of_shards", 3)   // 分片数
+                        .put("index.number_of_replicas", 2) // 副本数
 //                .put("analysis.analyzer.default.tokenizer", "ik_smart") // 默认分词器
-                .put("analysis.analyzer.default.tokenizer", "ik_max_word") // 将文本做最细粒度的拆分
+                        .put("analysis.analyzer.default.tokenizer", "ik_max_word") // 将文本做最细粒度的拆分
         );
 
         // 3. 设置mapping
@@ -293,11 +302,74 @@ public class RestHighLevelClientApiDemo {
     }
 
     /**
-     *
+     * term检索
      */
+    @Test
     public void search() {
 
+        SearchSourceBuilder builder = new SearchSourceBuilder();
+//        // 分页
+//        builder.from(0);
+//        builder.size(3);
 
+//        // 显示version，默认为false
+//        builder.version(true);
+
+//        // 过滤指定字段，为空时则不过滤
+//        builder.fetchSource(new String[]{"name", "isbn"}, new String[0]);
+
+//        // 高亮关键字
+//        HighlightBuilder highlightBuilder = new HighlightBuilder();
+//        highlightBuilder.preTags("<strong>");
+//        highlightBuilder.postTags("</strong>");
+//        highlightBuilder.field("name");
+//        builder.highlighter(highlightBuilder);
+
+//        // 使用term查询
+//        TermQueryBuilder queryBuilder =  QueryBuilders.termQuery("price", "128");
+//        builder.query(queryBuilder);
+
+//        // match查询
+//        MatchQueryBuilder matchQueryBuilder = QueryBuilders.matchQuery("name", "服务实战");
+//        // 使用运算符
+//        matchQueryBuilder.operator(Operator.AND);
+//        builder.query(matchQueryBuilder);
+
+//        // 短语查询
+//        MatchPhraseQueryBuilder matchPhraseQueryBuilder = QueryBuilders.matchPhraseQuery("name", "服务实战");
+//        builder.query(matchPhraseQueryBuilder);
+
+//        // 前缀查询
+//        MatchPhrasePrefixQueryBuilder matchPhrasePrefixQueryBuilder = QueryBuilders.matchPhrasePrefixQuery("name", "Spring Clou");
+//        builder.query(matchPhrasePrefixQueryBuilder);
+
+//        // 多字段查询
+//        MultiMatchQueryBuilder multiMatchQuery = QueryBuilders.multiMatchQuery("9787115453686 Cloud", "name", "isbn");
+//        builder.query(multiMatchQuery);
+
+//        // 评分过滤
+//        builder.minScore(0.5F);
+
+        SearchRequest request = new SearchRequest(new String[]{"book"}, builder);
+        log.info("request: {}", request.source());
+        try {
+            SearchResponse response = client.search(request, RequestOptions.DEFAULT);
+            log.info("response: {}", response);
+            SearchHit[] searchHits = response.getHits().getHits();
+            log.info("length: {}", searchHits.length);
+            for (SearchHit searchHit : searchHits) {
+                log.info("************************************");
+                log.info("id: {}", searchHit.getId());
+                log.info("index: {}", searchHit.getIndex());
+                log.info("version: {}", searchHit.getVersion());
+                log.info("score: {}", searchHit.getScore());
+                log.info("source: {}", searchHit.getSourceAsString());
+                log.info("highlight: {}", searchHit.getHighlightFields().toString());
+                log.info("************************************");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
