@@ -50,7 +50,7 @@
         <zkclient.version>0.11</zkclient.version>
         <curator.version>4.2.0</curator.version>
         <commons.logging.version>1.2</commons.logging.version>
-        <netty-version>4.1.25.Final</netty-version>
+        <netty-version>4.1.44.Final</netty-version>
     </properties>
 
     <modules>
