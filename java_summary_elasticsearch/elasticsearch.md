@@ -487,6 +487,7 @@ join类型(join): join类型是Elasticsearch 6.x引入的类型，以取代淘�
     - failed：在副本分片上索引操作失败的情况下包含复制相关错误。
 - _seq_no:
 - _primary_term: 
+
 #### 查看文档
 
 请求:
@@ -546,6 +547,7 @@ join类型(join): join类型是Elasticsearch 6.x引入的类型，以取代淘�
       "_seq_no" : 4,
       "_primary_term" : 7
     }
+    
 #### 简单检索
 
 1. term查询
@@ -876,8 +878,83 @@ join类型(join): join类型是Elasticsearch 6.x引入的类型，以取代淘�
       }
     }
 
+7. terms查询
 
-7. 简单match查询
+返回包含任何一个给定值的数据。
+
+请求:
+    
+    get book/_search
+    {
+      "query": {
+        "terms": {
+          "name": [
+            "高性能",
+            "实战"
+          ]
+        }
+      }
+    }
+
+响应:
+    
+    {
+      "took" : 1,
+      "timed_out" : false,
+      "_shards" : {
+        "total" : 3,
+        "successful" : 3,
+        "skipped" : 0,
+        "failed" : 0
+      },
+      "hits" : {
+        "total" : {
+          "value" : 3,
+          "relation" : "eq"
+        },
+        "max_score" : 1.0,
+        "hits" : [
+          {
+            "_index" : "book",
+            "_type" : "_doc",
+            "_id" : "3",
+            "_score" : 1.0,
+            "_source" : {
+              "name" : "Spring Cloud微服务实战",
+              "isbn" : "9787121313011",
+              "count" : 10,
+              "price" : 12.0
+            }
+          },
+          {
+            "_index" : "book",
+            "_type" : "_doc",
+            "_id" : "2",
+            "_score" : 1.0,
+            "_source" : {
+              "name" : "Netty实战",
+              "isbn" : "9787115453686",
+              "count" : 10,
+              "price" : 69
+            }
+          },
+          {
+            "_index" : "book",
+            "_type" : "_doc",
+            "_id" : "1",
+            "_score" : 1.0,
+            "_source" : {
+              "name" : "高性能MYSQL",
+              "isbn" : "9787121198854",
+              "count" : 10,
+              "price" : 128.0
+            }
+          }
+        ]
+      }
+    }
+
+8. 简单match查询
 
 与term查询的区别：match在匹配时会对所查找的关键词进行分词，然后按分词匹配查找，而term会直接对关键词进行查找。
 
@@ -938,7 +1015,7 @@ join类型(join): join类型是Elasticsearch 6.x引入的类型，以取代淘�
       }
     }
 
-8. 使用操作符的match查询
+9. 使用操作符的match查询
 
 请求:
     
@@ -990,7 +1067,7 @@ join类型(join): join类型是Elasticsearch 6.x引入的类型，以取代淘�
     }
 
 
-9. match_phrase查询（短语查询）
+10. match_phrase查询（短语查询）
 
 使用match_phrase查询，会对查询内容进行分词，返回的数据需要满足下列要求：
 - 分词后的所有词项需要出现在该字段中
@@ -1041,7 +1118,7 @@ join类型(join): join类型是Elasticsearch 6.x引入的类型，以取代淘�
       }
     }
 
-10. match_phrase_prefix查询（前缀查询）
+11. match_phrase_prefix查询（短语前缀查询）
 
 match_phrase_prefix与match_phrase基本相同，只是它允许查询条件进行分词后的最后一个词满足前缀匹配即可。
 
@@ -1090,7 +1167,7 @@ match_phrase_prefix与match_phrase基本相同，只是它允许查询条件进�
       }
     }
 
-11. multi_match查询（多字段查询）
+12. multi_match查询（多字段查询）
 
 请求:
     
@@ -1150,19 +1227,425 @@ match_phrase_prefix与match_phrase基本相同，只是它允许查询条件进�
       }
     }
     
-12. common_terms查询（常用词查询）
+13. common_terms查询（常用词查询）
 
 请求:
     
     
 响应:  
 
-13. 
+14. range查询（范围查询）
+
+请求:
+
+    get book/_search
+    {
+      "query": {
+        "range": {
+          "price": {
+            "gte": 100,
+            "lte": 200
+          }
+        }
+      }
+    }
+    
+响应:
+
+    {
+      "took" : 3,
+      "timed_out" : false,
+      "_shards" : {
+        "total" : 3,
+        "successful" : 3,
+        "skipped" : 0,
+        "failed" : 0
+      },
+      "hits" : {
+        "total" : {
+          "value" : 1,
+          "relation" : "eq"
+        },
+        "max_score" : 1.0,
+        "hits" : [
+          {
+            "_index" : "book",
+            "_type" : "_doc",
+            "_id" : "1",
+            "_score" : 1.0,
+            "_source" : {
+              "name" : "高性能MYSQL",
+              "isbn" : "9787121198854",
+              "count" : 10,
+              "price" : 128.0
+            }
+          }
+        ]
+      }
+    }
+
+14. exists查询
+
+可匹配的记录：
+- 字段存在且值非空
+- 字段存在但为空字符串“”
+- 字段类型为数组且至少有一个值非空
+
+请求:
+    
+    get book/_search
+    {
+      "query": {
+        "exists": {
+          "field": "author"
+        }
+      }
+    }
+    
+响应: 
+
+    {
+      "took" : 964,
+      "timed_out" : false,
+      "_shards" : {
+        "total" : 3,
+        "successful" : 3,
+        "skipped" : 0,
+        "failed" : 0
+      },
+      "hits" : {
+        "total" : {
+          "value" : 2,
+          "relation" : "eq"
+        },
+        "max_score" : 1.0,
+        "hits" : [
+          {
+            "_index" : "book",
+            "_type" : "_doc",
+            "_id" : "5",
+            "_score" : 1.0,
+            "_source" : {
+              "name" : "C++入门",
+              "isbn" : "231316464227",
+              "count" : 10,
+              "price" : 123.0,
+              "author" : "张三"
+            }
+          },
+          {
+            "_index" : "book",
+            "_type" : "_doc",
+            "_id" : "2",
+            "_score" : 1.0,
+            "_source" : {
+              "name" : "Netty实战",
+              "isbn" : "9787115453686",
+              "count" : 10,
+              "price" : 69,
+              "author" : ""
+            }
+          }
+        ]
+      }
+    }
+
+15. prefix查询（前缀查询）
+
+请求:
+    
+    get book/_search
+    {
+      "query": {
+        "prefix": {
+          "name": "spring"
+        }
+      }
+    }
+    
+响应: 
+
+    {
+      "took" : 6,
+      "timed_out" : false,
+      "_shards" : {
+        "total" : 3,
+        "successful" : 3,
+        "skipped" : 0,
+        "failed" : 0
+      },
+      "hits" : {
+        "total" : {
+          "value" : 1,
+          "relation" : "eq"
+        },
+        "max_score" : 1.0,
+        "hits" : [
+          {
+            "_index" : "book",
+            "_type" : "_doc",
+            "_id" : "3",
+            "_score" : 1.0,
+            "_source" : {
+              "name" : "Spring Cloud微服务实战",
+              "isbn" : "9787121313011",
+              "count" : 10,
+              "price" : 12.0
+            }
+          }
+        ]
+      }
+    }
+
+16. wildcard查询（通配符查询）
+
+请求:
+    
+    get book/_search
+    {
+      "query": {
+        "wildcard": {
+          "name": "*实战*"
+        }
+      }
+    }
+    
+响应: 
+    
+    {
+      "took" : 4,
+      "timed_out" : false,
+      "_shards" : {
+        "total" : 3,
+        "successful" : 3,
+        "skipped" : 0,
+        "failed" : 0
+      },
+      "hits" : {
+        "total" : {
+          "value" : 2,
+          "relation" : "eq"
+        },
+        "max_score" : 1.0,
+        "hits" : [
+          {
+            "_index" : "book",
+            "_type" : "_doc",
+            "_id" : "3",
+            "_score" : 1.0,
+            "_source" : {
+              "name" : "Spring Cloud微服务实战",
+              "isbn" : "9787121313011",
+              "count" : 10,
+              "price" : 12.0
+            }
+          },
+          {
+            "_index" : "book",
+            "_type" : "_doc",
+            "_id" : "2",
+            "_score" : 1.0,
+            "_source" : {
+              "name" : "Netty实战",
+              "isbn" : "9787115453686",
+              "count" : 10,
+              "price" : 69,
+              "author" : ""
+            }
+          }
+        ]
+      }
+    }
+
+17. regexp查询（正则表达式查询）
+
+请求:
+    
+    get book/_search
+    {
+      "query": {
+        "regexp": {
+          "name": ".*实战.*"
+        }
+      }
+    }
+    
+响应: 
+
+    {
+      "took" : 2,
+      "timed_out" : false,
+      "_shards" : {
+        "total" : 3,
+        "successful" : 3,
+        "skipped" : 0,
+        "failed" : 0
+      },
+      "hits" : {
+        "total" : {
+          "value" : 2,
+          "relation" : "eq"
+        },
+        "max_score" : 1.0,
+        "hits" : [
+          {
+            "_index" : "book",
+            "_type" : "_doc",
+            "_id" : "3",
+            "_score" : 1.0,
+            "_source" : {
+              "name" : "Spring Cloud微服务实战",
+              "isbn" : "9787121313011",
+              "count" : 10,
+              "price" : 12.0
+            }
+          },
+          {
+            "_index" : "book",
+            "_type" : "_doc",
+            "_id" : "2",
+            "_score" : 1.0,
+            "_source" : {
+              "name" : "Netty实战",
+              "isbn" : "9787115453686",
+              "count" : 10,
+              "price" : 69,
+              "author" : ""
+            }
+          }
+        ]
+      }
+    }
+
+18. fuzzy查询（模糊查询）
+
+请求:
+    
+    get book/_search
+    {
+      "query": {
+        "fuzzy": {
+          "name": "clood"
+        }
+      }
+    }
+    
+响应: 
+
+    {
+      "took" : 1,
+      "timed_out" : false,
+      "_shards" : {
+        "total" : 3,
+        "successful" : 3,
+        "skipped" : 0,
+        "failed" : 0
+      },
+      "hits" : {
+        "total" : {
+          "value" : 1,
+          "relation" : "eq"
+        },
+        "max_score" : 0.46035436,
+        "hits" : [
+          {
+            "_index" : "book",
+            "_type" : "_doc",
+            "_id" : "3",
+            "_score" : 0.46035436,
+            "_source" : {
+              "name" : "Spring Cloud微服务实战",
+              "isbn" : "9787121313011",
+              "count" : 10,
+              "price" : 12.0
+            }
+          }
+        ]
+      }
+    }
+
+
+19. type查询
 
 请求:
     
     
-响应:
+响应: 
+
+20. ids查询
+
+请求:
+
+    get /_search 
+    {
+      "query": {
+        "ids": {
+          "values": [1, 2]
+        }
+      }
+    }
+    
+响应: 
+
+    {
+      "took" : 2,
+      "timed_out" : false,
+      "_shards" : {
+        "total" : 18,
+        "successful" : 18,
+        "skipped" : 0,
+        "failed" : 0
+      },
+      "hits" : {
+        "total" : {
+          "value" : 3,
+          "relation" : "eq"
+        },
+        "max_score" : 1.0,
+        "hits" : [
+          {
+            "_index" : "book1",
+            "_type" : "_doc",
+            "_id" : "2",
+            "_score" : 1.0,
+            "_source" : {
+              "name" : "Netty实战",
+              "isbn" : "9787115453686",
+              "count" : 10,
+              "price" : 69,
+              "author" : ""
+            }
+          },
+          {
+            "_index" : "book",
+            "_type" : "_doc",
+            "_id" : "2",
+            "_score" : 1.0,
+            "_source" : {
+              "name" : "Netty实战",
+              "isbn" : "9787115453686",
+              "count" : 10,
+              "price" : 69,
+              "author" : ""
+            }
+          },
+          {
+            "_index" : "book",
+            "_type" : "_doc",
+            "_id" : "1",
+            "_score" : 1.0,
+            "_source" : {
+              "name" : "高性能MYSQL",
+              "isbn" : "9787121198854",
+              "count" : 10,
+              "price" : 128.0
+            }
+          }
+        ]
+      }
+    }
+
+
 
 参考博客: 
 
