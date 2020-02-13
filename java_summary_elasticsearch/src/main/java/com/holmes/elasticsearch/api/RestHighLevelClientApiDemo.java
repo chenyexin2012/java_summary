@@ -329,6 +329,16 @@ public class RestHighLevelClientApiDemo {
 //        TermQueryBuilder queryBuilder =  QueryBuilders.termQuery("price", "128");
 //        builder.query(queryBuilder);
 
+//        // terms查询
+//        TermsQueryBuilder termsQueryBuilder = QueryBuilders.termsQuery("name", "高性能", "实战");
+//        builder.query(termsQueryBuilder);
+
+//        // 常用词查询，待测试
+//        CommonTermsQueryBuilder commonTermsQueryBuilder = QueryBuilders.commonTermsQuery("name", "to be");
+//        commonTermsQueryBuilder.lowFreqOperator(Operator.AND);
+//        commonTermsQueryBuilder.cutoffFrequency(0.0001F);
+//        builder.query(commonTermsQueryBuilder);
+
 //        // match查询
 //        MatchQueryBuilder matchQueryBuilder = QueryBuilders.matchQuery("name", "服务实战");
 //        // 使用运算符
@@ -339,13 +349,44 @@ public class RestHighLevelClientApiDemo {
 //        MatchPhraseQueryBuilder matchPhraseQueryBuilder = QueryBuilders.matchPhraseQuery("name", "服务实战");
 //        builder.query(matchPhraseQueryBuilder);
 
-//        // 前缀查询
+//        // 短语前缀查询
 //        MatchPhrasePrefixQueryBuilder matchPhrasePrefixQueryBuilder = QueryBuilders.matchPhrasePrefixQuery("name", "Spring Clou");
 //        builder.query(matchPhrasePrefixQueryBuilder);
 
 //        // 多字段查询
 //        MultiMatchQueryBuilder multiMatchQuery = QueryBuilders.multiMatchQuery("9787115453686 Cloud", "name", "isbn");
 //        builder.query(multiMatchQuery);
+
+//        // 范围查询
+//        RangeQueryBuilder rangeQueryBuilder = QueryBuilders.rangeQuery("price");
+//        rangeQueryBuilder.gte(100);
+//        rangeQueryBuilder.lte(200);
+//        builder.query(rangeQueryBuilder);
+
+//        // exists查询
+//        ExistsQueryBuilder existsQueryBuilder = QueryBuilders.existsQuery("author");
+//        builder.query(existsQueryBuilder);
+
+//        // 前缀查询
+//        PrefixQueryBuilder prefixQueryBuilder = QueryBuilders.prefixQuery("name", "spring");
+//        builder.query(prefixQueryBuilder);
+
+//        // 通配符查询
+//        WildcardQueryBuilder wildcardQueryBuilder = QueryBuilders.wildcardQuery("name", "*实战*");
+//        builder.query(wildcardQueryBuilder);
+
+//        // 正则表达式查询
+//        RegexpQueryBuilder regexpQueryBuilder = QueryBuilders.regexpQuery("name", ".*实战.*");
+//        builder.query(regexpQueryBuilder);
+
+//        // type查询，待测试
+//        TypeQueryBuilder typeQueryBuilder = QueryBuilders.typeQuery("text");
+//        builder.query(typeQueryBuilder);
+
+//        // ids查询
+//        IdsQueryBuilder idsQueryBuilder = QueryBuilders.idsQuery();
+//        idsQueryBuilder.addIds("1", "2");
+//        builder.query(idsQueryBuilder);
 
 //        // 评分过滤
 //        builder.minScore(0.5F);
