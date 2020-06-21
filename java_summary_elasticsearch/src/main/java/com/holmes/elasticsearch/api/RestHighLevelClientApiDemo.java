@@ -25,6 +25,8 @@ import org.elasticsearch.index.query.*;
 import org.elasticsearch.index.search.MultiMatchQuery;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.aggregations.AggregationBuilder;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.junit.Before;
@@ -465,12 +467,82 @@ public class RestHighLevelClientApiDemo {
     }
 
     /**
-     *
+     * 指标聚合
      */
     @Test
     public void test3() {
 
+        SearchSourceBuilder builder = new SearchSourceBuilder();
+        builder.size(0);
+        AggregationBuilder aggs = AggregationBuilders.max("max_point").field("point");
+//        AggregationBuilder aggs = AggregationBuilders.min("min_point").field("point");
+//        AggregationBuilder aggs = AggregationBuilders.avg("avg_point").field("point");
+//        AggregationBuilder aggs = AggregationBuilders.sum("sum_point").field("point");
+//        AggregationBuilder aggs = AggregationBuilders.cardinality("cardinality_point").field("point");
+//        AggregationBuilder aggs = AggregationBuilders.count("count_point").field("point");
+//        AggregationBuilder aggs = AggregationBuilders.stats("stats_point").field("point");
+//        AggregationBuilder aggs = AggregationBuilders.extendedStats("mextended_stats_point").field("point");
 
+        builder.aggregation(aggs);
+        SearchRequest request = new SearchRequest(new String[]{"douban_book_index"}, builder);
+        log.info("request: {}", request.source());
+        try {
+            SearchResponse response = client.search(request, RequestOptions.DEFAULT);
+            log.info("response: {}", response);
+            SearchHit[] searchHits = response.getHits().getHits();
+            log.info("length: {}", searchHits.length);
+            for (SearchHit searchHit : searchHits) {
+                log.info("************************************");
+                log.info("id: {}", searchHit.getId());
+                log.info("index: {}", searchHit.getIndex());
+                log.info("version: {}", searchHit.getVersion());
+                log.info("score: {}", searchHit.getScore());
+                log.info("source: {}", searchHit.getSourceAsString());
+                log.info("highlight: {}", searchHit.getHighlightFields().toString());
+                log.info("************************************");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 桶聚合
+     */
+    @Test
+    public void test4() {
+
+        SearchSourceBuilder builder = new SearchSourceBuilder();
+        builder.size(0);
+
+        /**
+         * 按豆瓣评分进行分组，并求每个分组的的书籍的平均价格
+         */
+        AggregationBuilder aggs = AggregationBuilders.terms("point_count").field("point");
+        AggregationBuilder avgPrice = AggregationBuilders.avg("avg_price").field("price");
+
+        aggs.subAggregation(avgPrice);
+        builder.aggregation(aggs);
+        SearchRequest request = new SearchRequest(new String[]{"douban_book_index"}, builder);
+        log.info("request: {}", request.source());
+        try {
+            SearchResponse response = client.search(request, RequestOptions.DEFAULT);
+            log.info("response: {}", response);
+            SearchHit[] searchHits = response.getHits().getHits();
+            log.info("length: {}", searchHits.length);
+            for (SearchHit searchHit : searchHits) {
+                log.info("************************************");
+                log.info("id: {}", searchHit.getId());
+                log.info("index: {}", searchHit.getIndex());
+                log.info("version: {}", searchHit.getVersion());
+                log.info("score: {}", searchHit.getScore());
+                log.info("source: {}", searchHit.getSourceAsString());
+                log.info("highlight: {}", searchHit.getHighlightFields().toString());
+                log.info("************************************");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test

@@ -2021,8 +2021,97 @@ match_phrase_prefix与match_phrase基本相同，只是它允许查询条件进�
         }
       }
     }
+    
+5. cardinality
 
-5. stats
+基数统计，求某字段不同的值的个数。
+
+请求：
+
+    get douban_book_index/_search
+    {
+      "size": 0,
+      "aggs": {
+        "cardinality_point": {
+          "cardinality": {
+            "field": "point"
+          }
+        }
+      }
+    }
+
+响应：
+
+    {
+      "took" : 0,
+      "timed_out" : false,
+      "_shards" : {
+        "total" : 3,
+        "successful" : 3,
+        "skipped" : 0,
+        "failed" : 0
+      },
+      "hits" : {
+        "total" : {
+          "value" : 1000,
+          "relation" : "eq"
+        },
+        "max_score" : null,
+        "hits" : [ ]
+      },
+      "aggregations" : {
+        "cardinality_point" : {
+          "value" : 34
+        }
+      }
+    }
+    
+6. value_count
+
+统计包含某一字段的文档数
+
+请求：
+
+    get douban_book_index/_search
+    {
+      "size": 0,
+      "aggs": {
+        "count_point": {
+          "value_count": {
+            "field": "point"
+          }
+        }
+      }
+    }
+    
+响应：
+
+    {
+      "took" : 0,
+      "timed_out" : false,
+      "_shards" : {
+        "total" : 3,
+        "successful" : 3,
+        "skipped" : 0,
+        "failed" : 0
+      },
+      "hits" : {
+        "total" : {
+          "value" : 1000,
+          "relation" : "eq"
+        },
+        "max_score" : null,
+        "hits" : [ ]
+      },
+      "aggregations" : {
+        "count_point" : {
+          "value" : 380
+        }
+      }
+    }
+
+
+7. stats
 
 请求：一次获取价格的各种指标
 
@@ -2068,34 +2157,345 @@ match_phrase_prefix与match_phrase基本相同，只是它允许查询条件进�
       }
     }
 
-6. 
+8. extended_stats
+
+扩展统计，比stats显示更多的聚合指标
 
 请求：
 
+    get douban_book_index/_search
+    {
+      "size": 0,
+      "aggs": {
+        "extended_stats_price": {
+          "extended_stats": {
+            "field": "price"
+          }
+        }
+      }
+    }
 
 响应：
 
+    {
+      "took" : 0,
+      "timed_out" : false,
+      "_shards" : {
+        "total" : 3,
+        "successful" : 3,
+        "skipped" : 0,
+        "failed" : 0
+      },
+      "hits" : {
+        "total" : {
+          "value" : 1000,
+          "relation" : "eq"
+        },
+        "max_score" : null,
+        "hits" : [ ]
+      },
+      "aggregations" : {
+        "extended_stats_price" : {
+          "count" : 967,
+          "min" : 2.25,
+          "max" : 2019.0,
+          "avg" : 83.82747675097839,
+          "sum" : 81061.1700181961,
+          "sum_of_squares" : 2.698948146905095E7,
+          "variance" : 20883.483065091532,
+          "std_deviation" : 144.51118664342746,
+          "std_deviation_bounds" : {
+            "upper" : 372.84985003783333,
+            "lower" : -205.19489653587652
+          }
+        }
+      }
+    }
 
+9. percentiles、percentile_ranks
+
+[说明](https://www.elastic.co/guide/cn/elasticsearch/guide/current/percentiles.html)
 
 请求：
 
+    get douban_book_index/_search
+    {
+      "size": 0,
+      "aggs": {
+        "percentiles_point": {
+          "percentiles": {
+            "field": "point"
+            , "percents": [
+              1,
+              5,
+              25,
+              50,
+              75,
+              95,
+              99
+            ]
+          }
+        }
+      }
+    }
 
 响应：
 
+    {
+      "took" : 1,
+      "timed_out" : false,
+      "_shards" : {
+        "total" : 3,
+        "successful" : 3,
+        "skipped" : 0,
+        "failed" : 0
+      },
+      "hits" : {
+        "total" : {
+          "value" : 1000,
+          "relation" : "eq"
+        },
+        "max_score" : null,
+        "hits" : [ ]
+      },
+      "aggregations" : {
+        "percentiles_point" : {
+          "values" : {
+            "1.0" : 6.860000133514404,
+            "5.0" : 7.450000047683716,
+            "25.0" : 8.300000190734863,
+            "50.0" : 8.800000190734863,
+            "75.0" : 9.199999809265137,
+            "95.0" : 9.5,
+            "99.0" : 9.770000076293945
+          }
+        }
+      }
+    }
 
 
-请求：
+#### 桶聚合
 
+1. 分组
+
+请求：按豆瓣评分进行分组，并求每个分组的的书籍的平均价格
+
+    get douban_book_index/_search
+    {
+      "size": 0,
+      "aggs": {
+        "point_count": {
+          "terms": {
+            "field": "point"
+          },
+          "aggs": {
+            "avg_price": {
+              "avg": {
+                "field": "price"
+              }
+            }
+          }
+        }
+      }
+    }
 
 响应：
 
+    {
+      "took" : 0,
+      "timed_out" : false,
+      "_shards" : {
+        "total" : 3,
+        "successful" : 3,
+        "skipped" : 0,
+        "failed" : 0
+      },
+      "hits" : {
+        "total" : {
+          "value" : 1000,
+          "relation" : "eq"
+        },
+        "max_score" : null,
+        "hits" : [ ]
+      },
+      "aggregations" : {
+        "point_count" : {
+          "doc_count_error_upper_bound" : 3,
+          "sum_other_doc_count" : 145,
+          "buckets" : [
+            {
+              "key" : 9.300000190734863,
+              "doc_count" : 35,
+              "avg_price" : {
+                "value" : 78.7623529995189
+              }
+            },
+            {
+              "key" : 9.0,
+              "doc_count" : 32,
+              "avg_price" : {
+                "value" : 129.89343750476837
+              }
+            },
+            {
+              "key" : 9.100000381469727,
+              "doc_count" : 28,
+              "avg_price" : {
+                "value" : 76.53678563662938
+              }
+            },
+            {
+              "key" : 8.399999618530273,
+              "doc_count" : 22,
+              "avg_price" : {
+                "value" : 76.89090902155095
+              }
+            },
+            {
+              "key" : 8.699999809265137,
+              "doc_count" : 22,
+              "avg_price" : {
+                "value" : 72.5
+              }
+            },
+            {
+              "key" : 8.899999618530273,
+              "doc_count" : 20,
+              "avg_price" : {
+                "value" : 65.58900012969971
+              }
+            },
+            {
+              "key" : 8.199999809265137,
+              "doc_count" : 19,
+              "avg_price" : {
+                "value" : 63.73684210526316
+              }
+            },
+            {
+              "key" : 8.800000190734863,
+              "doc_count" : 19,
+              "avg_price" : {
+                "value" : 63.55263157894737
+              }
+            },
+            {
+              "key" : 9.199999809265137,
+              "doc_count" : 19,
+              "avg_price" : {
+                "value" : 80.66555574205186
+              }
+            },
+            {
+              "key" : 9.399999618530273,
+              "doc_count" : 19,
+              "avg_price" : {
+                "value" : 92.15631585372121
+              }
+            }
+          ]
+        }
+      }
+    }
 
+注：如果需要对text类型的字段进行桶聚合，需要设置字段 fielddata=true，fielddata默认为false，因为开启Text的fielddata对内存的占用很高。
+修改方式如下：
 
-请求：
+    PUT douban_book_index/_mapping
+    {
+      "properties": {
+        "publisher": { 
+          "type": "text",
+          "analyzer" : "ik_max_word",
+          "fielddata": true
+        }
+      }
+    }
 
+请求：对出版社名进行分组，经过观察查询响应信息可知，分组是根据分词的结果来进行的，因此分词器的选择会影响统计结果。
+
+    get douban_book_index/_search
+    {
+      "size": 0,
+      "aggs": {
+        "publisher_count": {
+          "terms": {
+            "field": "publisher"
+          }
+        }
+      }
+    }
 
 响应：
 
+    {
+      "took" : 0,
+      "timed_out" : false,
+      "_shards" : {
+        "total" : 3,
+        "successful" : 3,
+        "skipped" : 0,
+        "failed" : 0
+      },
+      "hits" : {
+        "total" : {
+          "value" : 1000,
+          "relation" : "eq"
+        },
+        "max_score" : null,
+        "hits" : [ ]
+      },
+      "aggregations" : {
+        "publisher_count" : {
+          "doc_count_error_upper_bound" : 16,
+          "sum_other_doc_count" : 1349,
+          "buckets" : [
+            {
+              "key" : "出版",
+              "doc_count" : 800
+            },
+            {
+              "key" : "社",
+              "doc_count" : 786
+            },
+            {
+              "key" : "出版社",
+              "doc_count" : 785
+            },
+            {
+              "key" : "工业",
+              "doc_count" : 329
+            },
+            {
+              "key" : "人民",
+              "doc_count" : 303
+            },
+            {
+              "key" : "人民邮电",
+              "doc_count" : 294
+            },
+            {
+              "key" : "邮电",
+              "doc_count" : 294
+            },
+            {
+              "key" : "机械",
+              "doc_count" : 176
+            },
+            {
+              "key" : "机械工业",
+              "doc_count" : 176
+            },
+            {
+              "key" : "电子",
+              "doc_count" : 155
+            }
+          ]
+        }
+      }
+    }
+
+2. 
 
 
 
@@ -2103,11 +2503,13 @@ match_phrase_prefix与match_phrase基本相同，只是它允许查询条件进�
  
 
 
-参考博客: 
+参考: 
 
-[https://blog.csdn.net/abc123lzf/article/details/102957060]
+[官方中文文档](https://www.elastic.co/guide/cn/elasticsearch/guide/current/index.html)
 
-[https://cloud.tencent.com/developer/article/1436463]
+[博客专题](https://blog.csdn.net/chengyuqiang/category_9271005.html)
 
-[https://blog.csdn.net/chengyuqiang/category_9271005.html]
+[mappings介绍](https://blog.csdn.net/abc123lzf/article/details/102957060)
+
+[索引管理](https://cloud.tencent.com/developer/article/1436463)
 
