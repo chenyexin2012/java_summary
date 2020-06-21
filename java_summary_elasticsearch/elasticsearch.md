@@ -1645,6 +1645,462 @@ match_phrase_prefix与match_phrase基本相同，只是它允许查询条件进�
       }
     }
 
+#### 复合查询
+
+1. Bool查询
+
+在单独的查询中组合任意数量的查询：
+
+- must: 必须匹配，查询的文档必须满足条件。
+
+- should: 应该匹配，不影响查询结果，如果查询条件满足则会影响评分，不满足则没有任何影响。
+
+- must_not: 不能匹配，查询的文档必须不满足条件。
+
+- filter: 必须匹配，这种语句不影响评分。
+
+请求：
+
+    get douban_book_index/_search
+    {
+      "query": {
+        "bool": {
+          "must": [
+            {
+              "match": {
+                "name": "java并发"
+              }
+            },
+            {
+              "range": {
+                "price": {
+                  "gte": 90,
+                  "lte": 100
+                }
+              }
+            }
+          ],
+          "must_not": [
+            {
+              "match": {
+                "name": "实践"
+              }
+            }
+          ],
+          "should": [
+            {
+              "match": {
+                "publisher": "电子工业"
+              }
+            }
+          ],
+          "filter": {
+            "bool": {
+              "must": [
+                {
+                  "match": {
+                    "name": "高级"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+    
+响应： 
+
+    {
+      "took" : 8,
+      "timed_out" : false,
+      "_shards" : {
+        "total" : 3,
+        "successful" : 3,
+        "skipped" : 0,
+        "failed" : 0
+      },
+      "hits" : {
+        "total" : {
+          "value" : 1,
+          "relation" : "eq"
+        },
+        "max_score" : 4.355178,
+        "hits" : [
+          {
+            "_index" : "douban_book_index",
+            "_type" : "_doc",
+            "_id" : "981",
+            "_score" : 4.355178,
+            "_source" : {
+              "_class" : "com.holmes.springboot.ealsticsearch.entity.Book",
+              "id" : 981,
+              "name" : "Java Web高级编程",
+              "price" : 99.8,
+              "author" : "威廉斯 (Nicholas S.Williams) / 清华大学出版社",
+              "publisher" : "清华大学出版社",
+              "pubDate" : "2015-6-1",
+              "point" : 8.5,
+              "commentCount" : "82",
+              "summary" : "Java成为世界上编程语言之一是有其优势的。熟悉JavaSE的程序员可以轻松地进入到Java EE开发中，构建出安全、可靠和具有扩展性的企业级应用程序。编写...",
+              "img" : "https://img3.doubanio.com/view/subject/s/public/s28314031.jpg"
+            }
+          }
+        ]
+      }
+    }
+
+2. constant_score
+
+查询以非评分模式进行，可以省去评分过程，提高查询效率
+
+请求：
+
+    get douban_book_index/_search
+    {
+      "query": {
+        "constant_score": {
+          "filter": {
+            "bool": {
+              "must": [
+                {
+                  "match": {
+                    "name": "java并发"
+                  }
+                },
+                {
+                  "range": {
+                    "price": {
+                      "gte": 90,
+                      "lte": 100
+                    }
+                  }
+                }
+              ],
+              "must_not": [
+                {
+                  "match": {
+                    "name": "实践"
+                  }
+                }
+              ],
+              "should": [
+                {
+                  "match": {
+                    "publisher": "电子工业"
+                  }
+                }
+              ],
+              "filter": {
+                "bool": {
+                  "must": [
+                    {
+                      "match": {
+                        "name": "高级"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+
+响应：
+
+    {
+      "took" : 0,
+      "timed_out" : false,
+      "_shards" : {
+        "total" : 3,
+        "successful" : 3,
+        "skipped" : 0,
+        "failed" : 0
+      },
+      "hits" : {
+        "total" : {
+          "value" : 1,
+          "relation" : "eq"
+        },
+        "max_score" : 1.0,
+        "hits" : [
+          {
+            "_index" : "douban_book_index",
+            "_type" : "_doc",
+            "_id" : "981",
+            "_score" : 1.0,
+            "_source" : {
+              "_class" : "com.holmes.springboot.ealsticsearch.entity.Book",
+              "id" : 981,
+              "name" : "Java Web高级编程",
+              "price" : 99.8,
+              "author" : "威廉斯 (Nicholas S.Williams) / 清华大学出版社",
+              "publisher" : "清华大学出版社",
+              "pubDate" : "2015-6-1",
+              "point" : 8.5,
+              "commentCount" : "82",
+              "summary" : "Java成为世界上编程语言之一是有其优势的。熟悉JavaSE的程序员可以轻松地进入到Java EE开发中，构建出安全、可靠和具有扩展性的企业级应用程序。编写...",
+              "img" : "https://img3.doubanio.com/view/subject/s/public/s28314031.jpg"
+            }
+          }
+        ]
+      }
+    }
+
+
+#### 指标聚合
+
+1. max
+
+请求：获取最高的豆瓣评分
+    
+    get douban_book_index/_search
+    {
+      "size": 0,
+      "aggs": {
+        "max_point": {
+          "max": {
+            "field": "point"
+          }
+        }
+      }
+    }
+
+响应：
+
+    {
+      "took" : 0,
+      "timed_out" : false,
+      "_shards" : {
+        "total" : 3,
+        "successful" : 3,
+        "skipped" : 0,
+        "failed" : 0
+      },
+      "hits" : {
+        "total" : {
+          "value" : 1000,
+          "relation" : "eq"
+        },
+        "max_score" : null,
+        "hits" : [ ]
+      },
+      "aggregations" : {
+        "max_point" : {
+          "value" : 9.899999618530273
+        }
+      }
+    }
+
+2. min
+
+请求：获取最低的豆瓣评分
+    
+    get douban_book_index/_search
+    {
+      "size": 0,
+      "aggs": {
+        "min_point": {
+          "min": {
+            "field": "point"
+          }
+        }
+      }
+    }
+
+响应：
+
+    {
+      "took" : 2,
+      "timed_out" : false,
+      "_shards" : {
+        "total" : 3,
+        "successful" : 3,
+        "skipped" : 0,
+        "failed" : 0
+      },
+      "hits" : {
+        "total" : {
+          "value" : 1000,
+          "relation" : "eq"
+        },
+        "max_score" : null,
+        "hits" : [ ]
+      },
+      "aggregations" : {
+        "min_point" : {
+          "value" : 6.199999809265137
+        }
+      }
+    }
+
+
+3. avg
+
+请求：获取价格平均值
+
+    get douban_book_index/_search
+    {
+      "size": 0,
+      "aggs": {
+        "avg_price": {
+          "avg": {
+            "field": "price"
+          }
+        }
+      }
+    }
+
+响应：
+    
+    {
+      "took" : 4,
+      "timed_out" : false,
+      "_shards" : {
+        "total" : 3,
+        "successful" : 3,
+        "skipped" : 0,
+        "failed" : 0
+      },
+      "hits" : {
+        "total" : {
+          "value" : 1000,
+          "relation" : "eq"
+        },
+        "max_score" : null,
+        "hits" : [ ]
+      },
+      "aggregations" : {
+        "avg_price" : {
+          "value" : 83.82747675097839
+        }
+      }
+    }
+
+4. sum
+
+请求：获取所有价格的和
+
+    get douban_book_index/_search
+    {
+      "size": 0,
+      "aggs": {
+        "sum_price": {
+          "sum": {
+            "field": "price"
+          }
+        }
+      }
+    }
+
+响应：
+
+    {
+      "took" : 2,
+      "timed_out" : false,
+      "_shards" : {
+        "total" : 3,
+        "successful" : 3,
+        "skipped" : 0,
+        "failed" : 0
+      },
+      "hits" : {
+        "total" : {
+          "value" : 1000,
+          "relation" : "eq"
+        },
+        "max_score" : null,
+        "hits" : [ ]
+      },
+      "aggregations" : {
+        "sum_price" : {
+          "value" : 81061.1700181961
+        }
+      }
+    }
+
+5. stats
+
+请求：一次获取价格的各种指标
+
+    get douban_book_index/_search
+    {
+      "size": 0,
+      "aggs": {
+        "stats_price": {
+          "stats": {
+            "field": "price"
+          }
+        }
+      }
+    }
+
+响应：
+    
+    {
+      "took" : 0,
+      "timed_out" : false,
+      "_shards" : {
+        "total" : 3,
+        "successful" : 3,
+        "skipped" : 0,
+        "failed" : 0
+      },
+      "hits" : {
+        "total" : {
+          "value" : 1000,
+          "relation" : "eq"
+        },
+        "max_score" : null,
+        "hits" : [ ]
+      },
+      "aggregations" : {
+        "stats_price" : {
+          "count" : 967,
+          "min" : 2.25,
+          "max" : 2019.0,
+          "avg" : 83.82747675097839,
+          "sum" : 81061.1700181961
+        }
+      }
+    }
+
+6. 
+
+请求：
+
+
+响应：
+
+
+
+请求：
+
+
+响应：
+
+
+
+请求：
+
+
+响应：
+
+
+
+请求：
+
+
+响应：
+
+
+
+
+
+ 
 
 
 参考博客: 

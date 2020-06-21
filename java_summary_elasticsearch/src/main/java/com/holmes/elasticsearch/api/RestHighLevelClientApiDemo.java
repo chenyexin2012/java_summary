@@ -41,7 +41,7 @@ public class RestHighLevelClientApiDemo {
 
     private static final Logger log = LoggerFactory.getLogger(RestHighLevelClientApiDemo.class);
 
-    private static final String HOST = "127.0.0.1";
+    private static final String HOST = "peer1";
 
     private static final int PORT = 9200;
 
@@ -302,10 +302,10 @@ public class RestHighLevelClientApiDemo {
     }
 
     /**
-     * term检索
+     * 简单检索
      */
     @Test
-    public void search() {
+    public void search1() {
 
         SearchSourceBuilder builder = new SearchSourceBuilder();
 //        // 分页
@@ -411,6 +411,66 @@ public class RestHighLevelClientApiDemo {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 复合查询
+     */
+    @Test
+    public void test2() {
+
+        SearchSourceBuilder builder = new SearchSourceBuilder();
+
+        MatchQueryBuilder mustNameMatch = QueryBuilders.matchQuery("name", "java并发");
+        RangeQueryBuilder mustPriceRange = QueryBuilders.rangeQuery("price").gte(90).lte(100);
+
+        MatchQueryBuilder mustNotNameMatch = QueryBuilders.matchQuery("name", "实践");
+        MatchQueryBuilder shouldPublisherMatch = QueryBuilders.matchQuery("publisher", "电子工业");
+
+        MatchQueryBuilder mustNameMatchFilter = QueryBuilders.matchQuery("name", "高级");
+
+        // 使用bool组合查询条件
+        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+        boolQueryBuilder.must(mustNameMatch)
+                .must(mustPriceRange)
+                .mustNot(mustNotNameMatch)
+                .should(shouldPublisherMatch)
+                .filter(mustNameMatchFilter);
+
+        // 使用constant_score非评分模式检索
+        ConstantScoreQueryBuilder constantScoreQueryBuilder = QueryBuilders.constantScoreQuery(boolQueryBuilder);
+
+        builder.query(boolQueryBuilder);
+//        builder.query(constantScoreQueryBuilder);
+        SearchRequest request = new SearchRequest(new String[]{"douban_book_index"}, builder);
+        log.info("request: {}", request.source());
+        try {
+            SearchResponse response = client.search(request, RequestOptions.DEFAULT);
+            log.info("response: {}", response);
+            SearchHit[] searchHits = response.getHits().getHits();
+            log.info("length: {}", searchHits.length);
+            for (SearchHit searchHit : searchHits) {
+                log.info("************************************");
+                log.info("id: {}", searchHit.getId());
+                log.info("index: {}", searchHit.getIndex());
+                log.info("version: {}", searchHit.getVersion());
+                log.info("score: {}", searchHit.getScore());
+                log.info("source: {}", searchHit.getSourceAsString());
+                log.info("highlight: {}", searchHit.getHighlightFields().toString());
+                log.info("************************************");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void test3() {
+
+
     }
 
     @Test
